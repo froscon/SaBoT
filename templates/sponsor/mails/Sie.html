@@ -1,0 +1,4 @@
+{% extends "sponsor/mails/commonMail.html" %}
+{% block greeting %}Sehr geehrte{% if rcpt.contactPersonGender == 'M' %}r Herr{% else %} Frau{% endif %} {{rcpt.contactPersonSurname}},{% endblock %}
+{% block en_greeting %}Dear {% if rcpt.contactPersonGender == 'M' %}Mr{% else %}Ms{% endif %} {{rcpt.contactPersonSurname}}{% endblock %}
+

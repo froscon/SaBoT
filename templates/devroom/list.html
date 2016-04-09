@@ -1,0 +1,113 @@
+{% extends "master.html" %}
+{% load url from future %}
+{% block content %}
+
+<div class="page-header">
+	<h2>List of devrooms ({{object_list|length}})</h2>
+</div>
+<ul class="nav nav-pills">
+	<li class="pull-right"><a href="{% url 'devroom_export_xml' %}" data-toggle="tooltip" title="Download devroom data of accepted projects as XML">XML export</a></li>
+	<li class="pull-right"><a href="{% url 'devroom_export_adminmail' %}" data-toggle="tooltip" title="Download the email addresses of the organizers (people with edit permissions) of all accepted projects">Organizer Mails</a></li>
+	<li class="pull-right"><a href="{% url 'devroom_export_allmail' %}" data-toggle="tooltip" title="Download the email addresses of all participants of all accepted projects">Participant Mails</a></li>
+</ul>
+<div class="controls">
+	<label for="show-only-accepted" class="checkbox"><input id="show-only-accepted" class="checkboxinput" type="checkbox" /> Show only accepted developer rooms</label>
+</div>
+
+<table class="table table-striped table-bordered table-hover tablesorter">
+	<thead>
+		<tr>
+			<th>Project name</th>
+			<th>Main Contact</th>
+			<th>E-Mail</th>
+			<th>Provided information</th>
+			<th>Last modified</th>
+			<th>Creation date</th>
+			<th>Room</th>
+			<th>Actions</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for project in object_list %}
+			<tr{% if project.accepted %} class="success"{% elif project.createDate > reg_deadline_booth %} class="danger"{% endif %} data-projectId="{{project.id}}" data-projectName="{{project.projectName}}">
+				<td>{{project.projectName}}</td>
+				<td>{{project.owner.first_name}} {{project.owner.last_name}}</td>
+				<td>{{project.owner.email}}</td>
+				<td>
+					{% if project.descriptionDE != "" and project.descriptionEN != "" %}<a href="{% url 'devroom_update_texts' pk=project.pk %}" data-toggle="tooltip" title="Texts in DE and EN available"><span class="glyphicon glyphicon-globe"></span></a>{% endif %}
+					{% if project.plannedProgram != "" %}<a href="{% url 'devroom_update_program' pk=project.pk %}" data-toggle="tooltip" title="Program information available"><span class="glyphicon glyphicon-book"></span></a>{% endif %}
+					{% if project.participants.all %}<a href="{% url 'devroom_participants' pk=project.pk %}" data-toggle="tooltip" title="Participants available"><span class="glyphicon glyphicon-user"></span></a>{% endif %}
+				</td>
+				<td>{{project.modifyDate|date:"j.n.Y"}}</td>
+				<td>{{project.createDate|date:"j.n.Y"}}</td>
+				<td class="roomfield">{{project.room}}</td>
+				<td>
+					{% if project.accepted %}
+						<form action="{% url 'devroom_unaccept' pk=project.pk %}" method="POST" style="display: inline">
+							{% csrf_token %}
+							<label for="unaccept-{{project.pk}}" style="display: inline"><span data-toggle="tooltip" title="Set this devroom to not accepted" class="glyphicon glyphicon-thumbs-down"></span></label>
+							<input type="submit" id="unaccept-{{project.pk}}" style="display: None" />
+						</form>
+					{% else %}
+						<form action="{% url 'devroom_accept' pk=project.pk %}" method="POST" style="display: inline">
+							{% csrf_token %}
+							<label for="accept-{{project.pk}}" style="display: inline"><span data-toggle="tooltip" title="Accept this devroom" class="glyphicon glyphicon-thumbs-up"></span></label>
+							<input type="submit" id="accept-{{project.pk}}" style="display: None" />
+						</form>
+					{% endif %}
+					<a href="{% url 'devroom_update_general' pk=project.pk %}" data-toggle="tooltip" title="Edit devroom information"><span class="glyphicon glyphicon-edit"></span></a>
+					<a href="{% url 'devroom_del' pk=project.pk %}" data-toggle="tooltip" title="Delete this devroom"><span class="glyphicon glyphicon-remove"></span></a>
+				</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>
+
+<div id="modal-roomsetter" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="Set room number" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				<h3>Set room number</h3>
+			</div>
+			<form id="roomSetForm" method="POST">
+				{% csrf_token %}
+				<div class="modal-body">
+					<p>
+						<label for="roomNumberInput"></label>
+						<input id="roomNumberInput" name="room" type="text" max-length="16" />
+					</p>
+				</div>
+				<div class="modal-footer">
+					<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+					<button class="btn btn-primary">Save changes</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script>
+	$(document).ready(function () {
+		$(".tablesorter").tablesorter({ sortList: [[0,0]], headers : { 3 : { sorter: false}, 7 : {sorter : false}, 4 : {sorter : "eudate"}, 5 : {sorter : "eudate"}}});
+		$("#show-only-accepted").change(function () {
+			if ($(this).prop("checked")) {
+				$("tbody > tr:not(.success)").hide();
+			}
+			else {
+				$("tbody > tr:not(.success)").show();
+			}
+		});
+
+		$(".roomfield:empty").tooltip({ title : "Click here to set a room", container : "body" });
+		$(".roomfield:not(:empty)").tooltip({ title : "Click here to change the room", container : "body" });
+
+		$(".roomfield").click(function () {
+			$("#roomSetForm").attr("action","/devrooms/" + $(this).parent().attr("data-projectId") + "/setroom");
+			$("label[for=roomNumberInput]").text("Room for the project " + $(this).parent().attr("data-projectName") + ":");
+			$("#roomNumberInput").val($(this).text());
+			$("#modal-roomsetter").modal();
+		});
+	});
+</script>
+{% endblock %}

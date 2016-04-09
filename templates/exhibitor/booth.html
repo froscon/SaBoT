@@ -1,0 +1,29 @@
+{% extends "master.html" %}
+{% load crispy_forms_tags %}
+{% load url from future %}
+
+{% block content %}
+
+{% include "exhibitor/alltabshead.html" %}
+
+<ul class="nav nav-tabs nav-tabs-bordered">
+	<li><a href="{% url 'exhibitor_update_general' pk=object.pk %}">General</a><li>
+	<li><a href="{% url 'exhibitor_update_texts' pk=object.pk %}">Description texts</a><li>
+	<li class="active"><a href="#">Booth</a><li>
+	<li><a href="{% url 'exhibitor_participants' pk=object.pk %}">Participants</a><li>
+</ul>
+
+<div class="tab-content tab-bordered">
+	<div class="tab-pane active" id="booth_info">
+		<div class="row">
+			<div class="col-md-8">
+				<p class="text-info">
+					In the last years, we often had the problem that the exhibition area in the mensa was overcrowded. Thus, we decided that booths in the mensa area can only have <strong>either</strong> normal tables <strong>or</strong> bartables. Moreover, we also offer booths in the first floor of the building. Although, there is more space, there might also be less visitors than in the mensa area. Please state your preferred location if you have one. In the case that everyone fits in the mensa area, we will not offer booths in the first floor.
+				</p>
+			</div>
+		</div>
+		{% crispy form form.helper%}
+	</div>
+</div>
+
+{% endblock %}

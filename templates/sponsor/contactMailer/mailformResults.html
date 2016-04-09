@@ -1,0 +1,16 @@
+{% extends "master.html" %}
+{% load url from future %}
+
+{% block content %}
+<div class="page-header">
+	<h2>Select Mail Recipients</h2>
+</div>
+
+<ul>
+	{% for res in results %}
+		<li>{{res.contact.companyName}}: {{res.status}} {% if res.status == "failed" %}{{res.info}}{% endif %}</li>
+	{% endfor %}
+</ul>
+
+
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends "master.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<div class="page-header">
+	<h2>Choose your password</h2>
+</div>
+
+{% crispy form form.helper %}
+
+{% endblock %}

@@ -1,0 +1,169 @@
+.bs-callout {
+	padding: 5px 5px 5px 20px;
+	margin: 10px 0;
+	border: 1px solid #eee;
+	border-left-width: 5px;
+	border-radius: 3px;
+}
+.bs-callout-success {
+	border-left-color: #3c763d;
+}
+.bs-callout-success h4 {
+	color: #3c763d;
+}
+
+.bs-callout-info {
+	border-left-color: #1b809e;
+}
+.bs-callout-info h4 {
+	color: #1b809e;
+}
+
+.form-grouper {
+	position: relative;
+	border-color: #ddd;
+	border-width: 1px;
+	border-radius: 4px;
+	border-style: solid;
+	padding: 45px 15px 15px 15px;
+}
+
+.form-grouper-label {
+	position: absolute;
+	top: 15px;
+	left: 15px;
+	font-size: 12px;
+	font-weight: 700;
+	color: #959595;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+}
+
+.filter-tools {
+	padding: 5px;
+	position: absolute;
+	right: 0px;
+	top: 0px;
+	border: 1px solid #eee;
+	border-radius: 3px;
+	list-style: none;
+}
+
+.filter-tools ul {
+	display: inline;
+	padding: 0px 0px 0px 10px;
+}
+
+.filter-tools form {
+	display: inline;
+}
+
+.filter-tools .form-group {
+	margin-right: 10px;
+}
+
+.filter-tools  li {
+	position: relative;
+	display: inline;
+}
+
+.table-container {
+	position: relative;
+	padding-top: 50px;
+}
+
+
+.tab-bordered {
+	border-left: 1px solid #ddd;
+	border-right: 1px solid #ddd;
+	border-bottom: 1px solid #ddd;
+	border-radius: 0px 0px 4px 4px;
+
+	padding: 10px;
+}
+.nav-tabs-bordered {
+	margin-bottom: 0px;
+}
+html,
+body {
+	height: 100%;
+	/* The html and body elements cannot have any padding or margin. */
+}
+
+body {
+	padding-top: 50px;
+}
+
+h5 {
+	font-weight: 700;
+}
+
+a > span.glyphicon {
+	color: black;
+}
+
+/* Wrapper for page content to push down footer */
+#wrap {
+	min-height: 100%;
+	height: auto !important;
+	height: 100%;
+	/* Negative indent footer by it's height */
+	margin: 0 auto -60px;
+}
+
+/* Set the fixed height of the footer here */
+#footer {
+	height: 60px;
+}
+#footer {
+	background-color: #f9f9f9;
+}
+
+/* Lastly, apply responsive CSS fixes as necessary */
+@media (max-width: 767px) {
+	#footer {
+		margin-left: -20px;
+		margin-right: -20px;
+		padding-left: 20px;
+		padding-right: 20px;
+	}
+}
+.asteriskField {
+	display: none;
+}
+.centerbox {
+	margin-left: auto;
+	margin-right: auto;
+	float: none;
+}
+.icon-spin {
+	-webkit-animation: spin 2s infinite linear;
+	-moz-animation: spin 2s infinite linear;
+	-o-animation: spin 2s infinite linear;
+	animation: spin 2s infinite linear;
+}
+@-moz-keyframes spin {
+	from { -moz-transform: rotate(0deg); }
+	to { -moz-transform: rotate(360deg); }
+}
+@-webkit-keyframes spin {
+	from { -webkit-transform: rotate(0deg); }
+	to { -webkit-transform: rotate(360deg); }
+}
+@keyframes spin {
+	from {transform:rotate(0deg);}
+	to {transform:rotate(360deg);}
+}
+
+span.icon-danger.glyphicon {
+	color: #a94442;
+}
+span.icon-warning.glyphicon {
+	color: #8a6d3b;
+}
+span.icon-success.glyphicon {
+	color: #3c763d;
+}
+span.icon-na.glyphicon {
+	display: none;
+}

@@ -1,0 +1,48 @@
+[
+	{
+		"model" : "sponsor.SponsorMailTemplate",
+		"pk" : 1,
+		"fields" : {
+			"templateName" : "sponsor/mails/Sie.html",
+			"mailSubject" : "Sponsoring FrOSCon 2016",
+			"mailTemplatePath" : "sponsor/mails/sie.html",
+			"attachments" : [1, 2]
+		}
+	},
+	{
+		"model" : "sponsor.SponsorMailTemplate",
+		"pk" : 2,
+		"fields" : {
+			"templateName" : "sponsor/mails/Du.html",
+			"mailSubject" : "Sponsoring FrOSCon 2016",
+			"mailTemplatePath" : "sponsor/mails/du.html",
+			"attachments" : [1, 2]
+		}
+	},
+	{
+		"model" : "sponsor.SponsorMailTemplate",
+		"pk" : 3,
+		"fields" : {
+			"templateName" : "sponsor/mails/DamenUndHerren.html",
+			"mailSubject" : "Sponsoring FrOSCon 2016",
+			"mailTemplatePath" : "sponsor/mails/damenUndHerren.html",
+			"attachments" : [1, 2]
+		}
+	},
+	{
+		"model" : "sponsor.SponsorMailAttachment",
+		"pk" : 1,
+		"fields" : {
+			"name" : "FrOSCon2016_Sponsoring_Flyer.pdf",
+			"filepath" : "flyer.pdf"
+		}
+	},
+	{
+		"model" : "sponsor.SponsorMailAttachment",
+		"pk" : 2,
+		"fields" : {
+			"name" : "FrOSCon2016_Sponsoring_Flyer_En.pdf",
+			"filepath" : "flyer_en.pdf"
+		}
+	}
+]

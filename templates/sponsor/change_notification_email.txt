@@ -1,0 +1,6 @@
+The user {{user.username}} has changed the entry of {{sponsor.contact.companyName}}!
+
+The following entries have been changed:
+
+{% for field, new_cont in change_dict.items %}* The field {{field}} is now: {{new_cont}}
+{% endfor %}

@@ -1,0 +1,286 @@
+{% extends "master.html" %}
+{% load url from future %}
+{% load sponsor %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<div class="page-header">
+	<h2>List of sponsors</h2>
+</div>
+<ul class="nav nav-pills" style="margin-bottom:20px">
+	<li class="pull-right"><a href="{% url 'sponsor_export_xml' %}" data-toggle="tooltip" title="Download sponsor data as XML">XML export</a></li>
+	<li class="pull-right"><a href="{% url 'sponsor_export_logos' %}" data-toggle="tooltip" title="Download all sponsor logos in an archive">Logo bulk export</a></li>
+	<li class="pull-right"><a href="{% url 'sponsor_export_programad' %}" data-toggle="tooltip" title="Download all program advertisements in an archive">Ad bulk export</a></li>
+	<li class="pull-right">
+		<a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Export mail <span class="caret"></span></a>
+		<ul class="dropdown-menu">
+			<li><a href="{% url 'sponsor_export_adminmail' %}">Organizers</a></li>
+			<li><a href="{% url 'sponsor_export_allmail' %}">All participants</a></li>
+			<li><a href="{% url 'sponsor_export_boothmail' %}">Booth personnel</a></li>
+			<li><a href="{% url 'sponsor_export_recruitingmail' %}">Recruiting personnel</a></li>
+		</ul>
+	</li>
+</ul>
+<p class="text-info"><span class="glyphicon glyphicon-circle-arrow-right"></span>Add a new sponsor from the list of <a href="{% url 'sponsorcontact_list' %}">sponsoring contacts</a></p>
+{% if moneyRaised %}
+	<div class="bs-callout bs-callout-success">
+		<h4>Money raised</h4>
+		<p><strong>{{moneyRaised}}€</strong></p>
+	</div>
+{% endif  %}
+<div class="table-container">
+<div class="filter-tools" style="display: none">
+	<span class="glyphicon glyphicon-filter" style="margin-right: 15px"></span>
+	<form class="form-inline">
+		<div class="form-group">
+			<label for="filterByPacket">Packets</label>
+			<select class="form-control" id="filterByPacket">
+			</select>
+		</div>
+		<div class="form-group">
+			<div class="checkbox">
+				<label for="filterBooth">
+					<input class="checkboxinput checkbox" id="filterBooth" type="checkbox" data-filter="booth"> with booth
+				</label>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="checkbox">
+				<label for="filterRecruiting">
+					<input class="checkboxinput checkbox" id="filterRecruiting" type="checkbox" data-filter="recruiting"> with recruiting
+				</label>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="checkbox">
+				<label for="filterParcel">
+					<input class="checkboxinput checkbox" id="filterParcel" type="checkbox" data-filter="parcel"> with parcel
+				</label>
+			</div>
+		</div>
+	</form>
+
+</div>
+<table class="table table-bordered table-hover tablesorter">
+	<thead>
+		<tr>
+			<th>Sponsor</th>
+			<th>Username</th>
+			<th>RT</th>
+			<th>Contact</th>
+			<th>E-Mail</th>
+			<th>Package</th>
+			<th>Status</th>
+			<th>Last modified</th>
+			<th>Actions</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for sponsor in object_list %}
+			<tr style="background-color: {% if sponsor.commitment %}{{sponsor.package.color}}{% else %}lightgrey{% endif %};">
+				<td data-toggle="popover" data-html="true" data-trigger="hover" data-placement="top" data-content="{{sponsor.adminComment|linebreaksbr}}">{{sponsor.contact.companyName}}</td>
+				<td>{{sponsor.owner.username}}</td>
+				<td>
+					{% if sponsor.rtTicketId %}
+						<a href="{{RT_TICKET_URL}}{{sponsor.rtTicketId}}">#{{sponsor.rtTicketId}}</a>
+					{% endif %}
+				</td>
+				<td>{{sponsor.owner.first_name}} {{sponsor.owner.last_name}}</td>
+				<td>{{sponsor.owner.email}}</td>
+				<td class="sponsor-package-col"{%if sponsor.package.hasBooth %} data-hasbooth="1"{% endif %}{% if sponsor.package.hasRecruitingEvent %} data-hasrecruiting="1"{% endif %}{% if sponsor.package.hasPackets %} data-hasparcel="1"{% endif %}>
+					<a href="{% url 'sponsorpackage_update' pk=sponsor.package.pk %}">{{sponsor.package}}</a>
+				</td>
+				<td>
+					<a href="{% url 'sponsor_update' pk=sponsor.pk %}#billing-address" data-toggle="tooltip" title="Company billing address status"><span class="glyphicon glyphicon-euro {{sponsor.billingAddressStatus|statuscolorclass}}"></span></a>
+					<a href="{% url 'sponsor_update' pk=sponsor.pk %}#general" data-toggle="tooltip" title="Company logo status"><span class="glyphicon glyphicon-picture {{sponsor.logoStatus|statuscolorclass}}"></span></a>
+					<a href="{% url 'sponsor_update' pk=sponsor.pk %}#general" data-toggle="tooltip" title="Company weblink status"><span class="glyphicon glyphicon-share-alt {{sponsor.hpLinkStatus|statuscolorclass}}"></span></a>
+					<a href="{% url 'sponsor_update' pk=sponsor.pk %}#social-media" data-toggle="tooltip" title="Company social media status"><span class="glyphicon glyphicon-bullhorn {{sponsor.socialMediaStatus|statuscolorclass}}"></span></a>
+					<a href="{% url 'sponsor_update' pk=sponsor.pk %}#froscon-homepage" data-toggle="tooltip" title="Status of texts for our homepage"><span class="glyphicon glyphicon-globe {{sponsor.hpTextStatus|statuscolorclass}}"></span></a>
+					<a href="{% url 'sponsor_update' pk=sponsor.pk %}#booth" data-toggle="tooltip" title="Booth information status"><span class="glyphicon glyphicon-home {{sponsor.boothStatus|statuscolorclass}}"></span></a>
+					<a href="{% url 'sponsor_update' pk=sponsor.pk %}#recruiting" data-toggle="tooltip" title="Recruiting session status"><span class="glyphicon glyphicon-resize-small {{sponsor.recruitingStatus|statuscolorclass}}"></span></a>
+					<a href="{% url 'sponsor_update' pk=sponsor.pk %}#printed-program" data-toggle="tooltip" title="Program advertisment status"><span class="glyphicon glyphicon-file {{sponsor.programAdStatus|statuscolorclass}}"></span></a>
+					<a href="{% url 'sponsor_update' pk=sponsor.pk %}#printed-program" data-toggle="tooltip" title="Program description text status"><span class="glyphicon glyphicon-align-left {{sponsor.programAdTextStatus|statuscolorclass}}"></span></a>
+					<a href="{% url 'sponsor_update' pk=sponsor.pk %}#parcel" data-toggle="tooltip" title="Information on sent packets"><span class="glyphicon glyphicon-gift {{sponsor.packetsStatus|statuscolorclass}}"></span></a>
+					<a href="{% url 'sponsor_participants' pk=sponsor.pk %}" data-toggle="tooltip" title="Participants status"><span class="glyphicon glyphicon-user {{sponsor.participantsStatus|statuscolorclass}}"></span></a>
+					<td>{{sponsor.modifyDate|date:"j.n.Y"}}</td>
+					<td>
+						<a href="{% url 'sponsor_update' pk=sponsor.pk %}" data-toggle="tooltip" title="Edit sponsor information"><span class="glyphicon glyphicon-edit"></span></a>
+						<a href="{% url 'sponsor_del' pk=sponsor.pk %}" data-toggle="tooltip" title="Delete this sponsor"><span class="glyphicon glyphicon-remove"></span></a>
+						<a href="#" class="offerLink" data-sponsoring-id="{{sponsor.pk}}" data-toggle="tooltip" title="Generate an offer for this sponsoring"><span class="glyphicon glyphicon-print"></span></a>
+					</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>
+</div>
+
+<div class="bs-callout bs-callout-info">
+	<h4>Statistics</h4>
+	<ul>
+		<li>Booth: Yes: {{wantBooth}}, No: {{noBooth}}, Avail: {{canBooth}}</li>
+		<li>Recruiting: Yes: {{wantRecruiting}}, No: {{noRecruiting}}, Avail: {{canRecruiting}}</li>
+	</ul>
+</div>
+
+<div id="modal-offer-generator" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="Generate an offer" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				<h3>Generate an offer</h3>
+			</div>
+			<form id="offerGeneratorForm" method="POST">
+				{% csrf_token %}
+				<div class="modal-body">
+					{{offerForm|crispy}}
+				</div>
+				<div class="modal-footer">
+					<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+					<button class="btn btn-primary" id="odtButton">Download ODT</button>
+					<button class="btn btn-primary" id="pdfButton">Download PDF</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script>
+
+function uniqueSort(arr) {
+	var i,
+	len = arr.length,
+	out = [],
+	obj = { };
+
+	for (i = 0; i < len; i++) {
+		obj[$.trim(arr[i])] = 0;
+	}
+	for (i in obj) {
+		out.push(i);
+	}
+	return out.sort();
+};
+
+function reapplyFilters() {
+	if (packageFilter != "") {
+		$(".sponsor-package-col").filter(function () { return $.trim($(this).text()) == packageFilter;}).siblings().andSelf().slideDown();
+		$(".sponsor-package-col").filter(function () { return $.trim($(this).text()) != packageFilter;}).siblings().andSelf().slideUp({ "queue" : false});
+	}
+	else {
+		// we apply property based filtering
+		var res = $(".sponsor-package-col");
+
+		for (var prop in filters) {
+			res = availableFilters[prop](res)
+		}
+
+		var toHide = $(".sponsor-package-col").not(res);
+		res.siblings().andSelf().slideDown();
+		toHide.siblings().andSelf().slideUp();
+	}
+}
+
+function filtersToHash() {
+	if (packageFilter != "") {
+		location.hash = "package:" + packageFilter
+	}
+	else {
+		if (Object.keys(filters).length > 0) {
+			location.hash= Object.keys(filters).join("-");
+		}
+		else {
+			location.hash = "";
+		}
+	}
+}
+
+function filtersFromHash() {
+	filters = {}
+	packageFilter = ""
+	$("[data-filter]").prop("checked", false);
+	$("#filterByPacket").val("all");
+	if (location.hash != "") {
+		if (location.hash.indexOf("#package:") === 0) {
+			packageFilter = location.hash.split(":")[1];
+			$("#filterByPacket").val(packageFilter);
+		}
+		else {
+			res = location.hash.substring(1).split("-");
+			res.forEach(function(val) { filters[val] = 1; $("[data-filter=" + val + "]").prop("checked", true); });
+		}
+	}
+}
+
+	var filters = {};
+	var packageFilter = "";
+	var availableFilters = {
+		"booth" : function (res) { return res.filter(".sponsor-package-col[data-hasbooth]"); },
+		"parcel" : function (res) { return res.filter(".sponsor-package-col[data-hasparcel]"); },
+		"recruiting" : function (res) { return res.filter(".sponsor-package-col[data-hasrecruiting]"); }
+	}
+
+	$(document).ready(function () {
+		$(".tablesorter").tablesorter({ sortList : [[0,0]], headers : { 6 : {sorter : false}, 7 : {sorter : "eudate"}, 8 : {sorter : false}}});
+		$("[data-toggle=popover]").popover({ container : "body", delay : { show: 500, hide: 100 } });
+
+		$(".filter-tools").show();
+		// fill package select box with available packages
+		var packages = uniqueSort($(".sponsor-package-col").map(function () { return $(this).text(); }).get());
+		$("#filterByPacket").append($("<option/>", {
+			value: "all",
+			text: "(all)",
+			}));
+		$.each(packages, function(idx, item) {
+			$("#filterByPacket").append($("<option/>", {
+				value: item,
+				text: item,
+				}));
+		});
+
+		$("#filterByPacket").change(function () {
+			var selector = $(this).val();
+			if (selector == "all") {
+				packageFilter = "";
+			}
+			else {
+				packageFilter = selector;
+			}
+			filtersToHash();
+		});
+
+		$("[data-filter]").change(function () {
+			packageFilter = "";
+			if ($(this).is(":checked")) {
+				filters[$(this).data("filter")] = 1;
+			} else {
+				delete filters[$(this).data("filter")];
+			}
+			filtersToHash();
+		});
+
+		$(window).on('hashchange', function () {
+			filtersFromHash();
+			reapplyFilters();
+		});
+		filtersFromHash();
+		reapplyFilters();
+
+		$(".offerLink").click(function (event) {
+			event.preventDefault();
+			$("#modal-offer-generator").data("sponsoring", $(this).data("sponsoringId"));
+			$("#modal-offer-generator").modal();
+		});
+		$("#odtButton").click(function (event) {
+			event.preventDefault();
+			window.location.href = "/invoice/genoffer-odt/" + $("#modal-offer-generator").data("sponsoring") + "-" + $("#id_template").val();
+			$("#modal-offer-generator").modal('hide');
+		});
+		$("#pdfButton").click(function (event) {
+			event.preventDefault();
+			window.location.href = "/invoice/genoffer-pdf/" + $("#modal-offer-generator").data("sponsoring") + "-" + $("#id_template").val();
+			$("#modal-offer-generator").modal('hide');
+		});
+	});
+</script>
+
+{% endblock %}

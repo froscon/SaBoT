@@ -1,0 +1,21 @@
+{% extends "master.html" %}
+{% load url from future %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<div class="page-header">
+	{% if object %}
+	<h2>Edit sponsoring contact</h2>
+	{% else %}
+	<h2>Create a new sponsoring contact</h2>
+	{% endif %}
+</div>
+
+
+<ul class="nav nav-pills"><li><a href="{% url 'sponsorcontact_list' %}"><span class="glyphicon glyphicon-arrow-left"></span> List of contacts</a></li></ul>
+
+{% crispy form form.helper %}
+
+
+
+{% endblock %}

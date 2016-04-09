@@ -1,0 +1,13 @@
+{% extends "master.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<div class="page-header">
+	<h2>Update your user information</h2>
+</div>
+<p>Please enter your full name. We use this information to print the conference tickets.</p>
+
+{% crispy form form.helper %}
+
+<p><a href="/accounts/password/change">Change your password</a></p>
+{% endblock %}

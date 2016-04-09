@@ -1,0 +1,22 @@
+{% extends "master.html" %}
+{% load crispy_forms_tags %}
+{% load url from future %}
+
+{% block content %}
+
+{% include "exhibitor/alltabshead.html" %}
+
+<ul class="nav nav-tabs nav-tabs-bordered">
+	<li><a href="{% url 'exhibitor_update_general' pk=object.pk %}">General</a><li>
+	<li class="active"><a href="#">Description texts</a><li>
+	<li><a href="{% url 'exhibitor_update_booth' pk=object.pk %}">Booth</a><li>
+	<li><a href="{% url 'exhibitor_participants' pk=object.pk %}">Participants</a><li>
+</ul>
+
+<div class="tab-content tab-bordered">
+	<div class="tab-pane active" id="description_info">
+		{% crispy form form.helper%}
+	</div>
+</div>
+
+{% endblock %}

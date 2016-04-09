@@ -1,0 +1,37 @@
+{% extends "master.html" %}
+{% load url from future %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<div class="page-header">
+	{% if object %}
+	<h2>Recreate and update invoice <small>{{sponsoring.contact.companyName}}</small></h2>
+	{% else %}
+	<h2>Create invoice <small>{{sponsoring.contact.companyName}}</small></h2>
+	{% endif %}
+</div>
+
+
+<ul class="nav nav-pills">
+	<li><a href="{% url 'invoice_overview' %}"><span class="glyphicon glyphicon-arrow-left"></span> Invoice overview</a></li></ul>
+
+<dl class="dl-horizontal">
+	<dt>Company</dt>
+	<dd>{{sponsoring.contact.companyName}}</dd>
+	<dt>Package</dt>
+	<dd>{{sponsoring.package.name}}</dd>
+	<dt>Amount (net)</dt>
+	<dd>{{sponsoring.package.price}}</dd>
+	<dt>Amount (gross)</dt>
+	<dd>{{sponsoring.package.getPriceGross}}</dd>
+	<dt>Description</dt>
+	<dd>
+	{% for item in sponsoring.getPackageDescription %}
+		{{item}}{% if not forloop.last %}<br />{% endif %}
+	{% endfor %}
+	</dd>
+</dl>
+
+{% crispy form form.helper %}
+
+{% endblock %}

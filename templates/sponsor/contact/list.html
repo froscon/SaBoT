@@ -1,0 +1,108 @@
+{% extends "master.html" %}
+{% load url from future %}
+{% block content %}
+
+<div class="page-header">
+	<h2>List of sponsoring contacts</h2>
+</div>
+<ul class="nav nav-pills">
+	<li class="pull-right"><a href="{% url 'sponsorcontact_email_reset' %}" data-toggle="tooltip" title="Clear the email sending information.">Reset Email</a></li>
+	<li class="pull-right"><a href="{% url 'sponsorcontact_export_xml' %}" data-toggle="tooltip" title="Download sponsor contact data as XML">XML export</a></li>
+	<li class="pull-right"><a id="rt-import" href="#" data-toggle="tooltip" title="Reimport the reply status from RT.">Import reply status <span style="margin-left:5px" data-toggle="tooltip" class="glyphicon glyphicon-refresh"></span>
+</a></li>
+	<li class="pull-right"><a href="{% url 'sponsorcontact_mail' %}" data-toggle="tooltip" title="Select the recipients from the registered sponsor contacts to send the email to">Batchmail</a></li>
+</ul>
+
+<div class="alert alert-info">
+	Entries highlighted in a yellow color are of poor quality because essential information is missing. An entry should either only contain the general information (company name, general contact address) or be complete with a personal contact.<br />
+	Green highlighted entries are complete. They can be used to create new sponsorings for the conference.
+</div>
+
+<ul class="nav nav-pills"><li><a href="{% url 'sponsorcontact_new' %}"><span class="glyphicon glyphicon-plus"></span> Add a new sponsor contact</a></li></ul>
+<table class="table table-striped table-bordered table-hover tablesorter">
+	<thead>
+		<tr>
+			<th>Company</th>
+			<th>E-Mail</th>
+			<th>Contact</th>
+			<th>G</th>
+			<th>Contact E-Mail</th>
+			<th>Mail template</th>
+			<th>RT</th>
+			<th>Status</th>
+			<th>Actions</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for contact in object_list %}
+			<tr{% if contact.contactPersonSurname != "" and contact.contactPersonGender == None or contact.contactPersonSurname != "" and contact.contactPersonEmail == "" %} class="warning"{% endif %}{% if contact.allDataAvailable %} class="success"{% endif %} id="contact-{{contact.id}}">
+				<td data-toggle="popover" data-html="true" data-trigger="hover" data-placement="top" data-content="{{contact.comment|linebreaksbr}}">{{contact.companyName}}</td>
+				<td>{{contact.contactEMail}}</td>
+				<td>{{contact.contactPersonFirstname}} {{contact.contactPersonSurname}}</td>
+				<td>{% if contact.contactPersonSurname != "" %}{% if contact.contactPersonGender == "M" %}M{% elif contact.contactPersonGender == "F" %}F{% else %}<span class="glyphicon glyphicon-question-sign"></span>{% endif %}{% endif %}</td>
+				<td>{{contact.contactPersonEmail}}</td>
+				<td>{{contact.template}}</td>
+				<td>
+					{% if contact.rtTicketId %}
+						<a href="{{RT_TICKET_URL}}{{contact.rtTicketId}}">#{{contact.rtTicketId}}</a>
+					{% endif %}
+				</td>
+				<td>
+					{% if contact.lastMailed %}
+						<span class="glyphicon glyphicon-envelope" data-toggle="tooltip" title="This company was contacted"></span>
+						{{contact.lastMailed|date:"d.m.Y"}}
+					{% endif %}
+					{% if contact.responded %}
+						<span class="glyphicon glyphicon-comment" data-toggle="tooltip" title="This contact responded to our approach"></span>
+					{% elif contact.lastMailed %}
+						<span class="glyphicon glyphicon-time" data-toggle="tooltip" title="We are still waiting for a response of this contact"></span>
+					{% endif %}
+				</td>
+				<td>
+					{% if not contact.lastMailed %}
+						<form action="{% url 'sponsorcontact_set_mailed' pk=contact.pk %}" method="POST" style="display: inline">
+							{% csrf_token %}
+							<label for="mailed-{{contact.pk}}" style="display: inline"><span data-toggle="tooltip" title="Mark as contacted manually" class="glyphicon glyphicon-phone-alt"></i></label>
+							<input type="submit" id="mailed-{{contact.pk}}" style="display: None" />
+						</form>
+					{% endif %}
+					<a href="{% url 'sponsorcontact_update' pk=contact.pk %}" data-toggle="tooltip" title="Edit sponsorcontact information"><span class="glyphicon glyphicon-edit"></span></a>
+					<a href="{% url 'sponsorcontact_del' pk=contact.pk %}" data-toggle="tooltip" title="Delete this sponsorcontact"><span class="glyphicon glyphicon-remove"></span></a>
+					{%if contact.contactPersonEmail|length > 0 %}
+						<a href="{% url 'sponsor_new' pk=contact.pk %}" data-toggle="tooltip" title="Create a sponsoring for the contact"><span class="glyphicon glyphicon-hand-right"></span></a>
+					{% endif %}
+				</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+
+</table>
+<script>
+	$.ajaxSetup({
+		beforeSend: function(xhr, settings) {
+			xhr.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
+		}
+	});
+
+	$(document).ready(function () {
+		$(".tablesorter").tablesorter({ sortList : [[0,0]], headers : { 6 : { sorter : false}, 7 : { sorter : false},}});
+		$("[data-toggle=popover]").popover({ container : "body", delay : { show: 500, hide: 100 } });
+		$("#rt-import").click(function () {
+			$("#rt-import span").addClass("icon-spin");
+			$.post("{% url 'sponsorcontact_response_update' %}",
+				function (res) {
+					location.reload();
+				}
+		);
+
+		});
+
+	});
+	var shiftWindow = function () { scrollBy(0, -70); }
+	if (location.hash) {
+		shiftWindow();
+		window.addEventListener("hashchange", shiftWindow);
+	}
+</script>
+
+{% endblock %}

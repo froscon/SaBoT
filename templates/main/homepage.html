@@ -1,0 +1,60 @@
+{% extends "master.html" %}
+{% load url from future %}
+{% block content %}
+
+<div class="page-header">
+	<h2>Overview</h2>
+</div>
+
+{% if not user_exhibitors and not user_devrooms  and not user_sponsorings %}
+	<p class="lead">
+		Welcome to the FrOSCon registration interface for projects on the conference!
+	</p>
+	<p class="lead">
+		You can use this portal to register
+		<ul class="lead">
+			<li>for a booth at the conference for your project.
+			<li>for a developer room at the conference. You can use this room for any purpose that helps your project(s). This includes developer meetings as well as presentations for the guests of FrOSCon. 
+		</ul>
+	</p>
+	<div style="text-align: center; margin-top: 50px">
+		<h2>What do you want to do?</h2>
+		<a href="{% url 'exhibitor_new' %}" class="btn btn-lg btn-primary">Register a booth</a>
+		<a href="{% url 'devroom_new' %}" class="btn btn-lg btn-primary" style="margin-left: 50px">Register a developer room</a>
+	</div>
+{% else %}
+	<p class="lead">Hi {{user.first_name}} {{user.last_name}}, <small>(<a href="{% url 'auth_user_profile' %}">not correct?</a>)</small></p>
+
+	{% if user_sponsorings %}
+	<p class="lead">You are part of the booth personal of the following sponsors:</p>
+	<ul class="lead">
+		{% for project in user_sponsorings %}
+			<li>{{project.contact.companyName}}</a></li>
+		{% endfor %}
+	</ul>
+	{% endif %}
+
+	{% if user_exhibitors %}
+	<p class="lead">You are involved in the following projects that registered for a booth:</p>
+	<ul class="lead">
+		{% for project in user_exhibitors %}
+			<li><a href="{% url 'exhibitor_update_general' pk=project.id %}">{{project.projectName}}</a></li>
+		{% endfor %}
+	</ul>
+	{% endif %}
+
+	{% if user_devrooms %}
+	<p class="lead">You are involved in the following projects that registered for a developer room:</p>
+	<ul class="lead">
+		{% for project in user_devrooms %}
+			<li><a href="{% url 'devroom_update_general' pk=project.id %}">{{project.projectName}}</a></li>
+		{% endfor %}
+	</ul>
+	{% endif %}
+	<div style="text-align: center; margin-top: 50px">
+		<h2>Register more projects</h2>
+		<a href="{% url 'exhibitor_new' %}" class="btn btn-lg btn-primary">Register a booth</a>
+		<a href="{% url 'devroom_new' %}" class="btn btn-lg btn-primary" style="margin-left: 50px">Register a developer room</a>
+	</div>
+{% endif %}
+{% endblock %}

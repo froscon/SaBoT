@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<exhibitors xmlns="http://callforprojects.froscon.org/exhibitors">
+	{% for project in object_list %}
+		<exhibitor>
+			<name>{{project.projectName}}</name>
+			<creationDate>{{project.createDate|date:"U"}}</creationDate>
+			<lastModified>{{project.modifyDate|date:"U"}}</lastModified>
+			<maincontact>
+				<firstname>{{project.owner.first_name}}</firstname>
+				<lastname>{{project.owner.last_name}}</lastname>
+				<email>{{project.owner.email}}</email>
+			</maincontact>
+			<homepage>{{project.homepage}}</homepage>
+			{% if project.logo %}<logo>{{project.logo.url}}</logo>{% endif %}
+			<description lang="en">
+				{{project.descriptionEN}}
+			</description>
+			<description lang="de">
+				{{project.descriptionDE}}
+			</description>
+			<booth>
+				<preferredLocation>{% if project.boothPreferedLocation == 0 %}No preference{% elif project.boothPreferedLocation == 1 %}Mensa{% elif project.boothPreferedLocation == 2 %}First floor{% endif %}</preferredLocation>
+				<tables>{{project.boothNumTables}}</tables>
+				<chairs>{{project.boothNumChairs}}</chairs>
+				<comment>{{project.boothComment}}</comment>
+			</booth>
+			<participants>
+				{% for membership in project.exhibitorparticipants_set.all %}
+					<person>
+						<firstname>{{membership.user.first_name}}</firstname>
+						<lastname>{{membership.user.last_name}}</lastname>
+						<email>{{membership.user.email}}</email>
+						{% if membership.isAdmin %}<organizer />{% endif %}
+					</person>
+				{% endfor %}
+			</participants>
+		</exhibitor>
+	{% endfor %}
+</exhibitors>

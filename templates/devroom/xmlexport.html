@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<devrooms xmlns="http://callforprojects.froscon.org/devrooms">
+	{% for project in object_list %}
+		<devroom>
+			<name>{{project.projectName}}</name>
+			<creationDate>{{project.createDate|date:"U"}}</creationDate>
+			<lastModified>{{project.modifyDate|date:"U"}}</lastModified>
+			<maincontact>
+				<firstname>{{project.owner.first_name}}</firstname>
+				<lastname>{{project.owner.last_name}}</lastname>
+				<email>{{project.owner.email}}</email>
+			</maincontact>
+			<homepage>{{project.homepage}}</homepage>
+			{% if project.logo %}<logo>{{project.logo.url}}</logo>{% endif %}
+			<description lang="en">
+				{{project.descriptionEN}}
+			</description>
+			<description lang="de">
+				{{project.descriptionDE}}
+			</description>
+			<program>
+				<usageTime>{{project.schedule}}</usageTime>
+				<description>{{project.plannedProgram}}</description>
+				<numGuests>{{project.anticipatedGuests}}</numGuests>
+			</program>
+			<participants>
+				{% for membership in project.devroomparticipants_set.all %}
+					<person>
+						<firstname>{{membership.user.first_name}}</firstname>
+						<lastname>{{membership.user.last_name}}</lastname>
+						<email>{{membership.user.email}}</email>
+						{% if membership.isAdmin %}<organizer />{% endif %}
+					</person>
+				{% endfor %}
+			</participants>
+		</devroom>
+	{% endfor %}
+</devrooms>

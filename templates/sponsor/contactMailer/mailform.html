@@ -1,0 +1,130 @@
+{% extends "master.html" %}
+{% load url from future %}
+
+{% block content %}
+<div class="page-header">
+	<h2>Select Mail Recipients</h2>
+</div>
+	<form method="POST">
+		{% csrf_token %}
+		<div class="alert alert-danger">
+			WARNING: This is only for testing purposes. Final Mailtemplates are still missing. Please don't actually send emails to real contacts!
+		</div>
+		<div class="alert alert-warning">
+			Rows with orange highlighting in the table indicate that this sponsor has been already recently mailed.
+		</div>
+		<div id="modernInput" style="display: none">
+			<ul class="nav nav-pills">
+				<li class="pull-right">
+					<a href="#" id="toggleAllInputs"><span class="glyphicon glyphicon-transfer"></span>Toggle receivers</a>
+				</li>
+			</ul>
+			<table class="table table-striped table-bordered table-hover tablesorter">
+				<thead>
+					<tr>
+						<th>Company</th>
+						<th>General E-Mail</th>
+						<th>Contact</th>
+						<th>Contact E-Mail</th>
+						<th>Mail template</th>
+						<th>Send Mail?</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for contact in contact_list %}
+						<tr{% if contact.wasRecentlyMailed %} class="warning"{% endif %}>
+							<td>{{contact.companyName}}</td>
+							<td>{{contact.contactEMail}}</td>
+							<td>{{contact.contactPersonFirstname}} {{contact.contactPersonSurname}}</td>
+							<td>{{contact.contactPersonEmail}}</td>
+							<td>{{contact.template}}</td>
+							<td>
+								<input data-cid="{{contact.pk}}" class="contactChecker" type="checkbox" />
+								<a data-cid="{{contact.pk}}" class="contactMailPreview" data-toggle="tooltip" title="Show a preview of the sent mail"><span class="glyphicon glyphicon-eye-open"></span></a>
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+		<div id="fallbackInput">
+			<p class="text-warning">This is the fallback input mode. Please activate JavaScript to use the modern style input.</p>
+			{{form.as_p}}
+		</div>
+		<div class="form-actions">
+			<button type="Submit" class="btn btn-primary">Send</button>
+		</div>
+	</form>
+</div>
+
+<div id="modal-mailprev" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="Preview of Mail" aria-hidden="true">
+	<div class="modal-dialog" style="width: 700px">
+		<div class="modal-content" style="padding: 10px">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				<h3>Mail preview for <span id="mailprev-company"></span></h3>
+			</div>
+			<h4>Mailtext</h4>
+			<pre id="mailprev-mail">
+			</pre>
+			<h4>Mail attachments</h4>
+			<ul id="mailprev-attachments">
+			</ul>
+		</div>
+	</div>
+</div>
+
+<script>
+	$(document).ready(function () {
+		$(".tablesorter").tablesorter({ sortList : [[0,0]], headers : { 5 : { sorter : false}}});
+
+		$("#toggleAllInputs").click(function () {
+			$(".contactChecker").click();
+		});
+
+		$(".contactChecker").change(function () {
+			// find respective item
+			var selItem = $("option[value=" + $(this).data("cid") + "]");
+			if (selItem.length == 0) {
+				alert("Cannot find respective list entry");
+				return;
+			}
+			if ($(this).is(":checked")) {
+				selItem.attr("selected", true);
+			}
+			else {
+				selItem.removeAttr("selected");
+			}
+		});
+		$("#modernInput").css("display","block");
+		$("#fallbackInput").css("display", "none");
+
+		$(".contactMailPreview").click(function () {
+			var clicked = this;
+			$.getJSON("/sponsorcontacts/mailpreview/" + $(this).data("cid"), function (data) {
+				if (!data["success"]) { return; }
+				$("#mailprev-company").html(data["company"]);
+				$("#mailprev-mail").html(data["message"]);
+				var attachments = [];
+				$.each(data["attachments"], function (k,att) {
+					attachments.push("<li>" + att + "</li>");
+				});
+				$("#mailprev-attachments").html(attachments.join(""));
+				$("#modal-mailprev").modal();
+			})
+			.fail(function () {
+				$(clicked).removeAttr("data-original-title");
+				$(clicked).tooltip("destroy");
+				$(clicked).popover({
+					title : "Error",
+					content : "Unable to render email template",
+					placement : "right"
+				});
+				$(clicked).popover("show");
+				setTimeout( function () { $(clicked).popover("hide") ; }, 5000);
+			});
+		});
+	});
+</script>
+
+{% endblock %}

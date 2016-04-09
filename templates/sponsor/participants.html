@@ -1,0 +1,70 @@
+{% extends "master.html" %}
+{% load url from future %}
+{% load formstyle %}
+
+{% block content %}
+
+<div class="page-header">
+	<h2>Sponsor</h2>
+</div>
+
+<ul class="nav nav-tabs">
+	<li><a href="{% url 'sponsor_update' pk=project.pk %}"><span class="glyphicon glyphicon-circle-arrow-left"></span> General information</a><li>
+	<li class="active"><a href="#">Participants</a></li>
+</ul>
+
+<div class="tab-content">
+	<div class="tab-pane active" id="participants">
+		<div class="row">
+			<div class="col-md-8">
+				<p>Please enter the personal of your company that will run your presence on the conference. Please note that you have to add yourself explicitly if you also come.</p>
+
+				<p class="text-info">Please note that we <strong>require an email address</strong> for every participant in order to send information on the ticket, catering etc. If the person is not registered in this portal, we automatically create an account and inform the person via email.</p>
+
+			</div>
+		</div>
+
+		<table class="table table-striped table-bordered table-hover">
+			<thead>
+				<tr>
+					<th>First name</th>
+					<th>Last name</th>
+					<th>E-Mail</th>
+					<th>Attributes</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for part in participants_list %}
+				<tr>
+					<td>{{part.user.first_name}}</td>
+					<td>{{part.user.last_name}}</td>
+					<td>{{part.user.email}}</td>
+					<td>
+						{% if part.user.is_active %}
+							<a href="#" data-toggle="tooltip" title="User has activated the account"><span class="glyphicon glyphicon-user"></span></a>
+						{% endif %}
+					</td>
+					<td>
+						<form action="{% url 'sponsor_participants_delete' pk=part.pk %}" method="POST" style="display: inline">
+							{% csrf_token %}
+							<button data-toggle="tooltip" title="Remove this user"><span class="glyphicon glyphicon-remove"></span></button>
+						</form>
+					</td>
+				</tr>
+				{% endfor %}
+				<form method="POST">
+					<tr>
+						<td>{{form.first_name|cssclass:"form-control"}}</td>
+						<td>{{form.last_name|cssclass:"form-control"}}</td>
+						<td><div {% if form.email.errors %}class="form-group has-error"{% endif %}>{{form.email|cssclass:"form-control"}}</div></td>
+						<td></td>
+						<td>{% csrf_token %}<button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span></button></td>
+					</tr>
+				</form>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+{% endblock %}

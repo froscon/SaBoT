@@ -1,0 +1,25 @@
+The complete software part and website templates is licensed under the MIT License (see below).
+
+This license does not apply to
+- Sample invoice and offer documents provided in invoice/
+- Sample sponsor emails in template/sponsor/mails and the
+  corresponding config in sponsor/fixtures/mails.json
+- Sample config values that are FrOScon specific
+
+We provide those in order to support you with creating your own
+conference specific documents/mails/configs. Do not use them in
+a production environment.
+
+We redistribute a version of bootstrap (see static/bootstrap/LICENCE)
+and a (slightly modified) version of jquery-tablesorter (see
+static/tablesorter/LICENSE).
+
+
+The MIT License (MIT)
+Copyright (c) 2016 Martin Lang <Martin.Lang@rwth-aachen.de>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

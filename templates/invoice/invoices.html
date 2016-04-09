@@ -1,0 +1,133 @@
+{% extends "master.html" %}
+{% load url from future %}
+{% load formstyle %}
+{% load sponsor %}
+{% block content %}
+<div class="page-header">
+	<h2>Invoice overview</h2>
+</div>
+<table class="table table-bordered table-hover tablesorter">
+	<thead>
+		<tr>
+			<th>Company</th>
+			<th>Invoice no.</th>
+			<th>Amount</th>
+			<th>Due Date</th>
+			<th>Package</th>
+			<th>Actions</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for sponsoring in object_list %}
+			<tr {% if sponsoring.invoice.payed %}class="success"{% endif %}{% if not sponsoring.invoice.payed and sponsoring.invoice.dueDate < today %}class="danger"{% endif %}>
+				<td><a href="{% url 'sponsorcontact_update' pk=sponsoring.contact.pk %}">{{sponsoring.contact.companyName}}</a></td>
+				<td>{{sponsoring.invoice.invoiceNumber}}</td>
+				<td>{{sponsoring.invoice.invoiceAmount}}{% if sponsoring.invoice %}€{% endif %}</td>
+				<td>{{sponsoring.invoice.dueDate|date:"d.m.Y"}}</td>
+				<td>{{sponsoring.package.name}}</td>
+				<td>
+					{% if user|has_group:"finance" %}
+						{% if not sponsoring.invoice %}
+							{% if sponsoring.contact.allDataAvailable %}
+								{% if sponsoring.package.invoiceTextDE != "" and sponsoring.package.invoiceTextEN != "" %}
+									<a href="{% url "invoice_create" spk=sponsoring.pk %}"><span class="glyphicon glyphicon-plus" data-toggle="tooltip" title="Create an invoice for this sponsoring"></span></a>
+								{% else %}
+									<a href="{% url 'sponsorpackage_update' pk=sponsoring.package.pk %}" data-toggle="tooltip" title="The package information for this sponsoring is incomplete. An invoice description is missing. Click to edit."><span class="glyphicon glyphicon-list-alt" style="color: #b94a48;"></span></a>
+								{% endif %}
+							{% else %}
+								<a href="{% url 'sponsorcontact_update' pk=sponsoring.contact.pk %}" data-toggle="tooltip" title="The contact information for this sponsor is incomplete. Click to edit."><span class="glyphicon glyphicon-question-sign" style="color: #b94a48;"></span></a>
+							{% endif %}
+						{% else %}
+							<a href="{% url "invoice_create" spk=sponsoring.pk %}"><span class="glyphicon glyphicon-repeat" data-toggle="tooltip" title="Recreate an invoice for this sponsoring"></span></a>
+							{% if sponsoring.invoice.pdf %}
+								<a href="{{sponsoring.invoice.pdf.url}}" data-toggle="tooltip" title="Download invoice pdf"><span class="glyphicon glyphicon-download"></span></a>
+								{% if sponsoring.invoice.rtTicketRef %}
+									<a href="{{RT_TICKET_URL}}{{sponsoring.invoice.rtTicketRef}}" data-toggle="tooltip" title="View invoice RT ticket"><span class="glyphicon glyphicon-list-alt"></span></a>
+								{% else %}
+									<span data-toggle="tooltip" title="Create invoice mail via RT" class="glyphicon glyphicon-send" data-send-mail="{{sponsoring.pk}}"></span>
+								{% endif %}
+								{% if not sponsoring.snailmailinvoice %}
+									{% form_post_button "envelope" "Snailmail this invoice" "invoice_snailmailinvoice" spk=sponsoring.pk %}
+								{% else %}
+									{% if sponsoring.snailmailinvoice.success %}
+										<span data-toggle="tooltip" title="Invoice snailmail was handed to delivery service." class="glyphicon glyphicon-envelope" style="color: #3c763d"></span>
+									{% elif sponsoring.snailmailinvoice.joberror == "" %}
+										<span data-toggle="tooltip" title="Invoice snailmail awaits to be printed." class="glyphicon glyphicon-print"></span>
+									{% else %}
+										<span data-toggle="tooltip" title="Invoice snailmail error: {{sponsoring.snailmailinvoice.joberror}}" class="glyphicon glyphicon-print" style="color: #d9534f"></span>
+									{% endif %}
+								{% endif %}
+								{% if not sponsoring.invoice.payed %}
+									{% form_post_button "ok-circle" "Mark this invoice as payed." "invoice_markpayed" pk=sponsoring.invoice.pk %}
+								{% else %}
+									{% form_post_button "remove-circle" "Mark this invoice as NOT YET payed." "invoice_marknotpayed" pk=sponsoring.invoice.pk %}
+
+								{% endif %}
+							{% endif %}
+						{% endif %}
+					{% elif sponsoring.invoice.pdf %}
+						<a href="{{sponsoring.invoice.pdf.url}}" data-toggle="tooltip" title="Download invoice pdf"><span class="glyphicon glyphicon-download"></span></a>
+					{% endif %}
+				</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>
+
+
+<div id="modal-rtmail" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="Mail Content" aria-hidden="true">
+	<div class="modal-dialog" style="width: 800px">
+		<div class="modal-content" style="padding: 10px">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				<h3>Send invoice to <span id="modal-rtmail-company"></span></h3>
+			</div>
+			<form id="modal-rtmail-form" method="POST">
+				{% csrf_token %}
+				<textarea id="modal-rtmail-message" rows="10" cols="40" name="text" class="textarea form-control"></textarea>
+				<button type="submit" class="btn btn-primary" style="margin-top: 20px">Create RT ticket</button>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script>
+
+	$.ajaxSetup({
+		beforeSend: function(xhr, settings) {
+			xhr.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
+		}
+	});
+
+	$(document).ready(function () {
+		$(".tablesorter").tablesorter({ sortList : [[0,0]], headers : {
+			2 : { sorter : "currency"},
+			3 : { sorter : "eudate"},
+			5 : { sorter : false},
+		}});
+
+		$("span[data-send-mail]").click(function () {
+			var clicked = this;
+			$.getJSON("/invoice/getinvoicemailtemplate/" + $(this).data("sendMail"), function (data) {
+				if (!data["success"]) { return; }
+				$("#modal-rtmail-company").html(data["company"]);
+				$("#modal-rtmail-message").val(data["message"]);
+				$("#modal-rtmail-form").attr("action", "/invoice/sendinvoice/" + $(clicked).data("sendMail"));
+				$("#modal-rtmail").modal();
+			})
+			.fail(function () {
+				$(clicked).tooltip("destroy");
+				$(clicked).popover({
+					title : "Error",
+					content : "Unable to obtain email template",
+					placement : "right"
+				});
+				$(clicked).popover("show");
+				setTimeout( function () { $(clicked).popover("hide") ; }, 5000);
+			});
+		});
+	});
+
+</script>
+
+{% endblock %}

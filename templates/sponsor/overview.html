@@ -1,0 +1,54 @@
+{% extends "master.html" %}
+{% load url from future %}
+
+{% block content %}
+
+<div class="page-header">
+	<h2>Sponsor <small>{{object.contact.companyName}}</small></h2>
+</div>
+<ul class="nav nav-pills" style="margin-bottom: 10px">
+	<li class="pull-right"><a href="{% url 'sponsor_update' pk=object.pk %}">Your data</a></li>
+	<li class="pull-right"><a href="{% url 'sponsor_faq' pk=object.pk %}">FAQ</a></li>
+	<li class="pull-right active"><a href="#">Overview</a></li>
+</ul>
+
+<h3>Welcome to FrOSCon sponsor management!</h3>
+<div class="alert alert-info">
+This is FrOSCon's management system for sponsors. You can find an overview on your booked sponsoring package and provide the data we need to complete your sponsoring.</p>
+<p>In case of any questions, please take a look at the FAQ page. In any case, please don't hesitate to contact us at <a href="mailto:{{SPONSOR_MAIL}}">{{SPONSOR_MAIL}}</a> if you have questions or need assistence with this system.</p>
+</div>
+
+<h3>Content of your sponsoring package</h3>
+<ul>
+{% if object.contact.contactPersonLanguage == "de-DE" %}
+	{% for item in object.package.getPackageDescriptionDE %}
+		<li>{{item}}</li>
+	{% endfor %}
+{% else %}
+	{% for item in object.package.getPackageDescriptionEN %}
+		<li>{{item}}</li>
+	{% endfor %}
+{% endif %}
+</ul>
+
+<h3>Status of your data input</h3>
+<table class="table">
+	<thead>
+		<tr>
+			<th>Category</th>
+			<th>Deadline</th>
+			<th>Status</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for statusItem in object.getStatusData %}
+			<tr>
+				<td><a href="{% url "sponsor_update" pk=object.pk %}{{statusItem.link}}">{{statusItem.name}}</a></td>
+				<td>{% if statusItem.deadline %}{{statusItem.deadline|date:"d.m.Y"}}{% else %}(as soon as available){% endif %}</td>
+			{% include "sponsor/statusItemStatus.html" with s=object si=statusItem %}
+			</tr>
+		{% endfor %}
+	<tbody>
+</table>
+
+{% endblock %}

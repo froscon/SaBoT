@@ -1,0 +1,44 @@
+from datetime import date, timedelta
+
+CONFERENCE_DATE = date(2016, 8, 20)
+
+REGISTRATION_DEADLINE = date(2016, 5, 23)
+
+CHANGES_DEADLINE = CONFERENCE_DATE - timedelta(6)
+
+PACKETS_DELIVERY_START = CONFERENCE_DATE - timedelta(5)
+
+PARTICIPANTS_DEADLINE = CONFERENCE_DATE - timedelta(7)
+BOOTH_DATA_DEADLINE = date(2016,7,1)
+RECRUITING_DATA_DEADLINE = CONFERENCE_DATE - timedelta(14)
+PRINTED_PROGRAM_DATA_DEADLINE = date(2016,7,1)
+PARCEL_DATA_DEADLINE = CONFERENCE_DATE - timedelta(5)
+
+DUE_WARNING_TIME = timedelta(14)
+
+
+
+NUMBER_OF_CONFERENCE_BAGS = 1500
+
+SPONSOR_MAIL = "sponsoren@yourconference.org"
+SPONSOR_URL = "https://sponsors.yourconference.org"
+
+CONFERENCE_NAME = "FrOSCon"
+
+CONFERENCE_VENUE_ADDRESS = """ FrOSCon e.V. / Hochschule Bonn-Rhein-Sieg
+Granthamallee 20
+53757 Sankt Augustin"""
+
+INVOICE_NUMBER_FORMAT = "R-{year}-{cntr:03d}"
+INVOICE_VAT = 7
+INVOICE_DEFAULT_PAYMENT_TIME = timedelta(14)
+
+
+DEFAULT_FROM_EMAIL = "projects@yourconference.org"
+SPONSOR_NOTIFICATION = [
+	'sponsor-manager@yourconference.org',
+]
+FINANCE_EMAIL = [
+	'finance@yourconference.org',
+]
+

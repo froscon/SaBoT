@@ -1,0 +1,45 @@
+This software is currently developed and tested with django version 1.7
+
+It depends on several third party extensions that have to be installed on the system:
++ django-registration version =1.0 (currently, newer versions not tested)
++ django-crispy-forms version >=1.6.0
++ python-rtkit version >=0.6.0
+
+
+The system is currently used with mod_wsgi in an apache environment. However, it is also
+possible to use fastcgi. An example of a working apache config for mod_wsgi looks like:
+
+	Alias /static/ 	/var/www/sabot/django/static/
+	Alias /media	/var/www/sabot/django/media
+
+	<Directory /var/www/sabot/django/static>
+		Order deny,allow
+		Allow from all
+	</Directory>
+	<Directory /var/www/sabot/django/media>
+		Order deny,allow
+		Allow from all
+	</Directory>
+
+	WSGIDaemonProcess sabot user=sabot group=sabot python-path=/var/www/sabot/django processes=2 threads=15 display-name=%{GROUP}
+	WSGIProcessGroup sabot
+
+	WSGIScriptAlias /	/var/www/sabot/django/sabot/wsgi.py
+
+	<Directory /var/www/sabot/django/sabot>
+		<Files wsgi.py>
+			Order allow,deny
+			allow from all
+		</Files>
+	</Directory>
+
+In order to test the software, you may simply (as usual for django projects)
+use ./manage.py run
+
+Before you start
+- create the config files sabot/settings.py sabot/conferenceSettings.py sabot/localSettings.py (and sabot/prodSettings.py if you want to distinguish a development and a production version) from their example files (prodSettings.py needs the same parameter
+- run the project use "./manage.py syncdb" to setup your database and create an admin user
+
+If you want to use the invoice creation functionality, it is required that
+you have libreoffice (or openoffice) installed on the server.
+

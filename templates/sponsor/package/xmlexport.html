@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sponsorPackages xmlns="http://callforprojects.froscon.org/sponsorpackages">
+	{% for package in object_list %}
+		<package>
+			<name>{{package.name}}</name>
+			<features>
+				{% if package.hasHpText %}<hpText />{% endif %}
+				{% if package.hasBooth %}<booth />{% endif %}
+				{% if package.hasProgramAd %}<programAd info="{{package.programAdInfo}}" />{% endif %}
+				{% if package.hasProgramAdText %}<programAdText numWords="{{package.programAdTextNumWords}}" />{% endif %}
+				{% if package.hasPackets %}<packets />{% endif %}
+				{% if package.hasParticipants %}<participants />{% endif %}
+				<freeTickets>{{package.numFreeTickets}}</freeTickets>
+			</features>
+			<price>{{package.price}}</price>
+		</package>
+	{% endfor %}
+</sponsorPackages>

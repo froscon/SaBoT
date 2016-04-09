@@ -1,0 +1,135 @@
+{% extends "master.html" %}
+{% load crispy_forms_tags %}
+{% load url from future %}
+
+{% block content %}
+
+<div class="page-header">
+	<h2>Sponsor <small>{{object.contact.companyName}}</small></h2>
+</div>
+<ul class="nav nav-pills" style="margin-bottom: 10px">
+	<li class="pull-right active"><a href="#">Your data</a></li>
+	<li class="pull-right"><a href="{% url 'sponsor_faq' pk=object.pk %}">FAQ</a></li>
+	<li class="pull-right"><a href="{% url 'sponsor_overview' pk=object.pk %}" data-toggle="tooltip" title="Overview of your sponsoring.">Overview</a></li>
+</ul>
+<div class="alert alert-info">
+	If you have any problems with filling in the form or if you have any (general) questions, please don't hesitate to contact us via <a href="mailto:{{SPONSOR_MAIL}}">{{SPONSOR_MAIL}}</a>. Please do not enter questions in the form below because we might not directly see them there.
+</div>
+
+{% crispy form form.helper%}
+
+{% if object.package.hasPackets %}
+<div id="packets-list-content" style="display: none; margin-top: 15px">
+	<h4>Packet tracking list</h4>
+	<table id="parcel-table" class="table table-striped table-bordered table-hover tablesorter">
+		<thead>
+			<tr>
+				<th>Date</th>
+				<th>Parcel Service</th>
+				<th>Tracking No</th>
+				<th>Content</th>
+{% if user.is_staff %}
+				<th>Storage</th>
+{% endif %}
+				<th>Actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for parcel in object.parcels.all %}
+			<tr{%if parcel.received %} class="success"{% endif %}>
+				<td>{{parcel.createDate|date:"j.n.Y"}}</td>
+				<td>{{parcel.parcelService}}</td>
+				<td>
+					{% if parcel.trackingUrl %}
+						<a href="{{parcel.trackingUrl}}">
+					{% endif %}
+						{{parcel.trackingNumber}}
+					{% if parcel.trackingUrl %}</a>{% endif %}
+				</td>
+				<td>{{parcel.contentAndUsage|linebreaksbr}}</td>
+{% if user.is_staff %}
+				<td>{{parcel.storageLocation}}</td>
+{% endif %}
+				<td>
+					<a href="{% url 'parcel_update' pk=parcel.pk %}" data-toggle="tooltip" title="Edit this package"><span class="glyphicon glyphicon-edit"></span></a>
+					<a href="{% url 'parcel_del' pk=parcel.pk %}" data-toggle="tooltip" title="Delete this package"><span class="glyphicon glyphicon-remove"></span></a>
+
+				</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	<p class="text-info">Packets in green lines are those which we already received.</p>
+	<a href="{% url 'parcel_add' spk=object.pk %}" role="button" class="btn btn-large btn-primary pull-right">New packet</a>
+</div>
+{% endif %}
+
+<script>
+
+
+function optOutFromHiddenFields() {
+	$(".optOutIcon").each(function (idx) {
+		// first find our form
+		var form = $(this).closest("form");
+		// now find the corresponding field
+		var field = $(this).siblings(":first-child");
+		var fieldname = field.attr("name");
+		var optout = $(form).find("input[name='" + fieldname + "OptOut']");
+		if (optout.val() == "True") {
+			field.val("");
+			field.prop("readonly", true);
+			$(this).tooltip({ "title" : "Provide this information" });
+		}
+		else {
+			$(this).tooltip({ "title" : "We don't provide this information" });
+		}
+
+	});
+}
+
+
+
+	$(document).ready(function () {
+		$('a[href="' + window.location.hash + '"][data-toggle="tab"]').tab("show");
+		if ($("#id_rtTicketId").length > 0) {
+			if ($("#id_rtTicketId").val() != "") {
+				var viewspan = $("<span class=\"input-group-addon\"><a href=\"{{RT_TICKET_URL}}" + $("#id_rtTicketId").val() + "\"><span class=\"glyphicon glyphicon-eye-open\"></span></a></span>");
+				viewspan.insertAfter("#id_rtTicketId");
+				$("#id_rtTicketId").parent().addClass("input-group");
+			}
+		}
+
+		// move parcel list to correct position and show it
+		$("#packets-list-content").insertAfter("#packets-list");
+		$("#packets-list-content").show();
+		if ($("#parcel-table").find("tbody").find("tr").size() > 0) {
+			$("#parcel-table").tablesorter({ sortList : [[0,0]], headers : { 0 : {sorter : "eudate"}, {% if user.is_staff %}5{% else %}4{% endif %}: {sorter : false}}});
+		}
+
+		$('a[data-toggle="tab"]').click(function () {
+			window.location.hash = $(this).attr("href");
+		});
+
+		$(".optOutIcon").click(function () {
+			var form = $(this).closest("form");
+			var field = $(this).siblings(":first-child");
+			var fieldname = field.attr("name");
+			var optout = $(form).find("input[name='" + fieldname + "OptOut']");
+			if (optout.val() == "True") {
+				optout.val("False");
+				field.prop("readonly", false);
+				$(this).attr("data-original-title", "We don't provide this information");
+			}
+			else {
+				optout.val("True");
+				field.prop("readonly", true);
+				field.val("");
+				$(this).attr("data-original-title", "Provide this information");
+			}
+		});
+		optOutFromHiddenFields();
+
+	});
+</script>
+
+{% endblock %}

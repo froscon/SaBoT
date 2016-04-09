@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sponsorcontacts xmlns="http://callforprojects.froscon.org/sponsorcontacts">
+	{% for contact in object_list %}
+		<sponsorcontact>
+			<name>{{contact.companyName}}</name>
+			<email>{{contact.contactEMail}}</email>
+			<street>{{contact.street}}</street>
+			<zipcode>{{contact.zipcode}}</zipcode>
+			<city>{{contact.city}}</city>
+			{% if contact.contactPersonSurname|length > 0 %}
+			<partner>
+				<firstname>{{contact.contactPersonFirstname}}</firstname>
+				<surname>{{contact.contactPersonSurname}}</surname>
+				{% if contact.contactPersonGender == "M" %}<male />{% else %}<female />{% endif %}
+				<email>{{contact.contactPersonEmail}}</email>
+			</partner>
+			{% endif %}
+			<mailtemplate>{{contact.template}}</mailtemplate>
+			<comments>
+				{{contact.comment}}
+			</comments>
+		</sponsorcontact>
+	{% endfor %}
+</sponsorcontacts>

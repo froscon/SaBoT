@@ -1,0 +1,27 @@
+{% extends "master.html" %}
+{% load url from future %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<div class="page-header">
+	{% if object %}
+	<h2>Edit sponsoring package</h2>
+	{% else %}
+	<h2>Create a sponsoring package</h2>
+	{% endif %}
+</div>
+
+
+<ul class="nav nav-pills"><li><a href="{% url 'sponsorpackage_list' %}"><span class="glyphicon glyphicon-arrow-left"></span> List of packages</a></li></ul>
+
+{% crispy form form.helper %}
+
+<script>
+	$(document).ready(function () {
+		conditionalInput("#id_hasProgramAdText", "#div_id_programAdTextNumWords");
+		conditionalInput("#id_hasProgramAd", "#program-ad-grouper");
+		conditionalInput("#id_hasBooth", "#booth-grouper");
+	});
+</script>
+
+{% endblock %}

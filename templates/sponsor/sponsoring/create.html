@@ -1,0 +1,23 @@
+{% extends "master.html" %}
+{% load crispy_forms_tags %}
+{% load url from future %}
+{% block content %}
+
+<div class="page-header">
+	<h2>Create a new sponsor</h2>
+</div>
+
+{% if sponsorContact.contactPersonEmail|length == 0 %}
+	<p class="text-danger">This contact cannot be used to create a sponsoring because the contact does not have a contact person. Please <a href="{% url 'sponsorcontact_update' pk=sponsorContact.pk %}">edit</a> and add a contact person first.</p>
+{% else %}
+	<p class="text-warning">You can create a new sponsoring entry for the company <strong>{{sponsorContact.companyName}}</strong> here. You have to enter a unique account name for the sponsor. This account will be linked with the sponsoring and can be used by the sponsor <strong>only</strong> to enter information about the sponsoring. It should not be used to create projects etc.</p>
+	<p class="text-info">Please note that the contact information gets copied from the contact database into the newly created account. Although the sponsoring is permanently linked to the contact entry, later changes in the contact database do not directly affect the created account.</p>
+
+	<form action="{% url 'sponsor_new' pk=sponsorContact.pk %}" method="POST">
+		<input type="hidden" name="sponsorContact" value="{{sponsorContact.pk}}" />
+		{% crispy form form.helper %}
+	</form>
+{% endif %}
+
+
+{% endblock %}

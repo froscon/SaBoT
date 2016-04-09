@@ -1,0 +1,10 @@
+*.pyc
+*.swp
+test.db
+*.log
+sabot/settings.py
+sabot/prodSettings.py
+sabot/localSettings.py
+sabot/conferenceSettings.py
+*.db
+media/*

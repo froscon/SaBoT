@@ -1,0 +1,26 @@
+{% extends "master.html" %}
+{% load url from future %}
+{% load formstyle %}
+{% block content %}
+
+<div class="page-header">
+	{% if object %}
+	<h2>Edit invoice template</h2>
+	{% else %}
+	<h2>Create a new invoice template</h2>
+	{% endif %}
+</div>
+
+
+<ul class="nav nav-pills">
+	<li><a href="{% url 'documenttemplate_list' %}"><span class="glyphicon glyphicon-arrow-left"></span> List of invoice templates</a></li></ul>
+
+{% if object %}
+	{% simple_crispy form "Save" %}
+{% else %}
+	{% simple_crispy form "Create" %}
+{% endif %}
+
+
+
+{% endblock %}

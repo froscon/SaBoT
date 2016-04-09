@@ -1,0 +1,83 @@
+{% extends "master.html" %}
+{% load url from future %}
+{% block content %}
+
+<div class="page-header">
+	<h2>List of exhibitors ({{object_list|length}})</h2>
+</div>
+<ul class="nav nav-pills">
+	<li class="active">
+		<a href="#">Information View</a>
+	</li>
+	<li><a href="{% url 'exhibitor_list_planning' %}">Planning View</a></li>
+	<li class="pull-right"><a href="{% url 'exhibitor_export_xml' %}" data-toggle="tooltip" title="Download exhibitor data of accepted projects as XML">XML export</a></li>
+	<li class="pull-right"><a href="{% url 'exhibitor_export_adminmail' %}" data-toggle="tooltip" title="Download the email addresses of the organizers (people with edit permissions) of all accepted projects">Organizer Mails</a></li>
+	<li class="pull-right"><a href="{% url 'exhibitor_export_allmail' %}" data-toggle="tooltip" title="Download the email addresses of all participants of all accepted projects">Participant Mails</a></li>
+</ul>
+<div class="controls">
+	<label for="show-only-accepted" class="checkbox"><input id="show-only-accepted" class="checkboxinput" type="checkbox" /> Show only accepted exhibitors</label>
+</div>
+<table class="table table-striped table-bordered table-hover tablesorter">
+	<thead>
+		<tr>
+			<th>Project name</th>
+			<th>Main Contact</th>
+			<th>E-Mail</th>
+			<th>Provided information</th>
+			<th>Last modified</th>
+			<th>Creation date</th>
+			<th>Actions</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for project in object_list %}
+			<tr{% if project.accepted %} class="success"{% elif project.createDate > reg_deadline_booth %} class="danger"{% endif %}>
+				<td>{{project.projectName}}</td>
+				<td>{{project.owner.first_name}} {{project.owner.last_name}}</td>
+				<td>{{project.owner.email}}</td>
+				<td>
+					{% if project.descriptionDE != "" and project.descriptionEN != "" %}<a href="{% url 'exhibitor_update_texts' pk=project.pk %}" data-toggle="tooltip" title="Texts in DE and EN available"><span class="glyphicon glyphicon-globe"></span></a>{% endif %}
+					{% if project.boothNumTables and project.boothNumChairs %}<a href="{% url 'exhibitor_update_booth' pk=project.pk %}" data-toggle="tooltip" title="Booth information available"><span class="glyphicon glyphicon-home"></span></a>{% endif %}
+					{% if project.participants.all %}<a href="{% url 'exhibitor_participants' pk=project.pk %}" data-toggle="tooltip" title="Participants available"><span class="glyphicon glyphicon-user"></span></a>{% endif %}
+				</td>
+				<td>{{project.modifyDate|date:"j.n.Y"}}</td>
+				<td>{{project.createDate|date:"j.n.Y"}}</td>
+				<td>
+					{% if project.accepted %}
+						<form action="{% url 'exhibitor_unaccept' pk=project.pk %}" method="POST" style="display: inline">
+							{% csrf_token %}
+							<label for="unaccept-{{project.pk}}" style="display: inline"><span data-toggle="tooltip" title="Set this exhibitor to not accepted" class="glyphicon glyphicon-thumbs-down"></i></label>
+							<input type="submit" id="unaccept-{{project.pk}}" style="display: None" />
+						</form>
+					{% else %}
+						<form action="{% url 'exhibitor_accept' pk=project.pk %}" method="POST" style="display: inline">
+							{% csrf_token %}
+							<label for="accept-{{project.pk}}" style="display: inline"><span data-toggle="tooltip" title="Accept this exhibitor" class="glyphicon glyphicon-thumbs-up"></span></label>
+							<input type="submit" id="accept-{{project.pk}}" style="display: None" />
+						</form>
+					{% endif %}
+					<a href="{% url 'exhibitor_update_general' pk=project.pk %}" data-toggle="tooltip" title="Edit exhibitor information"><span class="glyphicon glyphicon-edit"></span></a>
+					<a href="{% url 'exhibitor_del' pk=project.pk %}" data-toggle="tooltip" title="Delete this exhibitor"><span class="glyphicon glyphicon-remove"></span></a>
+				</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+
+</table>
+
+<script>
+	$(document).ready(function () {
+		$(".tablesorter").tablesorter({ sortList: [[0,0]], headers : { 3 : { sorter: false}, 6 : {sorter : false}, 4 : {sorter : "eudate"}, 5 : {sorter : "eudate"}}});
+
+		$("#show-only-accepted").change(function () {
+			if ($(this).prop("checked")) {
+				$("tbody > tr:not(.success)").hide();
+			}
+			else {
+				$("tbody > tr:not(.success)").show();
+			}
+		});
+	});
+</script>
+
+{% endblock %}

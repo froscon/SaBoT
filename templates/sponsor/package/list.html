@@ -1,0 +1,59 @@
+{% extends "master.html" %}
+{% load url from future %}
+{% block content %}
+
+<div class="page-header">
+	<h2>List of sponsoring packages</h2>
+</div>
+<ul class="nav nav-pills" style="margin-bottom:20px">
+	<li><a href="{% url 'sponsorpackage_new' %}"><span class="glyphicon glyphicon-plus"></span> Add a new sponsoring package</a></li>
+	<li class="pull-right"><a href="{% url 'sponsorpackage_export_xml' %}" data-toggle="tooltip" title="Download sponsor packages as XML">XML export</a></li>
+	</ul>
+<table class="table table-bordered table-hover tablesorter">
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Price</th>
+			<th>Contains</th>
+			<th>Free tickets</th>
+			<th>Usage</th>
+			<th>Actions</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for package in object_list %}
+			<tr style="background-color: {{package.color}};">
+				<td>{{package.name}}</td>
+				<td>{{package.price}}€</td>
+				<td>
+					{% if package.hasBooth %}<span class="glyphicon glyphicon-home" data-toggle="tooltip" title="Sponsor can have a booth on the conference"></span>{% endif %}
+					{% if package.hasRecruitingEvent %}<span class="glyphicon glyphicon-resize-small" data-toggle="tooltip" title="Sponsor can participate in the recruiting event"></span>{% endif %}
+					{% if package.hasHpText %}<span class="glyphicon glyphicon-globe" data-toggle="tooltip" title="Sponsor has a text on our homepage"></span>{% endif %}
+					{% if package.hasProgramAd %}<span class="glyphicon glyphicon-file" data-toggle="tooltip" title="Sponsor has an advertisement in the printed program"></span>{% endif %}
+					{% if package.hasProgramAdText %}<span class="glyphicon glyphicon-align-left" data-toggle="tooltip" title="Sponsor has a description text in the printed program"></span>{% endif %}
+					{% if package.hasPackets %}<span class="glyphicon glyphicon-gift" data-toggle="tooltip" title="Sponsor can send us packets for the conference"></span>{% endif %}
+					{% if package.hasParticipants %}<span class="glyphicon glyphicon-user" data-toggle="tooltip" title="Sponsor can register people as VIPs on the conference"></span>{% endif %}
+				</td>
+				<td>{{package.numFreeTickets}}</td>
+				<td>{{package.countCommitedSponsorings}}/{{package.countSponsorings}}/{% if package.countPackages == 0 %}∞{% else %}{{package.countPackages}}{% endif %}</td>
+				<td>
+					<a href="{% url 'sponsorpackage_update' pk=package.pk %}" data-toggle="tooltip" title="Edit sponsor package information"><span class="glyphicon glyphicon-edit"></span></a>
+					<a href="{% url 'sponsorpackage_del' pk=package.pk %}" data-toggle="tooltip" title="Delete this sponsor package"><span class="glyphicon glyphicon-remove"></span></a>
+				</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+
+</table>
+<script>
+	$(document).ready(function () {
+		$(".tablesorter").tablesorter({ sortList : [[1,1]], headers : {
+			1 : { sorter : "currency"},
+			2 : { sorter : false},
+			4 : { sorter : false },
+			5 : { sorter : false }
+		}});
+	});
+</script>
+
+{% endblock %}

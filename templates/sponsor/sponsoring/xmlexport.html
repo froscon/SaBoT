@@ -1,0 +1,114 @@
+{% load sponsor %}<?xml version="1.0" encoding="UTF-8"?>
+<sponsors xmlns="http://callforprojects.froscon.org/sponsors">
+	{% for sponsor in object_list %}
+		<sponsor>
+			<name>{{sponsor.contact.companyName}}</name>
+			<maincontact>
+				<firstname>{{sponsor.owner.first_name}}</firstname>
+				<lastname>{{sponsor.owner.last_name}}</lastname>
+				<email>{{sponsor.owner.email}}</email>
+			</maincontact>
+			<address>
+				<addressLine1>{{sponsor.contact.contactPersonFirstname}} {{sponsor.contact.contactPersonSurname}}</addressLine1>
+				<addressLine2>{{sponsor.contact.address2}}</addressLine2>
+				<street>{{sponsor.contact.street}}</street>
+				<zipcode>{{sponsor.contact.zipcode}}</zipcode>
+				<city>{{sponsor.contact.city}}</city>
+				<country>{% if sponsor.contact.country != "" %}{{sponsor.contact.country}}{% else %}Deutschland{% endif %}</country>
+			</address>
+			{% if sponsor.contact.differentBillingAddress %}
+			<billingAddress>
+				<addressLine1>{{sponsor.contact.billingName}}</addressLine1>
+				<addressLine2>{{sponsor.contact.billingAddress2}}</addressLine2>
+				<street>{{sponsor.contact.billingStreet}}</street>
+				<zipcode>{{sponsor.contact.billingZipcode}}</zipcode>
+				<city>{{sponsor.contact.billingCity}}</city>
+				<country>{% if sponsor.contact.billingCountry != "" %}{{sponsor.contact.billingCountry}}{% else %}Deutschland{% endif %}</country>
+			</billingAddress>
+			{% endif %}
+			<internalComment>
+				{{sponsor.adminComment}}
+			</internalComment>
+			<homepage>{{sponsor.homepage}}</homepage>
+			<socialMedia>
+				<facebook>
+					<accountName>{{sponsor.facebookAccount}}</accountName>
+					<fanpageUrl>{{sponsor.facebookPage}}</fanpageUrl>
+				</facebook>
+				<googlePlus>
+					<accountName>{{sponsor.gplusAccount}}</accountName>
+					<fanpageUrl>{{sponsor.gplusPage}}</fanpageUrl>
+				</googlePlus>
+				<twitter>
+					<accountName>{{sponsor.twitterAccount}}</accountName>
+				</twitter>
+			</socialMedia>
+			{% if sponsor.logo %}<logo>{{sponsor.logo.url}}</logo>{% endif %}
+			<package>
+				<name>{{sponsor.package.name}}</name>
+				<features>
+					{% if sponsor.package.hasHpText %}<hpText />{% endif %}
+					{% if sponsor.package.hasBooth %}<booth />{% endif %}
+					{% if sponsor.package.hasProgramAd %}<programAd info="{{sponsor.package.programAdInfo}}" />{% endif %}
+					{% if sponsor.package.hasProgramAdText %}<programAdText numWords="{{sponsor.package.programAdTextNumWords}}" />{% endif %}
+					{% if sponsor.package.hasPackets %}<packets />{% endif %}
+					{% if sponsor.package.hasRecruitingEvent %}<recruitingEvent />{% endif %}
+					{% if sponsor.package.hasParticipants %}<participants />{% endif %}
+					<freeTickets>{{sponsor.package.numFreeTickets}}</freeTickets>
+				</features>
+				<price>{{sponsor.package.price}}</price>
+			</package>
+			<lastModified>{{sponsor.modifyDate|xsddatetime}}</lastModified>
+			{% if sponsor.package.hasHpText %}
+			<hpText lang="en">
+				{{sponsor.hpTextEN}}
+			</hpText>
+			<hpText lang="de">
+				{{sponsor.hpTextDE}}
+			</hpText>
+			<hpCategory>{{sponsor.package.hpCatagoryName}}</hpCategory>
+			{% if sponsor.homepage != "" and sponsor.logo %}{% if sponsor.hpTextDE != "" or sponsor.hpTextEN != "" %}
+				<hpPublish />
+			{% endif %}{% endif %}
+
+			{% endif %}
+			{% if sponsor.package.hasBooth %}
+			<booth>
+				{% if sponsor.wantBooth %}
+				<tables>{{sponsor.boothTables}}</tables>
+				<bartables>{{sponsor.boothBarTables}}</bartables>
+				<chairs>{{sponsor.boothChairs}}</chairs>
+				<comment>{{sponsor.boothComments}}</comment>
+				{% elif sponsor.wantBooth != None %}
+					<noBooth />
+				{% endif %}
+			</booth>
+			{% endif %}
+			{% if sponsor.wantRecruting %}
+				<recruitingEvent />
+			{% endif %}
+			{% if sponsor.package.hasPackets %}
+			<packets>
+				{{sponsor.packetInfo}}
+			</packets>
+			{% endif %}
+			{% if sponsor.package.hasProgramAd and sponsor.programAd %}
+			<programAd>{{sponsor.programAd.url}}</programAd>
+			{% endif %}
+			{% if sponsor.package.hasProgramAdText %}
+			<programAdText>{{sponsor.programAdText}}</programAdText>
+			{% endif %}
+			{% if sponsor.package.hasParticipants %}
+			<participants>
+				{% for membership in sponsor.sponsoringparticipants_set.all %}
+					<person>
+						<firstname>{{membership.user.first_name}}</firstname>
+						<lastname>{{membership.user.last_name}}</lastname>
+						<email>{{membership.user.email}}</email>
+					</person>
+				{% endfor %}
+			</participants>
+			{% endif %}
+		</sponsor>
+	{% endfor %}
+</sponsors>

@@ -1,0 +1,19 @@
+{% extends "master.html" %}
+{% load crispy_forms_tags %}
+{% load url from future %}
+
+{% block content %}
+
+<div class="page-header">
+	<h2>Register a new devroom</h2>
+</div>
+{% if date_today > reg_deadline_room %}
+	<div class="alert alert-danger">
+		The registration deadline was the {{reg_deadline_room|date:"d.m.Y"}}. Please contact us by email if you still want to register for a developer room. However, we may not be able to accept you this year.
+	</div>
+{% endif %}
+
+{% crispy form form.helper%}
+
+
+{% endblock %}

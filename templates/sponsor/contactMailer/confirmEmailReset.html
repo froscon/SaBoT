@@ -1,0 +1,22 @@
+{% extends "master.html" %}
+{% load url from future %}
+
+{% block content %}
+<div class="page-header">
+	<h2>Confirm complete reset</h2>
+</div>
+<div class="row">
+<div class="col-md-5 centerbox">
+		<form method="POST">
+			{% csrf_token %}
+			<b>Do you really want to reset all the email sending information?</b>
+			<br />
+			This is necessary only once a year before sending out new mails! Use tis functionality with care!
+			<div class="form-actions" style="margin-top:30px">
+				<button type="Submit" class="btn btn-danger">Complete RESET</button>
+				<a href="{% url 'sponsorcontact_list' %}" class="btn">Cancel</a>
+			</div>
+		</form>
+	</div>
+</div>
+{% endblock %}

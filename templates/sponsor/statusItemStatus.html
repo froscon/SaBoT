@@ -1,0 +1,24 @@
+{% if si.status == 2 %}
+	<td class="success">OK</td>
+{% elif si.status == -2 %}
+	<td>Not used</td>
+{% else %}
+	{% if si.overdue %}
+	<td class="danger">
+	{% elif si.dueWarn %}
+	<td class="warning">
+	{% else %}
+	<td>
+	{% endif %}
+	{% if si.status == 0 %}
+		Missing
+	{% elif si.status == 1 %}
+		Incomplete
+	{% endif %}
+	{% if si.overdue %}
+	<strong>(overdue!)</strong>
+	{% elif si.dueWarn %}
+	(due soon)
+	{% endif %}
+	</td>
+{% endif %}

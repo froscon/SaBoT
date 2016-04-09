@@ -1,0 +1,69 @@
+{% extends "master.html" %}
+{% load url from future %}
+{% block content %}
+
+<div class="page-header">
+	<h2>Userlist</h2>
+</div>
+<div style="padding-bottom: 10px">
+	<ul class="nav nav-pills">
+		<li>
+			<a href="{% url 'auth_user_list' %}">Userlist</a>
+		</li>
+		<li class="active"><a href="#">Affiliation</a></li>
+	</ul>
+</div>
+
+
+<table class="table table-striped table-bordered table-hover tablesorter">
+	<thead>
+		<tr>
+			<th>ID</th>
+			<th>Username</th>
+			<th>Firstname</th>
+			<th>Lastname</th>
+			<th>Sponsors</th>
+			<th>Exhibitors</th>
+			<th>Devrooms</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for user in object_list %}
+			<tr>
+				<td>{{user.id}}</td>
+				<td>{{user.username}}</td>
+				<td>{{user.first_name}}</td>
+				<td>{{user.last_name}}</td>
+				<td>
+					{% for proj in user.sponsorparticipation.all %}
+						{{proj.projectName}}
+					{% endfor %}
+				</td>
+				<td>
+					{% for proj in user.exhibitors.all %}
+						{{proj.projectName}}
+					{% endfor %}
+					{% for proj in user.exhibitorparticipation.all %}
+						{{proj.projectName}}
+					{% endfor %}
+				</td>
+				<td>
+					{% for proj in user.devrooms.all %}
+						{{proj.projectName}}
+					{% endfor %}
+					{% for proj in user.devroomparticipation.all %}
+						{{proj.projectName}}
+					{% endfor %}
+				</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+
+</table>
+<script>
+	$(document).ready(function () {
+		$(".tablesorter").tablesorter();
+	});
+</script>
+
+{% endblock %}

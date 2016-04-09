@@ -1,0 +1,102 @@
+{% extends "master.html" %}
+{% load crispy_forms_tags %}
+{% load formstyle %}
+{% load url from future %}
+
+{% block content %}
+
+{% include "devroom/alltabshead.html" %}
+
+<ul class="nav nav-tabs nav-tabs-bordered">
+	<li><a href="{% url 'devroom_update_general' pk=project.pk %}">General</a><li>
+	<li><a href="{% url 'devroom_update_texts' pk=project.pk %}">Description texts</a><li>
+	<li><a href="{% url 'devroom_update_program' pk=project.pk %}">Program</a><li>
+	<li class="active"><a href="#">Participants</a><li>
+</ul>
+
+<div class="tab-content tab-bordered">
+	<div class="tab-pane active" id="participants">
+		<div class="row">
+			<div class="col-md-8">
+				<p>Please enter the personal that organizes/play a part in your devroom, e.g., team members or speakers.</p>
+
+				<p class="text-info">Please note that we <strong>require an email address</strong> for every participant in order to send information on the ticket, catering etc. If the person is not registered in this portal, we automatically create an account and inform the person via email. This account can be used to view your project's data and complete/correct naming information.</p>
+
+				<p class="text-info">You can mark participants to have <strong>edit priviledges</strong>. These participants can use their accounts to add/change information in the descripton of your devroom and this list below. Moreover, we consider this people to be the organizers of your devroom and send them information regarding the preparation of the room.</p>
+
+			</div>
+		</div>
+
+		<table class="table table-striped table-bordered table-hover">
+			<thead>
+				<tr>
+					<th>First name</th>
+					<th>Last name</th>
+					<th>E-Mail</th>
+					<th>Attributes</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>{{project.owner.first_name}}</td>
+					<td>{{project.owner.last_name}}</td>
+					<td>{{project.owner.email}}</td>
+					<td>
+						<a href="#" data-toggle="tooltip" title="User has activated the account"><span class="glyphicon glyphicon-user"></span></a>
+						<a href="#" data-toggle="tooltip" title="User can edit project settings"><span class="glyphicon glyphicon-star"></span></a>
+					</td>
+					<td></td>
+				</tr>
+
+				{% for part in participants_list %}
+				<tr>
+					<td>{{part.user.first_name}}</td>
+					<td>{{part.user.last_name}}</td>
+					<td>{{part.user.email}}</td>
+					<td>
+						{% if part.user.is_active %}
+							<a href="#" data-toggle="tooltip" title="User has activated the account"><span class="glyphicon glyphicon-user"></span></a>
+						{% endif %}
+						{% if part.isAdmin %}
+							<a href="#" data-toggle="tooltip" title="User can edit project settings"><span class="glyphicon glyphicon-star"></span></a>
+						{% endif %}
+					</td>
+					<td>
+						{% if not readonly %}
+						<form action="{% url 'devroom_participants_delete' pk=part.pk %}" method="POST" style="display: inline">
+							{% csrf_token %}
+							<button data-toggle="tooltip" title="Remove this user"><span class="glyphicon glyphicon-remove"></span></button>
+						</form>
+						{% if part.isAdmin %}
+							<form action="{% url 'devroom_participants_revoke_admin' pk=part.pk %}" method="post" style="display: inline">
+								{% csrf_token %}
+								<button data-toggle="tooltip" title="Remove edit privileges for this user"><span class="glyphicon glyphicon-star-empty"></span></button>
+							</form>
+						{% else %}
+							<form action="{% url 'devroom_participants_make_admin' pk=part.pk %}" method="post" style="display: inline">
+								{% csrf_token %}
+								<button data-toggle="tooltip" title="Enable this user to edit project settings"><span class="glyphicon glyphicon-star"></span></button>
+							</form>
+						{% endif %}
+						{% endif %}
+					</td>
+				</tr>
+				{% endfor %}
+				{% if not readonly %}
+				<form method="POST">
+					<tr>
+						<td>{{form.first_name|cssclass:"form-control"}}</td>
+						<td>{{form.last_name|cssclass:"form-control"}}</td>
+						<td><div {% if form.email.errors %}class="form-group has-error"{% endif %}>{{form.email|cssclass:"form-control"}}</div></td>
+						<td></td>
+						<td>{% csrf_token %}<button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span></button></td>
+					</tr>
+				</form>
+				{% endif %}
+			</tbody>
+		</table>
+	</div>
+</div>
+
+{% endblock %}

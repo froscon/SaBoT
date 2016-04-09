@@ -1,0 +1,22 @@
+{% extends "master.html" %}
+{% load crispy_forms_tags %}
+{% load url from future %}
+
+{% block content %}
+
+{% include "devroom/alltabshead.html" %}
+
+<ul class="nav nav-tabs nav-tabs-bordered">
+	<li class="active"><a href="#">General</a><li>
+	<li><a href="{% url 'devroom_update_texts' pk=object.pk %}">Description texts</a><li>
+	<li><a href="{% url 'devroom_update_program' pk=object.pk %}">Program</a><li>
+	<li><a href="{% url 'devroom_participants' pk=object.pk %}">Participants</a><li>
+</ul>
+
+<div class="tab-content tab-bordered">
+	<div class="tab-pane active" id="general_info">
+		{% crispy form form.helper%}
+	</div>
+</div>
+
+{% endblock %}
