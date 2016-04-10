@@ -44,7 +44,7 @@ class SponsorContact(models.Model):
 	zipcode = models.CharField(max_length=16, verbose_name=_("ZIP Code")) # this is a char field to stay flexible for foreign addresses
 	city = models.CharField(max_length=64, verbose_name=_("City"))
 	country = models.CharField(blank=True, max_length=64, verbose_name=_("Country"))
-	responded = models.BooleanField(verbose_name=_("This sponsor did react on our contact attempt"),default=False)
+	responded = models.BooleanField(verbose_name=_("This sponsor did react to our contact attempt"),default=False)
 	contactPersonFirstname = models.CharField(blank=True,max_length=128, verbose_name=_("Contact person firstname"))
 	contactPersonSurname = models.CharField(blank=True,max_length=128, verbose_name=_("Contact person surname"))
 	contactPersonGender = models.CharField(max_length=1,blank=True, choices=GENDER_CHOICES, verbose_name=_("Gender of contact person"))

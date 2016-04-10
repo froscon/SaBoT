@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
                 ('zipcode', models.CharField(max_length=16, verbose_name='ZIP Code')),
                 ('city', models.CharField(max_length=64, verbose_name='City')),
                 ('country', models.CharField(max_length=64, verbose_name='Country', blank=True)),
-                ('responded', models.BooleanField(default=False, verbose_name='This sponsor did react on our contact attempt')),
+                ('responded', models.BooleanField(default=False, verbose_name='This sponsor did react to our contact attempt')),
                 ('contactPersonFirstname', models.CharField(max_length=128, verbose_name='Contact person firstname', blank=True)),
                 ('contactPersonSurname', models.CharField(max_length=128, verbose_name='Contact person surname', blank=True)),
                 ('contactPersonGender', models.CharField(blank=True, max_length=1, verbose_name='Gender of contact person', choices=[(b'M', b'Male'), (b'F', b'Female')])),
