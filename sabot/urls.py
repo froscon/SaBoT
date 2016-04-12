@@ -19,7 +19,7 @@ urlpatterns = patterns('',
 	url(r'^accounts/', include('registration.backends.default.urls')),
 
 	url(r'^sponsors/', include('sponsor.urls_sponsors')),
-	url(r'^parcel/', include('sponsor.urls_parcel')),
+	url(r'^parcel/', include('parcel.urls')),
 	url(r'^sponsorcontacts/', include('sponsor.urls_sponsorcontacts')),
 	url(r'^sponsorpackages/', include('sponsor.urls_sponsorpackages')),
 	url(r'^exhibitors/', include('exhibitor.urls')),

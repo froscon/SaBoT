@@ -1,0 +1,58 @@
+{% extends "master.html" %}
+{% load url from future %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<div class="page-header">
+	{% if object %}
+	<h2>Edit parcel</h2>
+	{% else %}
+	<h2>Create a new parcel</h2>
+	{% endif %}
+</div>
+
+
+
+{% crispy form form.helper %}
+
+<script>
+	$(document).ready(function () {
+		bh = new Bloodhound({
+			datumTokenizer: function (d) { return [ d.identifier ]; },
+			queryTokenizer: Bloodhound.tokenizers.whitespace,
+			remote: {
+				url : "{% url 'parcel_query_owners' %}?q=%QUERY",
+				wildcard : "%QUERY",
+			},
+		});
+
+		bh.initialize();
+
+		$("#id_ownerAC").typeahead({
+			minLength : 3,
+			highlight : true,
+		},
+		{
+			name : "owners",
+			displayKey : "identifier",
+			source : bh.ttAdapter(),
+			templates : {
+				suggestion : function (obj) {
+					return "<div><p>" + obj.identifier + " <small>(" + obj.type + ")</p></div>";
+				},
+			},
+		});
+
+		$(document).on('typeahead:select', function (event, selected) {
+			$("#id_ownerType").val(selected.contentType_id);
+			$("#id_ownerId").val(selected.obj_id);
+		});
+
+
+
+
+	});
+</script>
+
+
+{% endblock %}

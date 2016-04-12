@@ -8,12 +8,10 @@ from exhibitor.models import Exhibitor
 from sponsor.models import Sponsoring
 
 class Parcel(models.Model):
-	ownerType = models.ForeignKey(ContentType, null=True, blank=True, editable=False)
-	ownerId = models.PositiveIntegerField(blank=True, null=True, editable=False)
+	ownerType = models.ForeignKey(ContentType, null=True, blank=True, verbose_name=_("Type of the owner object"))
+	ownerId = models.PositiveIntegerField(blank=True, null=True, verbose_name=_("Key of the owner object"))
 	owner = GenericForeignKey("ownerType", "ownerId")
-	link = models.PositiveIntegerField(blank=True, null=True, editable=False, verbose_name=_("Link to a sponsor/exhibtor/devroom"))
-	linkType = models.CharField(max_length=4,editable=False, verbose_name=_("Type of linked object"))
-	createDate = models.DateField(auto_now_add=True,editable=False)
+	createDate = models.DateField(auto_now_add=True,editable=False, verbose_name=_("Creation date"))
 	parcelService = models.CharField(max_length=128, verbose_name=_("Delivery service company"))
 	trackingNumber = models.CharField(max_length=128, verbose_name=_("Tracking number"))
 	trackingUrl = models.URLField(blank=True, verbose_name=_("Tracking URL (if available)"))
