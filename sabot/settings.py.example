@@ -114,6 +114,7 @@ INSTALLED_APPS = (
 	'exhibitor',
 	'devroom',
 	'invoice',
+	'parcel',
 	# Uncomment the next line to enable the admin:
 	# 'django.contrib.admin',
 	# Uncomment the next line to enable admin documentation:
