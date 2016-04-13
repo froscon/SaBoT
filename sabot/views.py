@@ -36,6 +36,12 @@ class ObjectPermCheckPOSTMixin(object):
 class ObjectPermCheckMixin(ObjectPermCheckGETMixin, ObjectPermCheckPOSTMixin):
 	pass
 
+class CallableSuccessUrlMixin(object):
+	def get_success_url(self):
+		if callable(self.success_url):
+			return self.success_url(self.object, self.kwargs)
+		else:
+			return super(CallableSuccessUrlMixin, self).get_success_url()
 
 class ChangeNotificationMixin(object):
 	def form_valid(self, form):
@@ -230,7 +236,7 @@ class OwnerSettingCreateView(CreateView):
 		self.object.save()
 		return redirect(self.get_success_url())
 
-class PermCheckUpdateView(ObjectPermCheckMixin,UpdateView):
+class PermCheckUpdateView(ObjectPermCheckMixin,CallableSuccessUrlMixin,UpdateView):
 	# make the form readonly if its only readable
 	def get_form(self, form_class):
 		form = super(PermCheckUpdateView, self).get_form(form_class)
