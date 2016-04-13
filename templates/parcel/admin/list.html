@@ -33,6 +33,8 @@
 					{% else %}
 						{{parcel.owner.projectName}}
 					{% endif %}
+				{% else %}
+					{{parcel.originText}}
 				{% endif %}
 				</td>
 				<td>{{parcel.parcelService}}</td>

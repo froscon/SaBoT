@@ -46,6 +46,13 @@
 		$(document).on('typeahead:select', function (event, selected) {
 			$("#id_ownerType").val(selected.contentType_id);
 			$("#id_ownerId").val(selected.obj_id);
+			$("#id_originText").val("");
+		});
+
+		$("#id_ownerAC").change(function () {
+			$("#id_originText").val($(this).val());
+			$("#id_ownerType").val("");
+			$("#id_ownerId").val("");
 		});
 
 

@@ -11,6 +11,7 @@ class Parcel(models.Model):
 	ownerType = models.ForeignKey(ContentType, null=True, blank=True, verbose_name=_("Type of the owner object"))
 	ownerId = models.PositiveIntegerField(blank=True, null=True, verbose_name=_("Key of the owner object"))
 	owner = GenericForeignKey("ownerType", "ownerId")
+	originText = models.CharField(max_length=256, blank=True, verbose_name=_("Name or description of the sender if it is no registered owner"))
 	createDate = models.DateField(auto_now_add=True,editable=False, verbose_name=_("Creation date"))
 	parcelService = models.CharField(max_length=128, verbose_name=_("Delivery service company"))
 	trackingNumber = models.CharField(max_length=128, verbose_name=_("Tracking number"))
