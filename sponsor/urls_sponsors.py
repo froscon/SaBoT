@@ -11,8 +11,8 @@ from django.views.generic import ListView, DeleteView, CreateView, UpdateView, T
 from invoice.forms import OfferForm
 from sponsor.forms import SponsorContactForm, SponsorPackageForm
 from sponsor.helpers import sponsor_filesanitize
-from sponsor.models import Sponsoring, SponsoringParticipants, SponsorContact, SponsorPackage, SponsorParcel
-from sponsor.views import SponsorCreateView, SponsorUpdateView, SponsorEmailingView, sponsorMailPreview, SponsorContactResetEmailView, loadResponseInfoFromRT, ParcelCreateView, ParcelUpdateView
+from sponsor.models import Sponsoring, SponsoringParticipants, SponsorContact, SponsorPackage
+from sponsor.views import SponsorCreateView, SponsorUpdateView, SponsorEmailingView, sponsorMailPreview, SponsorContactResetEmailView, loadResponseInfoFromRT
 
 from sabot.views import ParticipantsView, OwnerSettingCreateView, PermCheckUpdateView, EmailOutputView, XMLListView, MultipleListView, PropertySetterView, PermCheckPropertySetterView, PermCheckSimpleDeleteView, ArchiveCreatorView, PermCheckDeleteView, PermCheckDetailView
 from sabot.decorators import user_is_staff

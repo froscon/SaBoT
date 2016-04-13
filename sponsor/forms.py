@@ -10,7 +10,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Field, Submit, Div, HTML
 from crispy_forms.bootstrap import FormActions, StrictButton, TabHolder, Tab, AppendedText, PrependedText
 
-from models import Sponsoring, SponsorContact, SponsorPackage, SponsorParcel
+from models import Sponsoring, SponsorContact, SponsorPackage
 from sabot.crispy_ext import TextOptOut
 
 class LinkOnlyTab(Tab):
@@ -26,60 +26,6 @@ class LinkOnlyTab(Tab):
 
 class SponsorMailSelectorForm(forms.Form):
 	recipients = forms.ModelMultipleChoiceField(queryset = SponsorContact.objects.all(), label=_("Mail recipients"))
-
-
-class SponsorParcelForm(forms.ModelForm):
-	class Meta:
-		model = SponsorParcel
-		exclude = ("sponsoring","received", "storageLocation")
-
-	def __init__(self, *args, **kwargs):
-		super(SponsorParcelForm, self).__init__(*args, **kwargs)
-		self.helper = FormHelper()
-		self.helper.layout = Layout(
-			Field("parcelService"),
-			Field("trackingNumber"),
-			Field("trackingUrl"),
-			Field("contentAndUsage"),
-		)
-		self.helper.add_input(Submit("Save", "Save"))
-
-class SponsorParcelAdminInlineCreateForm(forms.ModelForm):
-	class Meta:
-		model = SponsorParcel
-		exclude = ("sponsoring",)
-
-	def __init__(self, *args, **kwargs):
-		super(SponsorParcelAdminInlineCreateForm, self).__init__(*args, **kwargs)
-		self.helper = FormHelper()
-		self.helper.layout = Layout(
-			Field("parcelService"),
-			Field("trackingNumber"),
-			Field("trackingUrl"),
-			Field("contentAndUsage"),
-			Field("received"),
-			Field("storageLocation"),
-		)
-		self.helper.add_input(Submit("Save", "Save"))
-
-class SponsorParcelAdminForm(forms.ModelForm):
-	class Meta:
-		model = SponsorParcel
-		exclude = ()
-
-	def __init__(self, *args, **kwargs):
-		super(SponsorParcelAdminForm, self).__init__(*args, **kwargs)
-		self.helper = FormHelper()
-		self.helper.layout = Layout(
-			Field("sponsoring"),
-			Field("parcelService"),
-			Field("trackingNumber"),
-			Field("trackingUrl"),
-			Field("contentAndUsage"),
-			Field("received"),
-			Field("storageLocation"),
-		)
-		self.helper.add_input(Submit("Save", "Save"))
 
 
 

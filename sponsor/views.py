@@ -24,54 +24,13 @@ from rtkit.errors import RTResourceError
 
 from sabot.views import ChangeNotificationMixin, PermCheckUpdateView, JobProcessingView
 from account.models import UserProfile
-from forms import SponsorCreationForm, SponsorForm, SponsorMailSelectorForm, SponsorParcelForm, SponsorParcelAdminForm, SponsorParcelAdminInlineCreateForm
-from models import Sponsoring, SponsorContact, SponsorParcel
+from sponsor.forms import SponsorCreationForm, SponsorForm, SponsorMailSelectorForm
+from sponsor.models import Sponsoring
 
 
 def id_generator(size=6, chars=string.ascii_lowercase + string.digits):
 	return ''.join(random.choice(chars) for x in range(size))
 
-
-class ParcelCreateView(CreateView):
-	model = SponsorParcel
-	template_name = "sponsor/parcel/update.html"
-
-	def __init__(self, *args, **kwargs):
-		super(ParcelCreateView, self).__init__(*args,**kwargs)
-		self.sponsoring = None
-
-	def get_form_class(self):
-		return SponsorParcelAdminInlineCreateForm if self.request.user.is_staff else SponsorParcelForm
-
-	def get_sponsoring(self):
-		if self.sponsoring is None:
-			try:
-				self.sponsoring = Sponsoring.objects.get(pk=self.kwargs["spk"])
-			except Sponsoring.DoesNotExist:
-				raise Http404
-		return self.sponsoring
-
-	def form_valid(self, form):
-		self.object = form.save(commit=False)
-		self.object.sponsoring = self.get_sponsoring()
-		self.object.save()
-		return redirect(self.get_success_url())
-
-	def get_success_url(self):
-		return reverse("sponsor_update", kwargs = { "pk" : self.kwargs["spk"] }) + "#parcel"
-
-class ParcelUpdateView(PermCheckUpdateView):
-	model = SponsorParcel
-	template_name = "sponsor/parcel/update.html"
-
-	def get_form_class(self):
-		return SponsorParcelAdminForm if self.request.user.is_staff else SponsorParcelForm
-
-	def get_success_url(self):
-		if self.object.sponsoring is not None:
-			return reverse("sponsor_update", kwargs = { "pk" : self.object.sponsoring_id }) + "#parcel"
-		else:
-			return reverse("parcel_list")
 
 class SponsorEmailingView(FormView):
 	form_class = SponsorMailSelectorForm

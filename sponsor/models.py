@@ -446,28 +446,6 @@ class Sponsoring(models.Model):
 		("Booth personnel", "/participants", lambda p : p.hasParticipants, settings.PARTICIPANTS_DEADLINE, lambda s : s.participantsStatus),
 	]
 
-class SponsorParcel(models.Model):
-	sponsoring = models.ForeignKey(Sponsoring,blank=True,null=True,related_name="parcels")
-	createDate = models.DateField(auto_now_add=True,editable=False)
-	parcelService = models.CharField(max_length=128, verbose_name=_("Delivery service company"))
-	trackingNumber = models.CharField(max_length=128, verbose_name=_("Tracking number"))
-	trackingUrl = models.URLField(blank=True, verbose_name=_("Tracking URL (if available)"))
-	contentAndUsage = models.TextField(blank=True, verbose_name=_("What is the content of this package? What should we use it for?"))
-	received = models.BooleanField(default=False, verbose_name=_("We received this package (tick this and enter storage location once handled)"))
-	storageLocation = models.TextField(blank=True, verbose_name=_("Storage location"))
-
-	def has_read_permission(self, user):
-		if self.sponsoring is not None:
-			return user == self.sponsoring.owner
-		else:
-			return False
-
-	def has_write_permission(self, user):
-		if self.sponsoring is not None:
-			return user == self.sponsoring.owner
-		else:
-			return False
-
 class SponsoringParticipants(models.Model):
 	project = models.ForeignKey(Sponsoring)
 	user = models.ForeignKey(User)
