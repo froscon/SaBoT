@@ -1,0 +1,53 @@
+{% extends "master.html" %}
+{% load url from future %}
+{% load formstyle %}
+
+{% block content %}
+
+<div class="page-header">
+	<h2>Sponsor</h2>
+</div>
+
+<ul class="nav nav-tabs">
+	<li><a href="{% url 'sponsor_update' pk=linked_object.pk %}#parcel"><span class="glyphicon glyphicon-circle-arrow-left"></span> General information</a><li>
+	<li class="active"><a href="#">Parcel Tracking</a></li>
+</ul>
+
+<ul class="nav nav-pills">
+	<li><a href="{% url 'sponsor_parcel_new' lpk=linked_object.pk %}"><span class="glyphicon glyphicon-plus"></span> Add parcel</a></li>
+</ul>
+
+<h4>Parcel tracking list</h4>
+<table id="parcel-table" class="table table-striped table-bordered table-hover tablesorter">
+	<thead>
+		<tr>
+			<th>Parcel Service</th>
+			<th>Tracking No</th>
+			<th>Content</th>
+			<th>Actions</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for parcel in object_list  %}
+		<tr{%if parcel.received %} class="success"{% endif %}>
+			<td>{{parcel.parcelService}}</td>
+			<td>
+				{% if parcel.trackingUrl %}
+					<a href="{{parcel.trackingUrl}}">
+				{% endif %}
+					{{parcel.trackingNumber}}
+				{% if parcel.trackingUrl %}</a>{% endif %}
+			</td>
+			<td>{{parcel.contentAndUsage|linebreaksbr}}</td>
+			<td>
+				<a href="{% url 'sponsor_parcel_update' pk=parcel.pk %}" data-toggle="tooltip" title="Edit this parcel"><span class="glyphicon glyphicon-edit"></span></a>
+				<a href="{% url 'sponsor_parcel_del' pk=parcel.pk %}" data-toggle="tooltip" title="Delete this parcel"><span class="glyphicon glyphicon-remove"></span></a>
+
+			</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+<p class="text-info">Packets in green lines are those which we already received.</p>
+
+{% endblock %}

@@ -53,3 +53,18 @@ class ParcelAdminForm(forms.ModelForm):
 			cleaned_data["originText"] = ""
 		return cleaned_data
 
+class UserParcelForm(forms.ModelForm):
+	class Meta:
+		model = Parcel
+		fields = ("parcelService", "trackingUrl", "trackingNumber", "contentAndUsage")
+
+	def __init__(self, *args, **kwargs):
+		super(UserParcelForm, self).__init__(*args, **kwargs)
+		self.helper = FormHelper()
+		self.helper.layout = Layout(
+			Field("parcelService"),
+			Field("trackingNumber"),
+			Field("trackingUrl"),
+			Field("contentAndUsage"),
+		)
+		self.helper.add_input(Submit("Save", "Save"))

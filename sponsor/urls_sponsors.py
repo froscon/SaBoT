@@ -9,10 +9,10 @@ from django.db.models import Count, Q, Sum
 from django.views.generic import ListView, DeleteView, CreateView, UpdateView, TemplateView
 
 from invoice.forms import OfferForm
-from sponsor.views import SponsorCreateView, SponsorUpdateView, SponsorEmailingView, sponsorMailPreview, SponsorContactResetEmailView, loadResponseInfoFromRT, ParcelCreateView, ParcelUpdateView
 from sponsor.forms import SponsorContactForm, SponsorPackageForm
-from sponsor.models import Sponsoring, SponsoringParticipants, SponsorContact, SponsorPackage, SponsorParcel
 from sponsor.helpers import sponsor_filesanitize
+from sponsor.models import Sponsoring, SponsoringParticipants, SponsorContact, SponsorPackage, SponsorParcel
+from sponsor.views import SponsorCreateView, SponsorUpdateView, SponsorEmailingView, sponsorMailPreview, SponsorContactResetEmailView, loadResponseInfoFromRT, ParcelCreateView, ParcelUpdateView
 
 from sabot.views import ParticipantsView, OwnerSettingCreateView, PermCheckUpdateView, EmailOutputView, XMLListView, MultipleListView, PropertySetterView, PermCheckPropertySetterView, PermCheckSimpleDeleteView, ArchiveCreatorView, PermCheckDeleteView, PermCheckDetailView
 from sabot.decorators import user_is_staff
@@ -95,4 +95,5 @@ urlpatterns = patterns('',
 			filename = "sponsorads.tar.bz2",
 			filelist = lambda : filter(lambda x : x is not None, map(partial(sponsor_filesanitize,"programAd"), Sponsoring.objects.select_related())) )),
 			name="sponsor_export_programad"),
+	url(r'^parcel/', include('sponsor.urls_parcel')),
 )

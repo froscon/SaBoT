@@ -305,8 +305,10 @@ class SponsorForm(forms.ModelForm):
 			tablist.append(
 				Tab("Parcel",
 					Field("packetInfo"),
-					HTML("<p class=\"text-info\">We will prepare approximately <strong>{} conference bags</strong>. If you send us less bag inserts, please briefly explain the way in which we should distribute your bag inserts.</p>\n<p class=\"text-info\">Please assure that no packets arrive before {} and use the following address to send us packets:</p>{{{{object.contact.companyName}}}}<br />c/o {}\n<br /><br /><p class=\"text-info\">Please enter your packets in the list below once you sent them.</p><hr /><div id=\"packets-list\"></div>".format(settings.NUMBER_OF_CONFERENCE_BAGS,settings.PACKETS_DELIVERY_START.strftime("%a %b %d %Y"),settings.CONFERENCE_VENUE_ADDRESS.replace("\n","<br />")))
-					)
+					HTML("<p class=\"text-info\">We will prepare approximately <strong>{} conference bags</strong>. If you send us less bag inserts, please briefly explain the way in which we should distribute your bag inserts.</p>\n<p class=\"text-info\">Please assure that no packets arrive before {} and use the following address to send us packets:</p>{{{{object.contact.companyName}}}}<br />c/o {}\n<br /><br />".format(settings.NUMBER_OF_CONFERENCE_BAGS,settings.PACKETS_DELIVERY_START.strftime("%a %b %d %Y"),settings.CONFERENCE_VENUE_ADDRESS.replace("\n","<br />"))),
+					HTML("<p class=\"text-info\">Please enter your parcel in the <a href=\"{}\"><span class=\"glyphicon glyphicon-list\"></span> <strong>tracking manager</strong></a> once you sent them to simplify our work and track whether we received your parcel.</p>".format(reverse("sponsor_parcel_tracking", kwargs={ "lpk" : instance.pk })),
+					),
+				)
 			)
 		if instance.package.hasProgramAd and instance.package.hasProgramAdText:
 			tablist.append(
