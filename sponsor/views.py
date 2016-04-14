@@ -25,7 +25,7 @@ from rtkit.errors import RTResourceError
 from sabot.views import ChangeNotificationMixin, PermCheckUpdateView, JobProcessingView
 from account.models import UserProfile
 from sponsor.forms import SponsorCreationForm, SponsorForm, SponsorMailSelectorForm
-from sponsor.models import Sponsoring
+from sponsor.models import Sponsoring, SponsorContact
 
 
 def id_generator(size=6, chars=string.ascii_lowercase + string.digits):
