@@ -237,6 +237,7 @@ class Sponsoring(models.Model):
 	gplusPageOptOut = models.BooleanField(default=False,verbose_name=_("Sponsor does not use G+ fanpage URL"))
 	gplusAccount = models.CharField(blank=True,max_length=128,verbose_name=_("G+ account name"))
 	gplusAccountOptOut = models.BooleanField(default=False,verbose_name=_("Sponsor does not use a G+ account name"))
+	socialMediaAnnounced = models.BooleanField(default=False,verbose_name=_("Social media announcements were made"))
 
 	billingAddress = models.TextField(blank=True, verbose_name=_("Your billing address"))
 	billingInForeignCountry = models.BooleanField(default=False, verbose_name=_("The address above is not in Germany")) 

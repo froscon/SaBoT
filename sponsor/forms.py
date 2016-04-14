@@ -168,6 +168,7 @@ class SponsorForm(forms.ModelForm):
 			del self.fields["commitment"]
 			del self.fields["rtTicketId"]
 			del self.fields["clearedForBilling"]
+			del self.fields["socialMediaAnnounced"]
 
 		if adminForm:
 			tablist.append(
@@ -179,6 +180,7 @@ class SponsorForm(forms.ModelForm):
 					Field("commitment"),
 					Field("clearedForBilling"),
 					Field("rtTicketId"),
+					Field("socialMediaAnnounced"),
 					Field("adminComment"),
 					Div(
 						HTML("{% load url from future %}<p>The access link for the sponsor is <a href=\"" + settings.SPONSOR_URL + "{% url 'auth_token' token=object.owner.legacy_profile.authToken %}\">" + settings.SPONSOR_URL + "{% url 'auth_token' token=object.owner.legacy_profile.authToken %}</a></p>"),
