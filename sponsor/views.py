@@ -150,12 +150,11 @@ def sponsorMailPreview(request, pk):
 			try:
 				message = render_to_string(tmpl.template.templateName, ctx_dict)
 				resp["message"] = message.encode("utf8")
+				names = []
 				if len(tmpl.attachments.all()) > 0:
-					names = []
-					for att in tmpl.attachments.all():
-						names.append(att.name)
+					names = [ att.name for att in tmpl.attachments.all() ]
 
-					resp["attachments"] = names
+				resp["attachments"] = names
 
 				resp["success"] = True
 			except TemplateSyntaxError as e:
