@@ -35,7 +35,7 @@ urlpatterns = patterns('',
 		name="sponsor_overview"),
 	url(r'^(?P<pk>[0-9]+)/faq$',
 		login_required(TemplateView.as_view(
-			template_name = "sponsor/faq.html")),
+			template_name = "sponsor/internalFaqPage.html")),
 		name="sponsor_faq"),
 	url(r'^participants/remove/(?P<pk>[0-9]+)$',
 		login_required(PermCheckSimpleDeleteView.as_view(

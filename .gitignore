@@ -6,5 +6,7 @@ sabot/settings.py
 sabot/prodSettings.py
 sabot/localSettings.py
 sabot/conferenceSettings.py
+templates/sponsor/internalFaq.html
+templates/sponsor/publicFaq.html
 *.db
 media/*

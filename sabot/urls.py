@@ -2,6 +2,7 @@ from django.conf.urls import patterns, include, url
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.conf.urls.static import static
+from django.views.generic import TemplateView
 
 from main.views import OverviewView, WayfinderView
 
@@ -13,6 +14,7 @@ urlpatterns = patterns('',
 		login_required(OverviewView.as_view(
 			template_name = "main/homepage.html")),
 		name = "overview"),
+	url(r"^faq$", TemplateView.as_view(template_name="sponsor/publicFaqPage.html")),
 
 ############ INCLUDE APPS ################
 	url(r'^accounts/', include('account.urls')),
