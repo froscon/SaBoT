@@ -304,6 +304,8 @@ class Sponsoring(models.Model):
 			return STATUS_MISSING
 
 	def socialMediaStatus(self):
+		if not self.package.hasSocialMedia:
+			return STATUS_NOTINPACKAGE
 		socialMediaItems = [
 			self.twitterAccount != "" or self.twitterAccountOptOut,
 			self.facebookPage != "" or self.facebookPageOptOut,

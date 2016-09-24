@@ -171,22 +171,26 @@ class SponsorForm(forms.ModelForm):
 			del self.fields["socialMediaAnnounced"]
 
 		if adminForm:
-			tablist.append(
-				Tab("Admin",
-					Div(
-						HTML("{% load url from future %}<strong>Connected with <a href=\"{% url 'sponsorcontact_update' pk=object.contact.pk %}\">{{object.contact.companyName}}</a></strong>"),
-					css_class="form-group"),
-					Field("package"),
-					Field("commitment"),
-					Field("clearedForBilling"),
-					Field("rtTicketId"),
-					Field("socialMediaAnnounced"),
-					Field("adminComment"),
-					Div(
-						HTML("{% load url from future %}<p>The access link for the sponsor is <a href=\"" + settings.SPONSOR_URL + "{% url 'auth_token' token=object.owner.legacy_profile.authToken %}\">" + settings.SPONSOR_URL + "{% url 'auth_token' token=object.owner.legacy_profile.authToken %}</a></p>"),
-					css_class="form-group"),
-				)
-			)
+			adminList = [
+				Div(
+					HTML("{% load url from future %}<strong>Connected with <a href=\"{% url 'sponsorcontact_update' pk=object.contact.pk %}\">{{object.contact.companyName}}</a></strong>"),
+				css_class="form-group"),
+				Field("package"),
+				Field("commitment"),
+				Field("clearedForBilling"),
+				Field("rtTicketId"),
+			]
+			if instance.package.hasSocialMedia:
+				adminList.append(Field("socialMediaAnnounced"))
+
+			adminList.extend([
+				Field("adminComment"),
+				Div(
+					HTML("{% load url from future %}<p>The access link for the sponsor is <a href=\"" + settings.SPONSOR_URL + "{% url 'auth_token' token=object.owner.legacy_profile.authToken %}\">" + settings.SPONSOR_URL + "{% url 'auth_token' token=object.owner.legacy_profile.authToken %}</a></p>"),
+				css_class="form-group"),
+			])
+
+			tablist.append(Tab("Admin", *adminList))
 
 
 		general_fields = [ Field("displayCompanyName"), Field("logo") ]
