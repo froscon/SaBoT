@@ -210,6 +210,7 @@ class Sponsoring(models.Model):
 	rtTicketId = models.PositiveIntegerField(blank=True, null=True, verbose_name=_("RT ticket id"))
 	commitment = models.BooleanField(verbose_name=_("The sponsor has confirmed the sponsoring"),default=False)
 
+	displayCompanyName = models.CharField(max_length=256, blank=True, verbose_name=_("Company or product name that we should you to announce and advertise your sponsoring"))
 	logo = models.ImageField(blank=True,upload_to="sponsors/logos", verbose_name=_("Company logo for homepage (preferably as PNG)"))
 	vectorLogo = models.FileField(blank=True,upload_to="sponsors/vec_logos", verbose_name=_("Company logo as vector graphics (preferably PDF or SVG) for printed advertisements such as posters, flyers and visitor badges"))
 	homepage = models.URLField(blank=True, verbose_name=_("Company homepage url"))

@@ -189,7 +189,7 @@ class SponsorForm(forms.ModelForm):
 			)
 
 
-		general_fields = [ Field("logo") ]
+		general_fields = [ Field("displayCompanyName"), Field("logo") ]
 		if instance.logo:
 				general_fields.append(
 					Div(

@@ -65,7 +65,7 @@
 	<thead>
 		<tr>
 			<th>Sponsor</th>
-			<th>Username</th>
+			<th>Display name</th>
 			<th>RT</th>
 			<th>Contact</th>
 			<th>E-Mail</th>
@@ -79,7 +79,7 @@
 		{% for sponsor in object_list %}
 			<tr style="background-color: {% if sponsor.commitment %}{{sponsor.package.color}}{% else %}lightgrey{% endif %};">
 				<td data-toggle="popover" data-html="true" data-trigger="hover" data-placement="top" data-content="{{sponsor.adminComment|linebreaksbr}}">{{sponsor.contact.companyName}}</td>
-				<td>{{sponsor.owner.username}}</td>
+				<td>{{sponsor.displayCompanyName}}</td>
 				<td>
 					{% if sponsor.rtTicketId %}
 						<a href="{{RT_TICKET_URL}}{{sponsor.rtTicketId}}">#{{sponsor.rtTicketId}}</a>
