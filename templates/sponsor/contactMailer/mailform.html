@@ -75,6 +75,18 @@
 </div>
 
 <script>
+	function displayError(clicked, msg) {
+		$(clicked).removeAttr("data-original-title");
+		$(clicked).tooltip("destroy");
+		$(clicked).popover({
+			title : "Error",
+			content : msg,
+			placement : "right"
+		});
+		$(clicked).popover("show");
+		setTimeout( function () { $(clicked).popover("hide") ; }, 5000);
+	}
+
 	$(document).ready(function () {
 		$(".tablesorter").tablesorter({ sortList : [[0,0]], headers : { 5 : { sorter : false}}});
 
@@ -102,7 +114,12 @@
 		$(".contactMailPreview").click(function () {
 			var clicked = this;
 			$.getJSON("/sponsorcontacts/mailpreview/" + $(this).data("cid"), function (data) {
-				if (!data["success"]) { return; }
+				if (!data["success"]) {
+					if (data["errormsg"]) {
+						displayError(clicked, data["errormsg"]);
+					}
+					return;
+				}
 				$("#mailprev-company").html(data["company"]);
 				$("#mailprev-mail").html(data["message"]);
 				var attachments = [];
@@ -113,15 +130,7 @@
 				$("#modal-mailprev").modal();
 			})
 			.fail(function () {
-				$(clicked).removeAttr("data-original-title");
-				$(clicked).tooltip("destroy");
-				$(clicked).popover({
-					title : "Error",
-					content : "Unable to render email template",
-					placement : "right"
-				});
-				$(clicked).popover("show");
-				setTimeout( function () { $(clicked).popover("hide") ; }, 5000);
+				displayError(clicked, "Unable to render email template");
 			});
 		});
 	});

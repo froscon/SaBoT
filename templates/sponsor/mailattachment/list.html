@@ -1,0 +1,38 @@
+{% extends "master.html" %}
+{% load url from future %}
+{% block content %}
+
+<div class="page-header">
+	<h2>List of mail attachments</h2>
+</div>
+
+
+<ul class="nav nav-pills">
+	<li><a href="{% url 'sponsormailattachment_new' %}"><span class="glyphicon glyphicon-plus"></span> Add a new mail attachment</a></li>
+</ul>
+<table class="table table-striped table-bordered table-hover tablesorter">
+	<thead>
+		<tr>
+			<th>Description</th>
+			<th>File</th>
+			<th>Actions</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for tmpl in object_list %}
+			<tr>
+				<td>{{tmpl.name}}</td>
+				<td><a href="{{tmpl.attachment.url}}" data-toggle="tooltip" title="Download attachment file."><span class="glyphicon glyphicon-download"></span></a></td>
+				<td>
+					<a href="{% url 'sponsormailattachment_update' pk=tmpl.pk %}" data-toggle="tooltip" title="Edit this attachment mail"><span class="glyphicon glyphicon-edit"></span></a>
+					<a href="{% url 'sponsormailattachment_del' pk=tmpl.pk %}" data-toggle="tooltip" title="Delete this attachment mail"><span class="glyphicon glyphicon-remove"></span></a>
+				</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+
+</table>
+<script>
+</script>
+
+{% endblock %}

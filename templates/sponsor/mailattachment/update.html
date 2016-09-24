@@ -1,0 +1,24 @@
+{% extends "master.html" %}
+{% load url from future %}
+{% load crispy_forms_tags %}
+{% load formstyle %}
+{% block content %}
+
+<div class="page-header">
+	{% if object %}
+	<h2>Edit mail attachment</h2>
+	{% else %}
+	<h2>Create a new mail attachment</h2>
+	{% endif %}
+</div>
+
+
+
+{% if object %}
+	{% simple_crispy form "Save" %}
+{% else %}
+	{% simple_crispy form "Create" %}
+{% endif %}
+
+
+{% endblock %}

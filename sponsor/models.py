@@ -9,21 +9,29 @@ from django.core.validators import RegexValidator
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-
-stripTemplateNameRe = re.compile(r".*/(.*)\.html")
-
 class SponsorMailAttachment(models.Model):
-	name = models.CharField(max_length=128, verbose_name=_("Displayed attachment name"))
-	filepath = models.CharField(max_length=256, verbose_name=_("Path of the attachment file"))
+	name = models.CharField(max_length=128, verbose_name=_("Displayed attachment file name"))
+	attachment = models.FileField(upload_to="sponsormail_attachments", verbose_name=_("The contact mail attachment"))
+
+	def __unicode__(self):
+		return self.name
 
 class SponsorMailTemplate(models.Model):
 	templateName = models.CharField(max_length=128, verbose_name=_("Template name"))
+	template = models.TextField(verbose_name=_("Django template content"))
+
+	def __unicode__(self):
+		return self.templateName
+
+
+class SponsorMail(models.Model):
+	mailTemplateName = models.CharField(max_length=128, verbose_name=_("Mail template name"))
+	template = models.ForeignKey(SponsorMailTemplate, on_delete=models.SET_NULL, null=True, verbose_name=_("Mail text template"))
 	mailSubject = models.CharField(max_length=256, verbose_name=_("E-mail subject"))
-	mailTemplatePath = models.CharField(max_length=128, verbose_name=_("Mail template filename"))
 	attachments = models.ManyToManyField(SponsorMailAttachment,blank=True)
 
 	def __unicode__(self):
-		return stripTemplateNameRe.sub(r"\1",self.templateName)
+		return self.mailTemplateName
 
 class SponsorContact(models.Model):
 	class Meta:
@@ -52,7 +60,7 @@ class SponsorContact(models.Model):
 	contactPersonEmail = models.EmailField(blank=True, verbose_name=_("Contact person email"))
 
 	comment = models.TextField(blank=True, verbose_name=_("Comments and Notes"))
-	template = models.ForeignKey(SponsorMailTemplate,blank=True, null=True, verbose_name=_("Mail contact template"))
+	template = models.ForeignKey(SponsorMail,blank=True, null=True, verbose_name=_("Mail contact template"))
 
 	lastMailed = models.DateField(blank=True,null=True,editable=False, verbose_name=_("Last time we mailed this contact"))
 	rtTicketId = models.PositiveIntegerField(blank=True, null=True, editable=False, verbose_name=_("RT ticket id"))

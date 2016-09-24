@@ -11,6 +11,7 @@ from django.core.urlresolvers import reverse
 from django.db import transaction
 from django.http import HttpResponseRedirect, Http404, HttpResponse
 from django.shortcuts import redirect
+from django.template import TemplateSyntaxError, TemplateDoesNotExist
 from django.template.loader import render_to_string
 from django.views.generic.base import TemplateResponseMixin, TemplateView
 from django.views.generic.detail import SingleObjectTemplateResponseMixin, SingleObjectMixin
@@ -54,7 +55,19 @@ class SponsorEmailingView(FormView):
 			# now compose the mail and send it as rt answer
 			tmpl = contact.template
 			ctx_dict = { "rcpt" : contact }
-			message = render_to_string(tmpl.templateName, ctx_dict)
+			try:
+				message = render_to_string(tmpl.template.templateName, ctx_dict)
+			except TemplateSyntaxError as e:
+				result["info"] = "Template syntax error: {}".format(e)
+				result["status"] = "failed"
+				results.append(result)
+				continue
+			except TemplateDoesNotExist as e:
+				result["info"] = "Template not found: {}".format(e)
+				result["status"] = "failed"
+				results.append(result)
+				continue
+
 			# create response
 			resp_data = {
 				"content" : {
@@ -69,7 +82,7 @@ class SponsorEmailingView(FormView):
 				names = []
 				for att in tmpl.attachments.all():
 					names.append(att.name)
-					resp_data["attachment_{0}".format(attId)] = file(settings.ATTACHMENTS_ROOT + att.filepath)
+					resp_data["attachment_{0}".format(attId)] = file(att.attachment.path)
 					attId = attId + 1
 
 				resp_data["content"]["Attachment"] = ", ".join(names)
@@ -134,16 +147,21 @@ def sponsorMailPreview(request, pk):
 		tmpl = contact.template
 		if tmpl is not None:
 			ctx_dict = { "rcpt" : contact }
-			message = render_to_string(tmpl.templateName, ctx_dict)
-			resp["message"] = message.encode("utf8")
-			if len(tmpl.attachments.all()) > 0:
-				names = []
-				for att in tmpl.attachments.all():
-					names.append(att.name)
+			try:
+				message = render_to_string(tmpl.template.templateName, ctx_dict)
+				resp["message"] = message.encode("utf8")
+				if len(tmpl.attachments.all()) > 0:
+					names = []
+					for att in tmpl.attachments.all():
+						names.append(att.name)
 
-				resp["attachments"] = names
+					resp["attachments"] = names
 
-			resp["success"] = True
+				resp["success"] = True
+			except TemplateSyntaxError as e:
+				resp["errormsg"] = "Template syntax error: {}".format(e)
+			except TemplateDoesNotExist as e:
+				resp["errormsg"] = "Template not found: {}".format(e)
 
 	except SponsorContact.DoesNotExist:
 		pass

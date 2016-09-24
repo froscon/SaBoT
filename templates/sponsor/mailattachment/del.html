@@ -1,0 +1,22 @@
+{% extends "master.html" %}
+{% load url from future %}
+
+{% block content %}
+<div class="page-header">
+	<h2>Confirm deletion</h2>
+</div>
+<div class="row">
+<div class="col-md-3 centerbox">
+		<form method="POST">
+			{% csrf_token %}
+			Do you really want to remove {{object.}}? <br />
+			<p class="text-danger">Please note that this will silently remove this template from all mass mails currently using it!</p>
+			{{form.as_p}}
+			<div class="form-actions">
+				<button type="Submit" class="btn btn-danger">Delete</button>
+				<a href="javascript:window.history.back();" class="btn">Cancel</a>
+			</div>
+		</form>
+	</div>
+</div>
+{% endblock %}
