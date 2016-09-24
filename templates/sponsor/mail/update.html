@@ -20,5 +20,87 @@
 	{% simple_crispy form "Create" %}
 {% endif %}
 
+<script>
+
+var activeAttachments = {};
+
+function addAttachment(id, name) {
+	if (activeAttachments[id]) {
+		return;
+	}
+	var li = $("<li/>");
+	li.html(name +
+		' <a href="#" data-toggle="tooltip" title="Delete this attachment"><span class="glyphicon glyphicon-remove"></span></a>');
+	li.find("a").click(removeAttachment);
+	li.data("pk", id);
+	li.appendTo("#new_att_list");
+	syncToSelect(id, true);
+	activeAttachments[id] = 1;
+}
+function removeAttachment() {
+	var parent = $(this).parent();
+	var id = parent.data("pk");
+	activeAttachments[id] = 0;
+	syncToSelect(id, false);
+	$(this).parent().remove();
+}
+
+function syncToSelect(id, newVal) {
+	var selItem = $("select[name='attachments'] option[value=" + id + "]");
+	if (selItem.length == 0) {
+		alert("Cannot find respective list entry");
+		return;
+	}
+	selItem.prop("selected", newVal);
+}
+
+	$(document).ready(function () {
+		// enable js based UI for attachments
+		$("#div_id_attachments div.controls").hide();
+
+		$("<ul id='new_att_list'/>").appendTo("#div_id_attachments");
+		$('\
+<label for="add-attach">Add attachment</label> \
+<input type="text" class="form-control" id="add-attach"> \
+		').appendTo("#div_id_attachments");
+
+
+
+		var availAttachments = [];
+		$("select[name='attachments'] option").each(function () {
+			var att = {};
+			att.identifier = $(this).text();
+			att.id = $(this).val();
+			availAttachments.push(att);
+			if ($(this).prop("selected")) {
+				addAttachment($(this).val(), $(this).text());
+			}
+		});
+
+		bh = new Bloodhound({
+			datumTokenizer: function (d) { return [ d.identifier ]; },
+			queryTokenizer: Bloodhound.tokenizers.whitespace,
+			local : availAttachments,
+		});
+
+		bh.initialize();
+
+		var th = $("#add-attach").typeahead({
+			minLength : 0,
+			highlight : true,
+		},
+		{
+			name : "attachments",
+			displayKey : "identifier",
+			source : bh.ttAdapter(),
+		});
+
+		$(document).on('typeahead:select', function (event, selected) {
+			addAttachment(selected.id, selected.identifier);
+			th.typeahead("val","");
+		});
+
+	});
+</script>
 
 {% endblock %}
