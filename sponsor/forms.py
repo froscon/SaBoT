@@ -31,7 +31,22 @@ class SponsorMailSelectorForm(forms.Form):
 
 class SponsorContactForm(forms.ModelForm):
 	class Meta:
-		exclude = ()
+		fields = [
+			"responded",
+			"companyName",
+			"contactEMail",
+			"street",
+			"zipcode",
+			"city",
+			"country",
+			"contactPersonFirstname",
+			"contactPersonSurname",
+			"contactPersonGender",
+			"contactPersonEmail",
+			"contactPersonLanguage",
+			"template",
+			"comment"
+		]
 		model = SponsorContact
 
 	def __init__(self, *args, **kwargs):
@@ -57,9 +72,6 @@ class SponsorContactForm(forms.ModelForm):
 		self.helper.add_input(Submit("Save", "Save"))
 
 class SponsorCreationForm(forms.Form):
-	class Meta:
-		exclude = ()
-
 	sponsorContact = forms.ModelChoiceField(queryset=SponsorContact.objects.all(), label=_("Sponsor Contact"))
 	sponsorUsername = forms.RegexField(regex=r'^[\w.@+-]+$',max_length=30,
 									label=_("Username for new sponsor account"),

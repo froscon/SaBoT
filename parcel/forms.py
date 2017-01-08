@@ -12,7 +12,17 @@ from sponsor.models import Sponsoring
 class ParcelAdminForm(forms.ModelForm):
 	class Meta:
 		model = Parcel
-		fields = ("ownerType", "ownerId", "originText", "parcelService", "trackingUrl", "trackingNumber", "contentAndUsage", "received", "storageLocation")
+		fields = [
+			"ownerType",
+			"ownerId",
+			"originText",
+			"parcelService",
+			"trackingUrl",
+			"trackingNumber",
+			"contentAndUsage",
+			"received",
+			"storageLocation"
+		]
 
 	ownerAC = forms.CharField(label=_("Project/Sponsor"))
 

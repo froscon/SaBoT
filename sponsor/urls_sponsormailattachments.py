@@ -8,12 +8,20 @@ urlpatterns = [
 	url(r'^new',
 		user_is_staff(CreateView.as_view(
 			model = SponsorMailAttachment,
+			fields = [
+				"name",
+				"attachment",
+			],
 			template_name = "sponsor/mailattachment/update.html",
 			success_url = "list")),
 		name = "sponsormailattachment_new"),
 	url(r'^(?P<pk>[0-9]+)$',
 		user_is_staff(UpdateView.as_view(
 			model = SponsorMailAttachment,
+			fields = [
+				"name",
+				"attachment",
+			],
 			template_name = "sponsor/mailattachment/update.html",
 			success_url = "list")),
 		name = "sponsormailattachment_update"),

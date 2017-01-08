@@ -59,7 +59,7 @@ urlpatterns = [
 			})),
 			name="sponsor_list"),
 	url(r'^del/(?P<pk>[0-9]+)$',
-		user_is_staff( DeleteView.as_view(model = Sponsoring, template_name= "sponsor/sponsoring/del.html", success_url="/sponsors/list") ),name="sponsor_del"),
+		user_is_staff(DeleteView.as_view(model = Sponsoring, template_name= "sponsor/sponsoring/del.html", success_url="/sponsors/list") ),name="sponsor_del"),
 	url(r'^export/adminmail',
 		user_is_staff(EmailOutputView.as_view(
 			queryset = User.objects.annotate(num_spon=Count("sponsorings")).filter(num_spon__gt=0).distinct(),

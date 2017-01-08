@@ -11,12 +11,22 @@ urlpatterns = [
 	url(r'^new',
 		user_is_staff(CreateView.as_view(
 			model = DocumentTemplate,
+			fields = [
+				"description",
+				"template",
+				"docType",
+			],
 			template_name = "invoice/documenttemplate/update.html",
 			success_url = "%(id)s")),
 		name = "documenttemplate_new"),
 	url(r'^(?P<pk>[0-9]+)$',
 		user_is_staff(UpdateView.as_view(
 			model = DocumentTemplate,
+			fields = [
+				"description",
+				"template",
+				"docType",
+			],
 			template_name = "invoice/documenttemplate/update.html",
 			success_url = "%(id)s")),
 		name = "documenttemplate_update"),
