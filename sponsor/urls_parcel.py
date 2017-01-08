@@ -1,6 +1,6 @@
 from functools import partial
 
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
@@ -22,7 +22,7 @@ def parcel_delete_next(obj, kwargs):
 		return reverse("parcel_list")
 
 
-urlpatterns = patterns('',
+urlpatterns = [
 	url(r'^(?P<lpk>[0-9]+)/list$',
 		login_required(LinkedParcelListView.as_view(
 			linked_model = Sponsoring,
@@ -49,4 +49,4 @@ urlpatterns = patterns('',
 			template_name = "parcel/user/update.html",
 			success_url = lambda obj, kwargs : reverse("sponsor_parcel_tracking", kwargs = { "lpk" : obj.ownerId }))),
 		name="sponsor_parcel_update"),
-)
+]

@@ -1,10 +1,10 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 
 from django.views.generic import ListView, DeleteView, CreateView, UpdateView
 from sponsor.models import SponsorMailTemplate
 from sabot.decorators import user_is_staff
 
-urlpatterns = patterns('',
+urlpatterns = [
 	url(r'^new',
 		user_is_staff(CreateView.as_view(
 			model = SponsorMailTemplate,
@@ -28,4 +28,4 @@ urlpatterns = patterns('',
 			template_name= "sponsor/dbtemplate/del.html",
 			success_url="../list")),
 			name="sponsordbtemplate_del"),
-)
+]

@@ -10,3 +10,4 @@ templates/sponsor/internalFaq.html
 templates/sponsor/publicFaq.html
 *.db
 media/*
+d10env

@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.conf.urls.static import static
@@ -6,7 +6,7 @@ from django.views.generic import TemplateView
 
 from main.views import OverviewView, WayfinderView
 
-urlpatterns = patterns('',
+urlpatterns = [
 ############# PORTAL PAGE #################
 
 	url(r"^$", 	login_required(WayfinderView.as_view()), name = "homepage"),
@@ -32,7 +32,7 @@ urlpatterns = patterns('',
 	#url(r'^ticket/', include('ticket.urls')),
 	url(r'^documenttemplate/', include('invoice.urls_documenttemplate')),
 	url(r'^invoice/', include('invoice.urls_invoice')),
-)
+]
 
 if settings.LOCAL:
 	urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

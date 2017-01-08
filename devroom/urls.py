@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 from django.core.urlresolvers import reverse
 from django.views.generic import ListView, DeleteView, CreateView, UpdateView
 from django.contrib.auth.models import User
@@ -12,7 +12,7 @@ from devroom.forms import DevroomGeneralForm, DevroomDescriptionForm, DevroomPro
 from devroom.views import SetRoomView
 
 
-urlpatterns = patterns('',
+urlpatterns = [
 	url(r'^new$',
 		login_required(OwnerSettingCreateView.as_view(
 			model = Devroom,
@@ -113,5 +113,4 @@ urlpatterns = patterns('',
 			queryset = Devroom.objects.select_related().filter(accepted=True),
 			template_name = "devroom/xmlexport.html")),
 			name="devroom_export_xml"),
-
-)
+]

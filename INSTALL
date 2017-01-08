@@ -1,9 +1,12 @@
-This software is currently developed and tested with django version 1.7
+This software is currently developed and tested with django version 1.10
 
 It depends on several third party extensions that have to be installed on the system:
 + django-registration version =1.0 (currently, newer versions not tested)
 + django-crispy-forms version >=1.6.0
 + python-rtkit version >=0.6.0
++ python-lxml
++ requests
++ python-pil (for image fields)
 
 
 The system is currently used with mod_wsgi in an apache environment. However, it is also

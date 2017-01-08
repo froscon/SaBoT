@@ -1,4 +1,4 @@
-from django.conf.urls import url, patterns
+from django.conf.urls import url
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView
 
 from parcel.forms import ParcelAdminForm
@@ -8,7 +8,7 @@ from sabot.decorators import user_is_finance, user_is_staff
 from sponsor.models import Sponsoring
 from sabot.views import MultipleListView
 
-urlpatterns = patterns('',
+urlpatterns = [
 	url(r'^list/?',
 		user_is_staff(MultipleListView.as_view(
 			template_params = {
@@ -40,4 +40,4 @@ urlpatterns = patterns('',
 	url(r'query_owners',
 		user_is_staff(queryParcelOwners),
 		name = "parcel_query_owners"),
-)
+]

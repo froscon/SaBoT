@@ -9,7 +9,7 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
-from django.contrib.sites.models import RequestSite, Site
+from django.contrib.sites.models import Site
 from django.template.loader import render_to_string
 from django.db.models import Count, Q
 
@@ -95,10 +95,7 @@ class ParticipantsView(ObjectPermCheckMixin,FormView):
 
 		except User.DoesNotExist:
 			# we create a matching user with emailaddr=username
-			if Site._meta.installed:
-				site = Site.objects.get_current()
-			else:
-				site = RequestSite(self.request)
+			site = Site.objects.get_current()
 
 			# we should come up with a unique username
 			proposedname = email.split("@")[0]
@@ -130,10 +127,7 @@ class ParticipantsView(ObjectPermCheckMixin,FormView):
 
 	def send_info_email(self, user):
 		profile = RegistrationProfile.objects.get(user=user)
-		if Site._meta.installed:
-			site = Site.objects.get_current()
-		else:
-			site = RequestSite(request)
+		site = Site.objects.get_current()
 
 		ctx_dict = {'activation_key': profile.activation_key,
 			'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS,

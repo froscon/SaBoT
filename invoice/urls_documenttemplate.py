@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Q, Sum
@@ -7,7 +7,7 @@ from django.views.generic import ListView, DeleteView, CreateView, UpdateView
 from sabot.decorators import user_is_staff
 from invoice.models import DocumentTemplate
 
-urlpatterns = patterns('',
+urlpatterns = [
 	url(r'^new',
 		user_is_staff(CreateView.as_view(
 			model = DocumentTemplate,
@@ -31,4 +31,4 @@ urlpatterns = patterns('',
 			template_name= "invoice/documenttemplate/del.html",
 			success_url="../list")),
 			name="documenttemplate_del"),
-)
+]

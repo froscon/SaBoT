@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Q, Sum
@@ -10,7 +10,7 @@ from sponsor.models import Sponsoring, SponsoringParticipants, SponsorContact, S
 from sabot.views import ParticipantsView, OwnerSettingCreateView, PermCheckUpdateView, EmailOutputView, XMLListView, MultipleListView, PropertySetterView, PermCheckPropertySetterView, PermCheckSimpleDeleteView, ArchiveCreatorView
 from sabot.decorators import user_is_staff
 
-urlpatterns = patterns('',
+urlpatterns = [
 	url(r'^new',
 		user_is_staff(CreateView.as_view(
 			model = SponsorPackage,
@@ -41,4 +41,4 @@ urlpatterns = patterns('',
 			queryset = SponsorPackage.objects.all(),
 			template_name = "sponsor/package/xmlexport.html")),
 			name="sponsorpackage_export_xml"),
-)
+]

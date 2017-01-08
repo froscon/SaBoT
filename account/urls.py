@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 from django.views.generic import ListView, DeleteView, CreateView, UpdateView
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
@@ -9,7 +9,7 @@ from sabot.decorators import user_is_staff
 from account.views import TokenLoginView, UserProfileView, ActivateAndSetPWView, CustomRegistrationView
 
 
-urlpatterns = patterns('',
+urlpatterns = [
 	url(r'^token/(?P<token>[0-9a-z]+)$', TokenLoginView.as_view(), name="auth_token"),
 	url(r'^profile$', login_required(UserProfileView.as_view()), name="auth_user_profile"),
 	url(r'^activatepw/(?P<activation_key>\w+)/$', ActivateAndSetPWView.as_view(), name="auth_activate_pw"),
@@ -60,4 +60,4 @@ urlpatterns = patterns('',
 			success_url = "/accounts/list")),
 		name = "auth_user_delete"),
 	url('^', include('django.contrib.auth.urls')),
-)
+]

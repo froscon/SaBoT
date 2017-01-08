@@ -1,6 +1,6 @@
 import datetime
 
-from django.conf.urls import url, patterns
+from django.conf.urls import url
 from django.views.generic import ListView
 
 from sabot.decorators import user_is_finance, user_is_staff
@@ -9,7 +9,7 @@ from invoice import views
 from invoice.models import Invoice
 from sponsor.models import Sponsoring
 
-urlpatterns = patterns('',
+urlpatterns = [
 	url(r"^invoices$",
 		user_is_staff(MultipleListView.as_view(
 			template_params = {
@@ -54,4 +54,4 @@ urlpatterns = patterns('',
 			property_value = False,
 			next_view = "invoice_overview")),
 		name="invoice_marknotpayed"),
-)
+]

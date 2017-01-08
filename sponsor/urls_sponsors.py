@@ -1,6 +1,6 @@
 from functools import partial
 
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
@@ -17,7 +17,7 @@ from sponsor.views import SponsorCreateView, SponsorUpdateView, SponsorEmailingV
 from sabot.views import ParticipantsView, OwnerSettingCreateView, PermCheckUpdateView, EmailOutputView, XMLListView, MultipleListView, PropertySetterView, PermCheckPropertySetterView, PermCheckSimpleDeleteView, ArchiveCreatorView, PermCheckDeleteView, PermCheckDetailView
 from sabot.decorators import user_is_staff
 
-urlpatterns = patterns('',
+urlpatterns = [
 	url(r'^new/(?P<pk>[0-9]+)$',
 		user_is_staff(SponsorCreateView.as_view()), name="sponsor_new"),
 	url(r'^(?P<pk>[0-9]+)/?$',
@@ -96,4 +96,4 @@ urlpatterns = patterns('',
 			filelist = lambda : filter(lambda x : x is not None, map(partial(sponsor_filesanitize,"programAd"), Sponsoring.objects.select_related())) )),
 			name="sponsor_export_programad"),
 	url(r'^parcel/', include('sponsor.urls_parcel')),
-)
+]
