@@ -18,7 +18,7 @@ urlpatterns = [
 
 ############ INCLUDE APPS ################
 	url(r'^accounts/', include('account.urls')),
-	url(r'^accounts/', include('registration.backends.default.urls')),
+	url(r'^accounts/', include('registration.backends.model_activation.urls')),
 
 	url(r'^sponsors/', include('sponsor.urls_sponsors')),
 	url(r'^parcel/', include('parcel.urls')),

@@ -1,5 +1,5 @@
 from django.template import TemplateDoesNotExist
-from django.template.loader import BaseLoader
+from django.template.loaders.base import Loader as BaseLoader
 
 from sponsor.models import SponsorMailTemplate
 

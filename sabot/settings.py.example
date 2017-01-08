@@ -76,24 +76,44 @@ STATICFILES_FINDERS = (
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'FILL_IN_HERE'
 
-# List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
-	'django.template.loaders.filesystem.Loader',
-	'django.template.loaders.app_directories.Loader',
-	'django.template.loaders.eggs.Loader',
-	'sponsor.dbtemplateloader.DBLoader',
-)
+TEMPLATES = [
+	{
+		'BACKEND': 'django.template.backends.django.DjangoTemplates',
+		'DIRS': [
+			PROJECT_ROOT + '/templates',
+		],
+		'APP_DIRS': False,
+		'OPTIONS': {
+			'context_processors': [
+				'django.template.context_processors.debug',
+				'django.template.context_processors.i18n',
+				'django.template.context_processors.media',
+				'django.template.context_processors.static',
+				'django.template.context_processors.tz',
+				'django.contrib.messages.context_processors.messages',
+				'sabot.template_processors.dates_processor',
+				'sabot.template_processors.settings_processor',
 
-MIDDLEWARE_CLASSES = (
-	'django.middleware.common.CommonMiddleware',
+			],
+			'loaders' : [
+				'django.template.loaders.filesystem.Loader',
+				'django.template.loaders.app_directories.Loader',
+				'django.template.loaders.eggs.Loader',
+				'sponsor.dbtemplateloader.DBLoader',
+			]
+		}
+	}
+]
+
+MIDDLEWARE = [
+	'django.middleware.security.SecurityMiddleware',
 	'django.contrib.sessions.middleware.SessionMiddleware',
+	'django.middleware.common.CommonMiddleware',
 	'django.middleware.csrf.CsrfViewMiddleware',
 	'django.contrib.auth.middleware.AuthenticationMiddleware',
 	'django.contrib.messages.middleware.MessageMiddleware',
 	'django.middleware.clickjacking.XFrameOptionsMiddleware',
-	# Uncomment the next line for simple clickjacking protection:
-	# 'django.middleware.clickjacking.XFrameOptionsMiddleware',
-)
+]
 
 ROOT_URLCONF = 'sabot.urls'
 
@@ -171,15 +191,3 @@ LOGGING = {
 ACCOUNT_ACTIVATION_DAYS = 365
 
 CRISPY_TEMPLATE_PACK = "bootstrap3"
-
-TEMPLATE_CONTEXT_PROCESSORS = (
-	"django.contrib.auth.context_processors.auth",
-	"django.core.context_processors.debug",
-	"django.core.context_processors.i18n",
-	"django.core.context_processors.media",
-	"django.core.context_processors.static",
-	"django.core.context_processors.tz",
-	"django.contrib.messages.context_processors.messages",
-	"sabot.template_processors.dates_processor",
-	"sabot.template_processors.settings_processor",
-)

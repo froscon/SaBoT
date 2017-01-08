@@ -7,8 +7,17 @@ from crispy_forms.bootstrap import FormActions, StrictButton, TabHolder, Tab
 
 
 class RegistrationFormNameAndUniqueEmail(RegistrationFormUniqueEmail):
-	firstName = forms.CharField(max_length=64,label=_("First name"))
-	lastName = forms.CharField(max_length=64,label=_("Last name"))
+	class Meta(RegistrationFormUniqueEmail.Meta):
+		fields = [
+			'username',
+			'first_name',
+			'last_name',
+			'email',
+			'password1',
+			'password2'
+		]
+		required_css_class = 'required'
+
 
 class UserProfileForm(forms.Form):
 	firstName = forms.CharField(max_length=64,label=_("First name"))

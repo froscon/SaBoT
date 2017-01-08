@@ -68,15 +68,3 @@ class ActivateAndSetPWView(FormView):
 			return redirect(reverse("auth_login"))
 		except RegistrationProfile.DoesNotExist:
 			raise Http404
-
-class CustomRegistrationView(RegistrationView):
-	def register(self, request, **cleaned_data):
-		newUser = super(CustomRegistrationView, self).register(request, **cleaned_data)
-		newUser.first_name = cleaned_data["firstName"]
-		newUser.last_name = cleaned_data["lastName"]
-		newUser.save()
-		profile = UserProfile.objects.create(user=newUser)
-		return newUser
-
-	def get_form_class(self, request):
-		return RegistrationFormNameAndUniqueEmail
