@@ -110,10 +110,11 @@ class ParticipantsView(ObjectPermCheckMixin,FormView):
 						proposedname = proposedname + str(num)
 						break
 
-			new_user = RegistrationProfile.objects.create_inactive_user(proposedname, email, "", site, send_email=False)
+			new_user = User(username=proposedname,email=email)
 			new_user.first_name = form.cleaned_data["first_name"]
 			new_user.last_name = form.cleaned_data["last_name"]
 			new_user.save()
+			RegistrationProfile.objects.create_profile(new_user)
 
 			# add new user - nontheless
 			connection = self.connection_table_class(project=self.object,user=new_user)
