@@ -232,8 +232,8 @@ class OwnerSettingCreateView(CreateView):
 
 class PermCheckUpdateView(ObjectPermCheckMixin,CallableSuccessUrlMixin,UpdateView):
 	# make the form readonly if its only readable
-	def get_form(self, form_class):
-		form = super(PermCheckUpdateView, self).get_form(form_class)
+	def get_form(self):
+		form = super(PermCheckUpdateView, self).get_form()
 
 		if not self.object.has_write_permission(self.request.user) and not self.request.user.is_staff:
 			for field in form.fields.values():
