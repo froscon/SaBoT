@@ -170,7 +170,7 @@ def sponsorMailPreview(request, pk):
 class SponsorCreateView(FormView):
 	form_class = SponsorCreationForm
 	template_name = "sponsor/sponsoring/create.html"
-	success_url = "../%(id)s"
+	success_url = "../{id}"
 
 	def form_valid(self, form):
 		# create a new user for this sponsor

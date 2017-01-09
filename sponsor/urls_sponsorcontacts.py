@@ -18,14 +18,14 @@ urlpatterns = [
 			model = SponsorContact,
 			form_class = SponsorContactForm,
 			template_name = "sponsor/contact/update.html",
-			success_url = "%(id)s")),
+			success_url = "{id}")),
 		name = "sponsorcontact_new"),
 	url(r'^(?P<pk>[0-9]+)$',
 		user_is_staff(UpdateView.as_view(
 			model = SponsorContact,
 			form_class = SponsorContactForm,
 			template_name = "sponsor/contact/update.html",
-			success_url = "list#contact-%(id)s")),
+			success_url = "list#contact-{id}")),
 		name = "sponsorcontact_update"),
 	url(r'^list/?',
 		user_is_staff(ListView.as_view(
@@ -37,7 +37,7 @@ urlpatterns = [
 			model = SponsorContact,
 			property_name = "lastMailed",
 			property_value = lambda req, **kwargs : datetime.date.today(),
-			redirect = "/sponsorcontacts/list#contact-%(id)s")),
+			redirect = "/sponsorcontacts/list#contact-{id}")),
 		name="sponsorcontact_set_mailed"),
 	url(r'^del/(?P<pk>[0-9]+)$',
 		user_is_staff(DeleteView.as_view(

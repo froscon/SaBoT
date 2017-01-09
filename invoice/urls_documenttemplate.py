@@ -17,7 +17,7 @@ urlpatterns = [
 				"docType",
 			],
 			template_name = "invoice/documenttemplate/update.html",
-			success_url = "%(id)s")),
+			success_url = "{id}")),
 		name = "documenttemplate_new"),
 	url(r'^(?P<pk>[0-9]+)$',
 		user_is_staff(UpdateView.as_view(
@@ -28,7 +28,7 @@ urlpatterns = [
 				"docType",
 			],
 			template_name = "invoice/documenttemplate/update.html",
-			success_url = "%(id)s")),
+			success_url = "{id}")),
 		name = "documenttemplate_update"),
 	url(r'^list/?',
 		user_is_staff(ListView.as_view(
