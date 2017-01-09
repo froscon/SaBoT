@@ -185,7 +185,7 @@ class SponsorForm(forms.ModelForm):
 		if adminForm:
 			adminList = [
 				Div(
-					HTML("{% load url from future %}<strong>Connected with <a href=\"{% url 'sponsorcontact_update' pk=object.contact.pk %}\">{{object.contact.companyName}}</a></strong>"),
+					HTML("<strong>Connected with <a href=\"{% url 'sponsorcontact_update' pk=object.contact.pk %}\">{{object.contact.companyName}}</a></strong>"),
 				css_class="form-group"),
 				Field("package"),
 				Field("commitment"),
@@ -198,7 +198,7 @@ class SponsorForm(forms.ModelForm):
 			adminList.extend([
 				Field("adminComment"),
 				Div(
-					HTML("{% load url from future %}<p>The access link for the sponsor is <a href=\"" + settings.SPONSOR_URL + "{% url 'auth_token' token=object.owner.legacy_profile.authToken %}\">" + settings.SPONSOR_URL + "{% url 'auth_token' token=object.owner.legacy_profile.authToken %}</a></p>"),
+					HTML("<p>The access link for the sponsor is <a href=\"" + settings.SPONSOR_URL + "{% url 'auth_token' token=object.owner.legacy_profile.authToken %}\">" + settings.SPONSOR_URL + "{% url 'auth_token' token=object.owner.legacy_profile.authToken %}</a></p>"),
 				css_class="form-group"),
 			])
 
