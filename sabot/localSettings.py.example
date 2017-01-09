@@ -64,3 +64,7 @@ EMAIL_HOST_PASSWORD =  ""
 EMAIL_USE_TLS = True
 
 GLOBAL_LOG_FILE = "sabot.log"
+# Recaptcha config
+RECAPTCHA_PUBLIC_KEY = ''
+RECAPTCHA_PRIVATE_KEY = ''
+NOCAPTCHA = True
