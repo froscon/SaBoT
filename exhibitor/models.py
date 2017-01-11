@@ -32,6 +32,8 @@ class Exhibitor(models.Model):
 	participants = models.ManyToManyField(User,blank=True,editable=False,related_name="exhibitorparticipation", through="ExhibitorParticipants")
 	accepted = models.BooleanField(default=False, editable=False)
 
+	year = models.PositiveIntegerField(editable=False, verbose_name=_("Conference year this exhibitor belongs to"))
+
 	def has_read_permission(self, user):
 		return ExhibitorParticipants.objects.filter(user=user).count() > 0 or user == self.owner
 
