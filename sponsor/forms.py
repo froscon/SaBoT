@@ -301,7 +301,9 @@ class SponsorForm(forms.ModelForm):
 			)
 		if instance.package.hasParticipants:
 			tablist.append(
-				LinkOnlyTab("Participants", targ_url=reverse("sponsor_participants", kwargs={"pk" : instance.pk }))
+				Tab("Participants",
+					HTML("<p class=\"text-info\">Partipants can be added/removed and listed in the <a href=\"{}\"><span class=\"glyphicon glyphicon-list\"></span> <strong>Partipants manager</strong></a>".format(reverse("sponsor_participants", kwargs={"pk" : instance.pk })))
+				)
 			)
 
 		actions = FormActions(

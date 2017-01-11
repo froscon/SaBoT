@@ -249,7 +249,7 @@ class Sponsoring(models.Model):
 	socialMediaAnnounced = models.BooleanField(default=False,verbose_name=_("Social media announcements were made"))
 
 	billingAddress = models.TextField(blank=True, verbose_name=_("Your billing address"))
-	billingInForeignCountry = models.BooleanField(default=False, verbose_name=_("The address above is not in Germany")) 
+	billingInForeignCountry = models.BooleanField(default=False, verbose_name=_("The address above is not in Germany"))
 	billingReference = models.CharField(blank=True, max_length=64, verbose_name=_("Your reference number"))
 	billingReferenceOptOut = models.BooleanField(default=False, verbose_name=_("Sponsor does not provide a billing reference number"))
 
