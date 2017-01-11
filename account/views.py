@@ -19,7 +19,7 @@ class TokenLoginView(RedirectView):
 		if user is not None:
 			if user.is_active:
 				login(self.request, user)
-				return self.request.REQUEST.get("next","/")
+				return self.request.GET.get("next","/")
 
 		raise Http404
 
