@@ -94,6 +94,7 @@ TEMPLATES = [
 				'django.contrib.messages.context_processors.messages',
 				'sabot.template_processors.dates_processor',
 				'sabot.template_processors.settings_processor',
+				'sabot.template_processors.active_year_processor',
 
 			],
 			'loaders' : [
