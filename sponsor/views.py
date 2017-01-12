@@ -19,12 +19,13 @@ from django.views.generic.edit import BaseFormView, UpdateView
 from django.views.generic import FormView, CreateView
 
 from rtkit.authenticators import BasicAuthenticator
-from rtkit.resource import RTResource
 from rtkit.errors import RTResourceError
+from rtkit.resource import RTResource
 
 
-from sabot.views import ChangeNotificationMixin, PermCheckUpdateView, JobProcessingView
 from account.models import UserProfile
+from sabot.multiYear import getActiveYear
+from sabot.views import ChangeNotificationMixin, PermCheckUpdateView, JobProcessingView
 from sponsor.forms import SponsorCreationForm, SponsorForm, SponsorMailSelectorForm
 from sponsor.models import Sponsoring, SponsorContact
 
@@ -189,6 +190,7 @@ class SponsorCreateView(FormView):
 
 			sponsoring = Sponsoring()
 			sponsoring.owner = user
+			sponsoring.year = getActiveYear(self.request)
 			sponsoring.contact = baseContact
 			sponsoring.package = form.cleaned_data["sponsorPackage"]
 			sponsoring.adminComment = form.cleaned_data["internalComment"]

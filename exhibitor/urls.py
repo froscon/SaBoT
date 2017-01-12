@@ -5,15 +5,16 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Q, Sum
 
-from sabot.views import ParticipantsView, OwnerSettingCreateView, PermCheckUpdateView, EmailOutputView, XMLListView, MultipleListView, PropertySetterView, PermCheckPropertySetterView, PermCheckSimpleDeleteView, ArchiveCreatorView
-from sabot.decorators import user_is_staff
-from exhibitor.models import Exhibitor, ExhibitorParticipants
 from exhibitor.forms import ExhibitorGeneralForm, ExhibitorDescriptionForm, ExhibitorBoothForm
+from exhibitor.models import Exhibitor, ExhibitorParticipants
+from sabot.decorators import user_is_staff
+from sabot.multiYear import YSListView, YSEmailOutputView, YSXMLListView, YSOwnerSettingCreateView
+from sabot.views import ParticipantsView, OwnerSettingCreateView, PermCheckUpdateView, EmailOutputView, XMLListView, MultipleListView, PropertySetterView, PermCheckPropertySetterView, PermCheckSimpleDeleteView, ArchiveCreatorView
 
 
 urlpatterns = [
 	url(r'^new$',
-		login_required(OwnerSettingCreateView.as_view(
+		login_required(YSOwnerSettingCreateView.as_view(
 			model = Exhibitor,
 			form_class = ExhibitorGeneralForm,
 			template_name = "exhibitor/create.html",
@@ -83,12 +84,12 @@ urlpatterns = [
 			redirect = lambda obj, kwargs: reverse("exhibitor_participants", kwargs = { "pk" : obj.project_id }) )),
 		name="exhibitor_participants_revoke_admin"),
 	url(r'^list\+planning/?',
-		user_is_staff(ListView.as_view(
+		user_is_staff(YSListView.as_view(
 			queryset = Exhibitor.objects.select_related(),
 			template_name = "exhibitor/list+planning.html")),
 			name="exhibitor_list_planning"),
 	url(r'^list/?',
-		user_is_staff(ListView.as_view(
+		user_is_staff(YSListView.as_view(
 			queryset = Exhibitor.objects.select_related(),
 			template_name = "exhibitor/list.html")),
 			name="exhibitor_list"),
@@ -99,17 +100,17 @@ urlpatterns = [
 			success_url="/exhibitors/list")),
 			name="exhibitor_del"),
 	url(r'^export/adminmail',
-		user_is_staff(EmailOutputView.as_view(
+		user_is_staff(YSEmailOutputView.as_view(
 			queryset = User.objects.filter(Q(exhibitorparticipants__isAdmin=True,exhibitorparticipants__project__accepted=True) | Q(exhibitors__accepted=True)).distinct(),
 			template_name = "mail.html")),
 			name="exhibitor_export_adminmail"),
 	url(r'export/allmail',
-		user_is_staff(EmailOutputView.as_view(
+		user_is_staff(YSEmailOutputView.as_view(
 			queryset = User.objects.filter(Q(exhibitorparticipants__project__accepted=True) | Q(exhibitors__accepted=True)).distinct(),
 			template_name = "mail.html")),
 			name="exhibitor_export_allmail"),
 	url(r'^export/xml',
-		user_is_staff(XMLListView.as_view(
+		user_is_staff(YSXMLListView.as_view(
 			queryset = Exhibitor.objects.select_related().filter(accepted=True),
 			template_name = "exhibitor/xmlexport.html")),
 			name="exhibitor_export_xml"),

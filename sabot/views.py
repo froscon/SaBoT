@@ -344,9 +344,9 @@ class ArchiveCreatorView(View):
 	def process_files(self,tarobj):
 		if self.filelist is not None:
 			if callable(self.filelist):
-				files = self.filelist()
+				files = self.filelist(self.request, self.kwargs)
 			if isinstance(self.filelist, (list,tuple)):
-				files = self.filelist()
+				files = self.filelist
 
 			for f in files:
 				if isinstance(f, tuple):

@@ -13,14 +13,16 @@ from exhibitor.models import Exhibitor
 from parcel.models import Parcel
 from sabot.views import CallableSuccessUrlMixin
 from sponsor.models import Sponsoring
+from sabot.multiYear import getActiveYear
 
 def queryParcelOwners(request):
 	response = []
 	if request.GET.has_key("q"):
 		query = request.GET["q"]
+		activeYear = getActiveYear(request)
 
 		# find companies with matching name
-		res = Sponsoring.objects.filter(contact__companyName__icontains=query)
+		res = Sponsoring.objects.filter(contact__companyName__icontains=query,year=activeYear)
 		response = response + [ {
 			"identifier" : s.contact.companyName,
 			"type" : unicode(_("Sponsor")),
@@ -28,7 +30,7 @@ def queryParcelOwners(request):
 			"obj_id" : s.pk,
 			}
 			for s in res ]
-		res = Exhibitor.objects.filter(projectName__icontains=query)
+		res = Exhibitor.objects.filter(projectName__icontains=query,year=activeYear)
 		response = response + [ {
 			"identifier" : p.projectName,
 			"type" : unicode(_("Exhibitor")),
@@ -36,7 +38,7 @@ def queryParcelOwners(request):
 			"obj_id" : p.pk,
 			}
 			for p in res ]
-		res = Devroom.objects.filter(projectName__icontains=query)
+		res = Devroom.objects.filter(projectName__icontains=query,year=activeYear)
 		response = response + [ {
 			"identifier" : p.projectName,
 			"type" : unicode(_("Devroom")),
@@ -64,6 +66,7 @@ class LinkedParcelCreateView(CallableSuccessUrlMixin,CreateView):
 
 		self.object = form.save(commit=False)
 		self.object.owner = linked
+		self.object.year = linked.year
 		self.object.save()
 		return redirect(self.get_success_url())
 

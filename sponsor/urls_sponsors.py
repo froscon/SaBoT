@@ -14,7 +14,8 @@ from sponsor.helpers import sponsor_filesanitize
 from sponsor.models import Sponsoring, SponsoringParticipants, SponsorContact, SponsorPackage
 from sponsor.views import SponsorCreateView, SponsorUpdateView, SponsorEmailingView, sponsorMailPreview, SponsorContactResetEmailView, loadResponseInfoFromRT
 
-from sabot.views import ParticipantsView, OwnerSettingCreateView, PermCheckUpdateView, EmailOutputView, XMLListView, MultipleListView, PropertySetterView, PermCheckPropertySetterView, PermCheckSimpleDeleteView, ArchiveCreatorView, PermCheckDeleteView, PermCheckDetailView
+from sabot.views import ParticipantsView, OwnerSettingCreateView, PermCheckUpdateView, MultipleListView, PropertySetterView, PermCheckPropertySetterView, PermCheckSimpleDeleteView, ArchiveCreatorView, PermCheckDeleteView, PermCheckDetailView
+from sabot.multiYear import YSEmailOutputView, YSXMLListView, getActiveYear
 from sabot.decorators import user_is_staff
 
 urlpatterns = [
@@ -47,53 +48,100 @@ urlpatterns = [
 		user_is_staff(MultipleListView.as_view(
 			template_name = "sponsor/sponsoring/list.html",
 			template_params = {
-				"object_list" : Sponsoring.objects.select_related(),
-				"moneyRaised" : lambda req, kwargs : Sponsoring.objects.filter(commitment=True).aggregate(total_sum=Sum("package__price"))["total_sum"],
-				"wantRecruiting" : lambda req, kwargs : Sponsoring.objects.filter(wantRecruting=True,commitment=True).count(),
-				"noRecruiting" : lambda req, kwargs : Sponsoring.objects.filter(wantRecruting=False,commitment=True).count(),
-				"canRecruiting" : lambda req, kwargs : Sponsoring.objects.filter(package__hasRecruitingEvent=True,commitment=True).count(),
-				"wantBooth" : lambda req, kwargs : Sponsoring.objects.filter(wantBooth=True,commitment=True).count(),
-				"noBooth" : lambda req, kwargs : Sponsoring.objects.filter(wantBooth=False,commitment=True).count(),
-				"canBooth" : lambda req, kwargs : Sponsoring.objects.filter(package__hasBooth=True,commitment=True).count(),
+				"object_list" : lambda req, kwargs : Sponsoring.objects.filter(
+					year=getActiveYear(req),
+				).select_related(),
+				"moneyRaised" : lambda req, kwargs : Sponsoring.objects.filter(
+					commitment=True,
+					year=getActiveYear(req),
+				).aggregate(total_sum=Sum("package__price"))["total_sum"],
+				"wantRecruiting" : lambda req, kwargs : Sponsoring.objects.filter(
+					wantRecruting=True,
+					commitment=True,
+					year=getActiveYear(req),
+				).count(),
+				"noRecruiting" : lambda req, kwargs : Sponsoring.objects.filter(
+					wantRecruting=False,
+					commitment=True,
+					year=getActiveYear(req),
+				).count(),
+				"canRecruiting" : lambda req, kwargs : Sponsoring.objects.filter(
+					package__hasRecruitingEvent=True,
+					commitment=True,
+					year=getActiveYear(req),
+				).count(),
+				"wantBooth" : lambda req, kwargs : Sponsoring.objects.filter(
+					wantBooth=True,
+					commitment=True,
+					year=getActiveYear(req),
+				).count(),
+				"noBooth" : lambda req, kwargs : Sponsoring.objects.filter(
+					wantBooth=False,
+					commitment=True,
+					year=getActiveYear(req),
+				).count(),
+				"canBooth" : lambda req, kwargs : Sponsoring.objects.filter(
+					package__hasBooth=True,
+					commitment=True,
+					year=getActiveYear(req),
+				).count(),
 				"offerForm" : lambda req, kwargs : OfferForm(),
 			})),
 			name="sponsor_list"),
 	url(r'^del/(?P<pk>[0-9]+)$',
 		user_is_staff(DeleteView.as_view(model = Sponsoring, template_name= "sponsor/sponsoring/del.html", success_url="/sponsors/list") ),name="sponsor_del"),
 	url(r'^export/adminmail',
-		user_is_staff(EmailOutputView.as_view(
+		user_is_staff(YSEmailOutputView.as_view(
 			queryset = User.objects.annotate(num_spon=Count("sponsorings")).filter(num_spon__gt=0).distinct(),
 			template_name = "mail.html")),
 			name="sponsor_export_adminmail"),
 	url(r'^export/allmail',
-		user_is_staff(EmailOutputView.as_view(
+		user_is_staff(YSEmailOutputView.as_view(
 			queryset = User.objects.annotate(num_spon=Count("sponsorings"), num_part=Count("sponsorparticipation")).filter( Q(num_part__gt=0)).distinct(),
 			template_name = "mail.html")),
 			name="sponsor_export_allmail"),
 	url(r'^export/boothmail',
-		user_is_staff(EmailOutputView.as_view(
+		user_is_staff(YSEmailOutputView.as_view(
 			queryset = User.objects.filter(sponsorparticipation__package__hasBooth=True).distinct(),
 			template_name = "mail.html")),
 			name="sponsor_export_boothmail"),
 	url(r'^export/recruitingmail',
-		user_is_staff(EmailOutputView.as_view(
+		user_is_staff(YSEmailOutputView.as_view(
 			queryset = User.objects.filter(sponsorparticipation__package__hasRecruitingEvent=True).distinct(),
 			template_name = "mail.html")),
 			name="sponsor_export_recruitingmail"),
 	url(r'^export/xml',
-		user_is_staff(XMLListView.as_view(
+		user_is_staff(YSXMLListView.as_view(
 			queryset = Sponsoring.objects.select_related(),
 			template_name = "sponsor/sponsoring/xmlexport.html")),
 			name="sponsor_export_xml"),
 	url(r'^export/logos',
 		user_is_staff(ArchiveCreatorView.as_view(
 			filename = "sponsorlogos.tar.bz2",
-			filelist = lambda : filter(lambda x : x is not None, map(partial(sponsor_filesanitize,"logo"), Sponsoring.objects.select_related())) )),
-			name="sponsor_export_logos"),
+			filelist = lambda req, kwargs : filter(
+				lambda x : x is not None,
+				map(
+					partial(sponsor_filesanitize,"logo"),
+					Sponsoring.objects.filter(
+						year=getActiveYear(req)
+					).select_related()
+				)
+			)
+		)),
+		name="sponsor_export_logos"),
 	url(r'^export/programad',
 		user_is_staff(ArchiveCreatorView.as_view(
 			filename = "sponsorads.tar.bz2",
-			filelist = lambda : filter(lambda x : x is not None, map(partial(sponsor_filesanitize,"programAd"), Sponsoring.objects.select_related())) )),
-			name="sponsor_export_programad"),
+			filelist = lambda req, kwargs : filter(
+				lambda x : x is not None,
+				map(
+					partial(sponsor_filesanitize,"programAd"),
+					Sponsoring.objects.filter(
+						year=getActiveYear(req)
+					).select_related()
+				)
+			)
+		)),
+		name="sponsor_export_programad"),
 	url(r'^parcel/', include('sponsor.urls_parcel')),
 ]
