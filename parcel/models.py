@@ -20,6 +20,8 @@ class Parcel(models.Model):
 	received = models.BooleanField(default=False, verbose_name=_("We received this package (tick this and enter storage location once handled)"))
 	storageLocation = models.TextField(blank=True, verbose_name=_("Storage location"))
 
+	year = models.PositiveIntegerField(editable=False, verbose_name=_("Conference year this parcel belongs to"))
+
 	@classmethod
 	def parcel_for_sponsoring(cls, sponsoring):
 		sponCT = ContentType.objects.get_for_model(Sponsoring)
