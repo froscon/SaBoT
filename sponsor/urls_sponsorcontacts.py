@@ -18,7 +18,7 @@ urlpatterns = [
 			model = SponsorContact,
 			form_class = SponsorContactForm,
 			template_name = "sponsor/contact/update.html",
-			success_url = "{id}")),
+			success_url = "./{id}")),
 		name = "sponsorcontact_new"),
 	url(r'^(?P<pk>[0-9]+)$',
 		user_is_staff(UpdateView.as_view(
