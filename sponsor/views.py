@@ -177,16 +177,20 @@ class SponsorCreateView(FormView):
 		# create a new user for this sponsor
 		try:
 			sp = transaction.savepoint()
-			user = User(username = form.cleaned_data["sponsorUsername"])
 			baseContact = form.cleaned_data["sponsorContact"]
-			user.first_name = baseContact.contactPersonFirstname
-			user.last_name = baseContact.contactPersonSurname
-			user.email = baseContact.contactPersonEmail
-			user.save()
 
-			profile = UserProfile(user = user)
-			profile.authToken = id_generator(24)
-			profile.save()
+			try:
+				user = User.objects.get(username=form.cleaned_data["sponsorUsername"])
+			except User.DoesNotExist:
+				user = User(username = form.cleaned_data["sponsorUsername"])
+				user.first_name = baseContact.contactPersonFirstname
+				user.last_name = baseContact.contactPersonSurname
+				user.email = baseContact.contactPersonEmail
+				user.save()
+
+				profile = UserProfile(user = user)
+				profile.authToken = id_generator(24)
+				profile.save()
 
 			sponsoring = Sponsoring()
 			sponsoring.owner = user
@@ -218,7 +222,7 @@ class SponsorCreateView(FormView):
 
 	def get_success_url(self):
 		if self.success_url:
-			url = self.success_url % self.object.__dict__
+			url = self.success_url.format(**self.object.__dict__)
 		else:
 			raise ImproperlyConfigured("No URL to redirect to")
 		return url

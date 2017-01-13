@@ -90,13 +90,6 @@ class SponsorCreationForm(forms.Form):
 		)
 		self.helper.add_input(Submit("Save","Create sponsor"))
 
-	def clean_sponsorUsername(self):
-		existing = User.objects.filter(username__iexact=self.cleaned_data['sponsorUsername'])
-		if existing.exists():
-			raise forms.ValidationError(_("A user with that username already exists."))
-		else:
-			return self.cleaned_data['sponsorUsername']
-
 	def clean_sponsorContact(self):
 		sponsorContact = self.cleaned_data["sponsorContact"]
 		if sponsorContact is not None:
