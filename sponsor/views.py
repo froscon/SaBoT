@@ -216,7 +216,7 @@ class SponsorCreateView(FormView):
 
 	def get_success_url(self):
 		if self.success_url:
-			url = self.success_url % self.object.__dict__
+			url = self.success_url.format(**self.object.__dict__)
 		else:
 			raise ImproperlyConfigured("No URL to redirect to")
 		return url
