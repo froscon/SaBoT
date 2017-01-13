@@ -9,7 +9,7 @@ from devroom.forms import DevroomGeneralForm, DevroomDescriptionForm, DevroomPro
 from devroom.models import Devroom, DevroomParticipants
 from devroom.views import SetRoomView
 from sabot.decorators import user_is_staff
-from sabot.multiYear import YSListView, YSEmailOutputView, YSXMLListView, YSOwnerSettingCreateView
+from sabot.multiYear import YSListView, YSXMLListView, YSOwnerSettingCreateView, getActiveYear
 from sabot.views import ParticipantsView, OwnerSettingCreateView, PermCheckUpdateView, EmailOutputView, XMLListView, MultipleListView, PropertySetterView, PermCheckPropertySetterView, PermCheckSimpleDeleteView, ArchiveCreatorView
 
 
@@ -100,13 +100,22 @@ urlpatterns = [
 			success_url="/devrooms/list")),
 			name="devroom_del"),
 	url(r'^export/adminmail',
-		user_is_staff(YSEmailOutputView.as_view(
-			queryset = User.objects.filter(Q(devroomparticipants__isAdmin=True,devroomparticipants__project__accepted=True) | Q(devrooms__accepted=True)).distinct(),
+		user_is_staff(EmailOutputView.as_view(
+			queryset = lambda req, kwargs : User.objects.filter(
+				Q(devroomparticipants__isAdmin=True,
+				  devroomparticipants__project__accepted=True,
+				  devroomparticipants__project__year=getActiveYear(req)) |
+				Q(devrooms__accepted=True,devrooms__year=getActiveYear(req))
+				).distinct(),
 			template_name = "mail.html")),
 			name="devroom_export_adminmail"),
 	url(r'^export/allmail',
-		user_is_staff(YSEmailOutputView.as_view(
-			queryset = User.objects.filter(Q(devroomparticipants__project__accepted=True) | Q(devrooms__accepted=True)).distinct(),
+		user_is_staff(EmailOutputView.as_view(
+			queryset = lambda req, kwargs : User.objects.filter(
+				Q(devroomparticipants__project__accepted=True,
+				  devroomparticipants__project__year=getActiveYear(req)) |
+				Q(devrooms__accepted=True,devrooms__year=getActiveYear(req))
+				).distinct(),
 			template_name = "mail.html")),
 			name="devroom_export_allmail"),
 	url(r'^export/xml',

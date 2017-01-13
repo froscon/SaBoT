@@ -253,7 +253,9 @@ class EmailOutputView(TemplateView):
 	def get_queryset(self):
 		if self.queryset is not None:
 			queryset = self.queryset
-			if hasattr(queryset, '_clone'):
+			if callable(queryset):
+				queryset = queryset(self.request, self.kwargs)
+			elif hasattr(queryset, '_clone'):
 				queryset = queryset._clone()
 		else:
 			raise ImproperlyConfigured("You have to enter a queryset")

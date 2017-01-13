@@ -8,7 +8,7 @@ from django.db.models import Count, Q, Sum
 from exhibitor.forms import ExhibitorGeneralForm, ExhibitorDescriptionForm, ExhibitorBoothForm
 from exhibitor.models import Exhibitor, ExhibitorParticipants
 from sabot.decorators import user_is_staff
-from sabot.multiYear import YSListView, YSEmailOutputView, YSXMLListView, YSOwnerSettingCreateView
+from sabot.multiYear import YSListView, YSXMLListView, YSOwnerSettingCreateView, getActiveYear
 from sabot.views import ParticipantsView, OwnerSettingCreateView, PermCheckUpdateView, EmailOutputView, XMLListView, MultipleListView, PropertySetterView, PermCheckPropertySetterView, PermCheckSimpleDeleteView, ArchiveCreatorView
 
 
@@ -100,13 +100,22 @@ urlpatterns = [
 			success_url="/exhibitors/list")),
 			name="exhibitor_del"),
 	url(r'^export/adminmail',
-		user_is_staff(YSEmailOutputView.as_view(
-			queryset = User.objects.filter(Q(exhibitorparticipants__isAdmin=True,exhibitorparticipants__project__accepted=True) | Q(exhibitors__accepted=True)).distinct(),
+		user_is_staff(EmailOutputView.as_view(
+			queryset = lambda req, kwargs : User.objects.filter(
+				Q(exhibitorparticipants__isAdmin=True,
+				  exhibitorparticipants__project__accepted=True,
+				  exhibitorparticipants__project__year=getActiveYear(req)) |
+				Q(exhibitors__accepted=True,exhibitors__year=getActiveYear(req))
+				).distinct(),
 			template_name = "mail.html")),
 			name="exhibitor_export_adminmail"),
 	url(r'export/allmail',
-		user_is_staff(YSEmailOutputView.as_view(
-			queryset = User.objects.filter(Q(exhibitorparticipants__project__accepted=True) | Q(exhibitors__accepted=True)).distinct(),
+		user_is_staff(EmailOutputView.as_view(
+			queryset = lambda req, kwargs : User.objects.filter(
+				Q(exhibitorparticipants__project__accepted=True,
+				  exhibitorparticipants__project__year=getActiveYear(req)) |
+				Q(exhibitors__accepted=True,exhibitors__year=getActiveYear(req))
+				).distinct(),
 			template_name = "mail.html")),
 			name="exhibitor_export_allmail"),
 	url(r'^export/xml',

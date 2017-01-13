@@ -14,8 +14,8 @@ from sponsor.helpers import sponsor_filesanitize
 from sponsor.models import Sponsoring, SponsoringParticipants, SponsorContact, SponsorPackage
 from sponsor.views import SponsorCreateView, SponsorUpdateView, SponsorEmailingView, sponsorMailPreview, SponsorContactResetEmailView, loadResponseInfoFromRT
 
-from sabot.views import ParticipantsView, OwnerSettingCreateView, PermCheckUpdateView, MultipleListView, PropertySetterView, PermCheckPropertySetterView, PermCheckSimpleDeleteView, ArchiveCreatorView, PermCheckDeleteView, PermCheckDetailView
-from sabot.multiYear import YSEmailOutputView, YSXMLListView, getActiveYear
+from sabot.views import ParticipantsView, OwnerSettingCreateView, PermCheckUpdateView, MultipleListView, PropertySetterView, PermCheckPropertySetterView, PermCheckSimpleDeleteView, ArchiveCreatorView, PermCheckDeleteView, PermCheckDetailView, EmailOutputView
+from sabot.multiYear import YSXMLListView, getActiveYear
 from sabot.decorators import user_is_staff
 
 urlpatterns = [
@@ -91,23 +91,34 @@ urlpatterns = [
 	url(r'^del/(?P<pk>[0-9]+)$',
 		user_is_staff(DeleteView.as_view(model = Sponsoring, template_name= "sponsor/sponsoring/del.html", success_url="/sponsors/list") ),name="sponsor_del"),
 	url(r'^export/adminmail',
-		user_is_staff(YSEmailOutputView.as_view(
-			queryset = User.objects.annotate(num_spon=Count("sponsorings")).filter(num_spon__gt=0).distinct(),
+		user_is_staff(EmailOutputView.as_view(
+			queryset = lambda req, kwargs : User.objects.filter(
+				Q(sponsorings__year=getActiveYear(req))
+				).distinct(),
 			template_name = "mail.html")),
 			name="sponsor_export_adminmail"),
 	url(r'^export/allmail',
-		user_is_staff(YSEmailOutputView.as_view(
-			queryset = User.objects.annotate(num_spon=Count("sponsorings"), num_part=Count("sponsorparticipation")).filter( Q(num_part__gt=0)).distinct(),
+		user_is_staff(EmailOutputView.as_view(
+			queryset = lambda req, kwargs : User.objects.filter(
+				Q(sponsorings__year=getActiveYear(req)) |
+				Q(sponsorparticipation__year=getActiveYear(req))
+				).distinct(),
 			template_name = "mail.html")),
 			name="sponsor_export_allmail"),
 	url(r'^export/boothmail',
-		user_is_staff(YSEmailOutputView.as_view(
-			queryset = User.objects.filter(sponsorparticipation__package__hasBooth=True).distinct(),
+		user_is_staff(EmailOutputView.as_view(
+			queryset = lambda req, kwargs : User.objects.filter(
+				sponsorparticipation__package__hasBooth=True,
+				sponsorparticipation__year=getActiveYear(req)
+				).distinct(),
 			template_name = "mail.html")),
 			name="sponsor_export_boothmail"),
 	url(r'^export/recruitingmail',
-		user_is_staff(YSEmailOutputView.as_view(
-			queryset = User.objects.filter(sponsorparticipation__package__hasRecruitingEvent=True).distinct(),
+		user_is_staff(EmailOutputView.as_view(
+			queryset = lambda req, kwargs : User.objects.filter(
+				sponsorparticipation__package__hasRecruitingEvent=True,
+				sponsorparticipation__year=getActiveYear(req)
+				).distinct(),
 			template_name = "mail.html")),
 			name="sponsor_export_recruitingmail"),
 	url(r'^export/xml',

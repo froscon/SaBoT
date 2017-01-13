@@ -18,7 +18,6 @@ def makeYearSelected(cls):
 		pass
 	return YS
 
-YSEmailOutputView = makeYearSelected(EmailOutputView)
 YSXMLListView = makeYearSelected(XMLListView)
 YSListView = makeYearSelected(ListView)
 
