@@ -26,8 +26,8 @@ from rtkit.resource import RTResource
 from account.models import UserProfile
 from sabot.multiYear import getActiveYear
 from sabot.views import ChangeNotificationMixin, PermCheckUpdateView, JobProcessingView
-from sponsor.forms import SponsorCreationForm, SponsorForm, SponsorMailSelectorForm
-from sponsor.models import Sponsoring, SponsorContact
+from sponsor.forms import SponsorCreationForm, SponsorForm, SponsorMailSelectorForm, PackagesImporterForm
+from sponsor.models import Sponsoring, SponsorContact, SponsorPackage
 
 
 def id_generator(size=6, chars=string.ascii_lowercase + string.digits):
@@ -227,6 +227,27 @@ class SponsorCreateView(FormView):
 			raise ImproperlyConfigured("No URL to redirect to")
 		return url
 
+class PackagesImporterView(FormView):
+	form_class = PackagesImporterForm
+	success_url = "./list"
+
+	@transaction.atomic
+	def form_valid(self, form):
+		currentYear = getActiveYear(self.request)
+		selectedYear = form.cleaned_data["fromYear"].year
+		packagesToBeImported = SponsorPackage.objects.filter(year=selectedYear)
+
+		for package in packagesToBeImported:
+			# The django way of copying a model is to set pk=None o_O
+			package.pk = None
+			package.year = currentYear
+			package.save()
+
+
+		return redirect(self.success_url)
+
+	def form_invalid(self, form):
+		return redirect(self.success_url)
 
 class SponsorUpdateView(ChangeNotificationMixin,PermCheckUpdateView):
 	model = Sponsoring

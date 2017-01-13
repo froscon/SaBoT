@@ -1,4 +1,5 @@
 {% extends "master.html" %}
+{% load crispy_forms_tags %}
 {% block content %}
 
 <div class="page-header">
@@ -8,6 +9,13 @@
 	<li><a href="{% url 'sponsorpackage_new' %}"><span class="glyphicon glyphicon-plus"></span> Add a new sponsoring package</a></li>
 	<li class="pull-right"><a href="{% url 'sponsorpackage_export_xml' %}" data-toggle="tooltip" title="Download sponsor packages as XML">XML export</a></li>
 	</ul>
+{% if not object_list %}
+<div class="alert alert-info">
+	<p style="margin-bottom: 20px"><span class="glyphicon glyphicon-info-sign"></span> The current package list appears is empty. You may want to import all packages from a previous edition of the conference to this year.</p>
+	{% crispy importerForm importerForm.helper %}
+</div>
+{% endif %}
+
 <table class="table table-bordered table-hover tablesorter">
 	<thead>
 		<tr>

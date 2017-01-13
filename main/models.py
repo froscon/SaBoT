@@ -14,4 +14,10 @@ class ConferenceYear(models.Model):
 			cy = ConferenceYear(year=current)
 			cy.save()
 
+	def __str__(self):
+		return str(self.year)
+
+	def __unicode__(self):
+		return unicode(self.year)
+
 	year = models.PositiveIntegerField(editable=False, unique=True, verbose_name=_("Conference year that exists in our database"))
