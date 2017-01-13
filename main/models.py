@@ -14,4 +14,4 @@ class ConferenceYear(models.Model):
 			cy = ConferenceYear(year=current)
 			cy.save()
 
-	year = models.PositiveIntegerField(editable=False, verbose_name=_("Conference year that exists in our database"))
+	year = models.PositiveIntegerField(editable=False, unique=True, verbose_name=_("Conference year that exists in our database"))
