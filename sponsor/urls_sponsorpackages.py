@@ -17,7 +17,7 @@ urlpatterns = [
 			model = SponsorPackage,
 			form_class = SponsorPackageForm,
 			template_name = "sponsor/package/update.html",
-			success_url = "{id}")),
+			success_url = "./{id}")),
 		name = "sponsorpackage_new"),
 	url(r'^(?P<pk>[0-9]+)$',
 		user_is_staff(UpdateView.as_view(
