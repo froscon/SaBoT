@@ -2,7 +2,7 @@
 <!DOCTYPE HTML>
 <html>
 	<head>
-		<title>FrOSCon-Exhibitors</title>
+		<title>FrOSCon SaBoT</title>
 		<meta charset="utf-8" />
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" type="text/javascript"></script>
 		<link rel="shortcut icon" href="/static/favicon.png">
@@ -19,6 +19,14 @@
 			$(document).ready(function () {
 				$("[data-toggle=tooltip]").not("ul.nav a").not("label > span").tooltip();
 				$("ul.nav a[data-toggle=tooltip], span[data-toggle=tooltip]").tooltip({ container: "body" });
+				$(".multiYear-selector").click(function () {
+					setConferenceYear($(this).data("year"));
+				});
+			});
+			$.ajaxSetup({
+				beforeSend: function(xhr, settings) {
+					xhr.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
+				}
 			});
 		</script>
 	</head>
@@ -33,7 +41,7 @@
 						<a class="navbar-brand dropdown-toggle" data-toggle="dropdown" href="#">FrOSCon {{active_year}} <b class="caret"></b></a>
 						<ul class="dropdown-menu">
 						{% for year in all_years %}
-							<li><a href="#">{{year}}</a></li>
+							<li><a href="#" data-year="{{year}}" class="multiYear-selector">{{year}}</a></li>
 						{% endfor %}
 						</ul>
 
