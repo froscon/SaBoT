@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.shortcuts import redirect
 from django.views.generic import ListView, CreateView
 
 from sabot.views import EmailOutputView, XMLListView
