@@ -9,8 +9,9 @@ from registration.backends.model_activation.views import RegistrationView
 from sabot.views import ParticipantsView, OwnerSettingCreateView, PermCheckUpdateView, EmailOutputView, XMLListView, MultipleListView, PropertySetterView, PermCheckPropertySetterView, PermCheckSimpleDeleteView, ArchiveCreatorView
 from sabot.decorators import user_is_staff
 
-from account.views import TokenLoginView, UserProfileView, ActivateAndSetPWView
+from account.views import TokenLoginView, UserProfileView, ActivateAndSetPWView, GenerateAuthTokenView
 from account.forms import RegistrationFormNameAndUniqueEmail
+from account.models import UserProfile
 
 
 urlpatterns = [
@@ -65,5 +66,15 @@ urlpatterns = [
 			template_name = "registration/del.html",
 			success_url = "/accounts/list")),
 		name = "auth_user_delete"),
+	url(r'^(?P<pk>\d+)/removeToken$',
+		user_is_staff(PropertySetterView.as_view(
+			model = UserProfile,
+			property_name = "authToken",
+			property_value = None,
+			next_view = "auth_user_list")),
+		name = "auth_user_remove_token"),
+	url(r'^(?P<pk>\d+)/genAuthToken$',
+		user_is_staff(GenerateAuthTokenView.as_view()),
+		name = "auth_user_gen_token"),
 	url('^', include('django.contrib.auth.urls')),
 ]

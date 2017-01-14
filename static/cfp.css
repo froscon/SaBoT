@@ -167,3 +167,16 @@ span.icon-success.glyphicon {
 span.icon-na.glyphicon {
 	display: none;
 }
+
+.strike {
+	position: relative;
+	display: inline-block;
+}
+.strike::before {
+	content: '';
+	border-bottom: 2px solid red;
+	width: 100%;
+	position: absolute;
+	right: 0;
+	top: 50%;
+}
