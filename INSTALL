@@ -13,7 +13,6 @@ It depends on several third party extensions that have to be installed on the sy
 The system is currently used with mod_wsgi in an apache environment. However, it is also
 possible to use fastcgi. An example of a working apache config for mod_wsgi looks like:
 
-`
 	Alias /static/ 	/var/www/sabot/django/static/
 	Alias /media	/var/www/sabot/django/media
 
@@ -37,7 +36,6 @@ possible to use fastcgi. An example of a working apache config for mod_wsgi look
 			allow from all
 		</Files>
 	</Directory>
-`
 
 In order to test the software, you may simply (as usual for django projects)
 use "./manage.py runserver"
