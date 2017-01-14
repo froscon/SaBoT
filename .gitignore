@@ -10,4 +10,5 @@ templates/sponsor/internalFaq.html
 templates/sponsor/publicFaq.html
 *.db
 media/*
+static/GitHub-Mark-32px.png
 d10env
