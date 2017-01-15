@@ -12,5 +12,7 @@ def dates_processor(request):
 def settings_processor(request):
 	return {
 		'RT_TICKET_URL' : settings.RT_TICKET_URL,
-		'SPONSOR_MAIL' : settings.SPONSOR_MAIL
+		'SPONSOR_MAIL' : settings.SPONSOR_MAIL,
+		'INSTALL_MAIN_URL' : settings.INSTALL_MAIN_URL,
+		'CONFERENCE_NAME' : settings.CONFERENCE_NAME
 	}

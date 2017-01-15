@@ -1,9 +1,9 @@
-You registered with the FrOSCon-Projects interface.
+You registered with the {{CONFERENCE_NAME}}-Projects interface.
 
 Please use the following link to activate your account:
 
-https://callforprojects.froscon.de/accounts/activate/{{activation_key}}
+{{INSTALL_MAIN_URL}}/accounts/activate/{{activation_key}}
 
 Best Regards,
 
-Your FrOSCon-Team
+Your {{CONFERENCE_NAME}}-Team

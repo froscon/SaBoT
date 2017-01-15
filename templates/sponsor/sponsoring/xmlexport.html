@@ -1,5 +1,5 @@
 {% load sponsor %}<?xml version="1.0" encoding="UTF-8"?>
-<sponsors xmlns="http://callforprojects.froscon.org/sponsors">
+<sponsors xmlns="{{INSTALL_MAIN_URL}}/sponsors">
 	{% for sponsor in object_list %}
 		<sponsor>
 			<name>{{sponsor.contact.companyName}}</name>

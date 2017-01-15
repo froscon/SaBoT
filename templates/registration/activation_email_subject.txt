@@ -1,1 +1,1 @@
-Your FroSCon-Projects registration
+Your {{CONFERENCE_NAME}}-Projects registration
