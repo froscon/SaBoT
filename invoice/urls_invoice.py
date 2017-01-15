@@ -3,17 +3,22 @@ import datetime
 from django.conf.urls import url
 from django.views.generic import ListView
 
-from sabot.decorators import user_is_finance, user_is_staff
-from sabot.views import PropertySetterView, MultipleListView
 from invoice import views
 from invoice.models import Invoice
+from sabot.decorators import user_is_finance, user_is_staff
+from sabot.multiYear import getActiveYear
+from sabot.views import PropertySetterView, MultipleListView
 from sponsor.models import Sponsoring
 
 urlpatterns = [
 	url(r"^invoices$",
 		user_is_staff(MultipleListView.as_view(
 			template_params = {
-				"object_list" : Sponsoring.objects.select_related().filter(commitment=True,clearedForBilling=True),
+				"object_list" : lambda req, kwargs : Sponsoring.objects.select_related().filter(
+					year=getActiveYear(req),
+					commitment=True,
+					clearedForBilling=True
+				),
 				"today" : lambda req, kwargs : datetime.date.today(),
 			},
 			template_name = "invoice/invoices.html")),

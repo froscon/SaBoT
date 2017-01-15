@@ -8,9 +8,29 @@ from django.contrib.auth.models import User
 from registration.models import RegistrationProfile
 from registration.backends.default.views import RegistrationView
 
-from forms import UserProfileForm, SetPasswordForm
-from forms import RegistrationFormNameAndUniqueEmail
-from models import UserProfile
+from account.forms import RegistrationFormNameAndUniqueEmail
+from account.forms import UserProfileForm, SetPasswordForm
+from account.models import UserProfile
+from sabot.views import JobProcessingView
+from sponsor.views import id_generator
+
+class GenerateAuthTokenView(JobProcessingView):
+	next_view = "auth_user_list"
+
+	def process_job(self):
+		try:
+			user = User.objects.get(pk=self.kwargs["pk"])
+		except User.DoesNotExist:
+			raise Http404
+
+		try:
+			up = UserProfile.objects.get(user=user)
+		except UserProfile.DoesNotExist:
+			up = UserProfile(user=user)
+
+		up.authToken = id_generator(24)
+		up.save()
+		return True
 
 class TokenLoginView(RedirectView):
 	permanent = False

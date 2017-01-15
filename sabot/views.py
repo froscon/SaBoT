@@ -253,7 +253,9 @@ class EmailOutputView(TemplateView):
 	def get_queryset(self):
 		if self.queryset is not None:
 			queryset = self.queryset
-			if hasattr(queryset, '_clone'):
+			if callable(queryset):
+				queryset = queryset(self.request, self.kwargs)
+			elif hasattr(queryset, '_clone'):
 				queryset = queryset._clone()
 		else:
 			raise ImproperlyConfigured("You have to enter a queryset")
@@ -344,9 +346,9 @@ class ArchiveCreatorView(View):
 	def process_files(self,tarobj):
 		if self.filelist is not None:
 			if callable(self.filelist):
-				files = self.filelist()
+				files = self.filelist(self.request, self.kwargs)
 			if isinstance(self.filelist, (list,tuple)):
-				files = self.filelist()
+				files = self.filelist
 
 			for f in files:
 				if isinstance(f, tuple):

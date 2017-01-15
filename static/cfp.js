@@ -11,3 +11,11 @@ function conditionalInput(cond, inp) {
 		}
 	});
 }
+
+function setConferenceYear(year) {
+	$.post("/setYear/"+year, function () {
+		location.reload();
+	}).fail(function () {
+		alert("Unable to set conference year to " + year);
+	});
+}

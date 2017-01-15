@@ -5,6 +5,7 @@ from django.conf.urls.static import static
 from django.views.generic import TemplateView
 
 from main.views import OverviewView, WayfinderView
+from sabot.multiYear import setActiveYearView
 
 urlpatterns = [
 ############# PORTAL PAGE #################
@@ -15,6 +16,10 @@ urlpatterns = [
 			template_name = "main/homepage.html")),
 		name = "overview"),
 	url(r"^faq$", TemplateView.as_view(template_name="sponsor/publicFaqPage.html")),
+
+########## MULTIYEAR SUPPORT #############
+	url(r"^setYear/(?P<year>\d{4})$", login_required(setActiveYearView)),
+
 
 ############ INCLUDE APPS ################
 	url(r'^accounts/', include('account.urls')),

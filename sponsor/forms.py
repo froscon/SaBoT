@@ -10,8 +10,9 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Field, Submit, Div, HTML
 from crispy_forms.bootstrap import FormActions, StrictButton, TabHolder, Tab, AppendedText, PrependedText
 
-from models import Sponsoring, SponsorContact, SponsorPackage
+from main.models import ConferenceYear
 from sabot.crispy_ext import TextOptOut
+from sponsor.models import Sponsoring, SponsorContact, SponsorPackage
 
 class LinkOnlyTab(Tab):
 	link_template = "sponsor/participantsLink.html"
@@ -27,6 +28,20 @@ class LinkOnlyTab(Tab):
 class SponsorMailSelectorForm(forms.Form):
 	recipients = forms.ModelMultipleChoiceField(queryset = SponsorContact.objects.all(), label=_("Mail recipients"))
 
+class PackagesImporterForm(forms.Form):
+	fromYear = forms.ModelChoiceField(queryset = ConferenceYear.objects.all(), label=_("Import all packages from year"))
+
+	def __init__(self, *args, **kwargs):
+		super(PackagesImporterForm, self).__init__(*args, **kwargs)
+		self.helper = FormHelper()
+		self.helper.form_class = 'form-horizontal'
+		self.helper.label_class = 'col-lg-5'
+		self.helper.field_class = 'col-lg-5'
+		self.helper.layout = Layout(
+			Field("fromYear"),
+		)
+		self.helper.form_action = "sponsorpackage_import"
+		self.helper.add_input(Submit("Import", "Import"))
 
 
 class SponsorContactForm(forms.ModelForm):
@@ -89,13 +104,6 @@ class SponsorCreationForm(forms.Form):
 			Field("internalComment")
 		)
 		self.helper.add_input(Submit("Save","Create sponsor"))
-
-	def clean_sponsorUsername(self):
-		existing = User.objects.filter(username__iexact=self.cleaned_data['sponsorUsername'])
-		if existing.exists():
-			raise forms.ValidationError(_("A user with that username already exists."))
-		else:
-			return self.cleaned_data['sponsorUsername']
 
 	def clean_sponsorContact(self):
 		sponsorContact = self.cleaned_data["sponsorContact"]

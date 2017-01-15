@@ -5,15 +5,15 @@
 	<h2>Overview</h2>
 </div>
 
-{% if not user_exhibitors and not user_devrooms  and not user_sponsorings %}
+{% if not user_exhibitors and not user_devrooms  and not user_sponsorings and not user_sponsoring_member %}
 	<p class="lead">
 		Welcome to the {{CONFERENCE_NAME}} registration interface for projects on the conference!
 	</p>
 	<p class="lead">
 		You can use this portal to register
 		<ul class="lead">
-			<li>for a booth at the conference for your project.
-			<li>for a developer room at the conference. You can use this room for any purpose that helps your project(s). This includes developer meetings as well as presentations for the guests of {{CONFERENCE_NAME}}.
+			<li>for a booth at the conference for your project.</li>
+			<li>for a developer room at the conference. You can use this room for any purpose that helps your project(s). This includes developer meetings as well as presentations for the guests of {{CONFERENCE_NAME}}.</li>
 		</ul>
 	</p>
 	<div style="text-align: center; margin-top: 50px">
@@ -25,10 +25,25 @@
 	<p class="lead">Hi {{user.first_name}} {{user.last_name}}, <small>(<a href="{% url 'auth_user_profile' %}">not correct?</a>)</small></p>
 
 	{% if user_sponsorings %}
+	<p class="lead">The following sponsorings are registered to be administrated with this account:</p>
+	<ul class="lead">
+		{% for sponsoring in user_sponsorings %}
+			<li><a href="{% url 'sponsor_overview' pk=sponsoring.id %}">
+				{% if sponsoring.displayCompanyName %}
+				{{sponsoring.displayCompanyName}}
+				{% else %}
+				{{sponsoring.contact.companyName}}
+				{% endif %}
+			</a></li>
+		{% endfor %}
+	</ul>
+	{% endif %}
+
+	{% if user_sponsoring_member %}
 	<p class="lead">You are part of the booth personal of the following sponsors:</p>
 	<ul class="lead">
-		{% for project in user_sponsorings %}
-			<li>{{project.contact.companyName}}</a></li>
+		{% for project in user_sponsoring_member %}
+			<li>{{project.contact.companyName}}</li>
 		{% endfor %}
 	</ul>
 	{% endif %}

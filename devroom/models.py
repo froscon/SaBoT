@@ -22,6 +22,8 @@ class Devroom(models.Model):
 	accepted = models.BooleanField(default=False, editable=False)
 	room = models.CharField(max_length=16,editable=False,blank=True)
 
+	year = models.PositiveIntegerField(editable=False, verbose_name=_("Conference year this devroom belongs to"))
+
 	def has_read_permission(self, user):
 		return DevroomParticipants.objects.filter(user=user).count() > 0 or user == self.owner
 

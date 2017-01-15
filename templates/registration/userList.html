@@ -59,6 +59,18 @@
 							<button data-toggle="tooltip" title="Revoke staff privileges from this user"><span class="glyphicon glyphicon-star-empty"></span></button>
 						</form>
 					{% endif %}
+					{% if user.legacy_profile.authToken %}
+						<form action="{% url 'auth_user_remove_token' pk=user.legacy_profile.pk %}" method="post" style="display: inline">
+							{% csrf_token %}
+							<button data-toggle="tooltip" title="Remove the authentication token for this account"><span class="strike" style="padding-left:4px; padding-right:4px"><span class="glyphicon glyphicon-barcode"></span></span></button>
+						</form>
+					{% else %}
+						<form action="{% url 'auth_user_gen_token' pk=user.id %}" method="post" style="display: inline">
+							{% csrf_token %}
+							<button data-toggle="tooltip" title="Add an authentication token for this account"><span style="padding-left:4px; padding-right:4px"><span class="glyphicon glyphicon-barcode"></span></span></button>
+						</form>
+
+					{% endif %}
 					<form action="{% url 'auth_user_delete' pk=user.id %}" method="GET" style="display: inline">
 						<button data-toggle="tooltip" title="Remove this user"><span class="glyphicon glyphicon-remove"></span></button>
 					</form>

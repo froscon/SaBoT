@@ -5,20 +5,23 @@ from parcel.forms import ParcelAdminForm
 from parcel.models import Parcel
 from parcel.views import queryParcelOwners
 from sabot.decorators import user_is_finance, user_is_staff
-from sponsor.models import Sponsoring
+from sabot.multiYear import getActiveYear, YSCreateView
 from sabot.views import MultipleListView
+from sponsor.models import Sponsoring
 
 urlpatterns = [
 	url(r'^list/?',
 		user_is_staff(MultipleListView.as_view(
 			template_params = {
-				"object_list" : Sponsoring.objects.select_related(),
-				"parcel_list" : Parcel.objects.select_related(),
+				"object_list" :
+					lambda req, kwargs : Sponsoring.objects.filter(year=getActiveYear(req)).select_related(),
+				"parcel_list" :
+					lambda req, kwargs : Parcel.objects.filter(year=getActiveYear(req)).select_related(),
 			},
 			template_name = "parcel/admin/list.html")),
 		name = "parcel_list"),
 	url(r'^new',
-		user_is_staff(CreateView.as_view(
+		user_is_staff(YSCreateView.as_view(
 			model = Parcel,
 			form_class = ParcelAdminForm,
 			template_name = "parcel/admin/update.html",

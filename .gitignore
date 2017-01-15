@@ -1,6 +1,6 @@
 *.pyc
 *.swp
-test.db
+test.db*
 *.log
 sabot/settings.py
 sabot/prodSettings.py

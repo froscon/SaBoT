@@ -13,7 +13,9 @@
 			<th>Amount</th>
 			<th>Due Date</th>
 			<th>Package</th>
+			{% if user|has_group:"finance" %}
 			<th>Actions</th>
+			{% endif %}
 		</tr>
 	</thead>
 	<tbody>
@@ -24,50 +26,50 @@
 				<td>{{sponsoring.invoice.invoiceAmount}}{% if sponsoring.invoice %}€{% endif %}</td>
 				<td>{{sponsoring.invoice.dueDate|date:"d.m.Y"}}</td>
 				<td>{{sponsoring.package.name}}</td>
+				{% if user|has_group:"finance" %}
 				<td>
-					{% if user|has_group:"finance" %}
-						{% if not sponsoring.invoice %}
-							{% if sponsoring.contact.allDataAvailable %}
-								{% if sponsoring.package.invoiceTextDE != "" and sponsoring.package.invoiceTextEN != "" %}
-									<a href="{% url "invoice_create" spk=sponsoring.pk %}"><span class="glyphicon glyphicon-plus" data-toggle="tooltip" title="Create an invoice for this sponsoring"></span></a>
-								{% else %}
-									<a href="{% url 'sponsorpackage_update' pk=sponsoring.package.pk %}" data-toggle="tooltip" title="The package information for this sponsoring is incomplete. An invoice description is missing. Click to edit."><span class="glyphicon glyphicon-list-alt" style="color: #b94a48;"></span></a>
-								{% endif %}
+					{% if not sponsoring.invoice %}
+						{% if sponsoring.contact.allDataAvailable %}
+							{% if sponsoring.package.invoiceTextDE != "" and sponsoring.package.invoiceTextEN != "" %}
+								<a href="{% url "invoice_create" spk=sponsoring.pk %}"><span class="glyphicon glyphicon-plus" data-toggle="tooltip" title="Create an invoice for this sponsoring"></span></a>
 							{% else %}
-								<a href="{% url 'sponsorcontact_update' pk=sponsoring.contact.pk %}" data-toggle="tooltip" title="The contact information for this sponsor is incomplete. Click to edit."><span class="glyphicon glyphicon-question-sign" style="color: #b94a48;"></span></a>
+								<a href="{% url 'sponsorpackage_update' pk=sponsoring.package.pk %}" data-toggle="tooltip" title="The package information for this sponsoring is incomplete. An invoice description is missing. Click to edit."><span class="glyphicon glyphicon-list-alt" style="color: #b94a48;"></span></a>
 							{% endif %}
 						{% else %}
-							<a href="{% url "invoice_create" spk=sponsoring.pk %}"><span class="glyphicon glyphicon-repeat" data-toggle="tooltip" title="Recreate an invoice for this sponsoring"></span></a>
-							{% if sponsoring.invoice.pdf %}
-								<a href="{{sponsoring.invoice.pdf.url}}" data-toggle="tooltip" title="Download invoice pdf"><span class="glyphicon glyphicon-download"></span></a>
-								{% if sponsoring.invoice.rtTicketRef %}
-									<a href="{{RT_TICKET_URL}}{{sponsoring.invoice.rtTicketRef}}" data-toggle="tooltip" title="View invoice RT ticket"><span class="glyphicon glyphicon-list-alt"></span></a>
+							<a href="{% url 'sponsorcontact_update' pk=sponsoring.contact.pk %}" data-toggle="tooltip" title="The contact information for this sponsor is incomplete. Click to edit."><span class="glyphicon glyphicon-question-sign" style="color: #b94a48;"></span></a>
+						{% endif %}
+					{% else %}
+						<a href="{% url "invoice_create" spk=sponsoring.pk %}"><span class="glyphicon glyphicon-repeat" data-toggle="tooltip" title="Recreate an invoice for this sponsoring"></span></a>
+						{% if sponsoring.invoice.pdf %}
+							<a href="{{sponsoring.invoice.pdf.url}}" data-toggle="tooltip" title="Download invoice pdf"><span class="glyphicon glyphicon-download"></span></a>
+							{% if sponsoring.invoice.rtTicketRef %}
+								<a href="{{RT_TICKET_URL}}{{sponsoring.invoice.rtTicketRef}}" data-toggle="tooltip" title="View invoice RT ticket"><span class="glyphicon glyphicon-list-alt"></span></a>
+							{% else %}
+								<span data-toggle="tooltip" title="Create invoice mail via RT" class="glyphicon glyphicon-send" data-send-mail="{{sponsoring.pk}}"></span>
+							{% endif %}
+							{% if not sponsoring.snailmailinvoice %}
+								{% form_post_button "envelope" "Snailmail this invoice" "invoice_snailmailinvoice" spk=sponsoring.pk %}
+							{% else %}
+								{% if sponsoring.snailmailinvoice.success %}
+									<span data-toggle="tooltip" title="Invoice snailmail was handed to delivery service." class="glyphicon glyphicon-envelope" style="color: #3c763d"></span>
+								{% elif sponsoring.snailmailinvoice.joberror == "" %}
+									<span data-toggle="tooltip" title="Invoice snailmail awaits to be printed." class="glyphicon glyphicon-print"></span>
 								{% else %}
-									<span data-toggle="tooltip" title="Create invoice mail via RT" class="glyphicon glyphicon-send" data-send-mail="{{sponsoring.pk}}"></span>
-								{% endif %}
-								{% if not sponsoring.snailmailinvoice %}
-									{% form_post_button "envelope" "Snailmail this invoice" "invoice_snailmailinvoice" spk=sponsoring.pk %}
-								{% else %}
-									{% if sponsoring.snailmailinvoice.success %}
-										<span data-toggle="tooltip" title="Invoice snailmail was handed to delivery service." class="glyphicon glyphicon-envelope" style="color: #3c763d"></span>
-									{% elif sponsoring.snailmailinvoice.joberror == "" %}
-										<span data-toggle="tooltip" title="Invoice snailmail awaits to be printed." class="glyphicon glyphicon-print"></span>
-									{% else %}
-										<span data-toggle="tooltip" title="Invoice snailmail error: {{sponsoring.snailmailinvoice.joberror}}" class="glyphicon glyphicon-print" style="color: #d9534f"></span>
-									{% endif %}
-								{% endif %}
-								{% if not sponsoring.invoice.payed %}
-									{% form_post_button "ok-circle" "Mark this invoice as payed." "invoice_markpayed" pk=sponsoring.invoice.pk %}
-								{% else %}
-									{% form_post_button "remove-circle" "Mark this invoice as NOT YET payed." "invoice_marknotpayed" pk=sponsoring.invoice.pk %}
-
+									<span data-toggle="tooltip" title="Invoice snailmail error: {{sponsoring.snailmailinvoice.joberror}}" class="glyphicon glyphicon-print" style="color: #d9534f"></span>
 								{% endif %}
 							{% endif %}
+							{% if not sponsoring.invoice.payed %}
+								{% form_post_button "ok-circle" "Mark this invoice as payed." "invoice_markpayed" pk=sponsoring.invoice.pk %}
+							{% else %}
+								{% form_post_button "remove-circle" "Mark this invoice as NOT YET payed." "invoice_marknotpayed" pk=sponsoring.invoice.pk %}
+
+							{% endif %}
 						{% endif %}
-					{% elif sponsoring.invoice.pdf %}
-						<a href="{{sponsoring.invoice.pdf.url}}" data-toggle="tooltip" title="Download invoice pdf"><span class="glyphicon glyphicon-download"></span></a>
 					{% endif %}
+				{% elif sponsoring.invoice.pdf %}
+					<a href="{{sponsoring.invoice.pdf.url}}" data-toggle="tooltip" title="Download invoice pdf"><span class="glyphicon glyphicon-download"></span></a>
 				</td>
+				{% endif %}
 			</tr>
 		{% endfor %}
 	</tbody>

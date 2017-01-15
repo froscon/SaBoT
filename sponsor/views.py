@@ -19,14 +19,15 @@ from django.views.generic.edit import BaseFormView, UpdateView
 from django.views.generic import FormView, CreateView
 
 from rtkit.authenticators import BasicAuthenticator
-from rtkit.resource import RTResource
 from rtkit.errors import RTResourceError
+from rtkit.resource import RTResource
 
 
-from sabot.views import ChangeNotificationMixin, PermCheckUpdateView, JobProcessingView
 from account.models import UserProfile
-from sponsor.forms import SponsorCreationForm, SponsorForm, SponsorMailSelectorForm
-from sponsor.models import Sponsoring, SponsorContact
+from sabot.multiYear import getActiveYear
+from sabot.views import ChangeNotificationMixin, PermCheckUpdateView, JobProcessingView
+from sponsor.forms import SponsorCreationForm, SponsorForm, SponsorMailSelectorForm, PackagesImporterForm
+from sponsor.models import Sponsoring, SponsorContact, SponsorPackage
 
 
 def id_generator(size=6, chars=string.ascii_lowercase + string.digits):
@@ -176,19 +177,24 @@ class SponsorCreateView(FormView):
 		# create a new user for this sponsor
 		try:
 			sp = transaction.savepoint()
-			user = User(username = form.cleaned_data["sponsorUsername"])
 			baseContact = form.cleaned_data["sponsorContact"]
-			user.first_name = baseContact.contactPersonFirstname
-			user.last_name = baseContact.contactPersonSurname
-			user.email = baseContact.contactPersonEmail
-			user.save()
 
-			profile = UserProfile(user = user)
-			profile.authToken = id_generator(24)
-			profile.save()
+			try:
+				user = User.objects.get(username=form.cleaned_data["sponsorUsername"])
+			except User.DoesNotExist:
+				user = User(username = form.cleaned_data["sponsorUsername"])
+				user.first_name = baseContact.contactPersonFirstname
+				user.last_name = baseContact.contactPersonSurname
+				user.email = baseContact.contactPersonEmail
+				user.save()
+
+				profile = UserProfile(user = user)
+				profile.authToken = id_generator(24)
+				profile.save()
 
 			sponsoring = Sponsoring()
 			sponsoring.owner = user
+			sponsoring.year = getActiveYear(self.request)
 			sponsoring.contact = baseContact
 			sponsoring.package = form.cleaned_data["sponsorPackage"]
 			sponsoring.adminComment = form.cleaned_data["internalComment"]
@@ -221,6 +227,27 @@ class SponsorCreateView(FormView):
 			raise ImproperlyConfigured("No URL to redirect to")
 		return url
 
+class PackagesImporterView(FormView):
+	form_class = PackagesImporterForm
+	success_url = "./list"
+
+	@transaction.atomic
+	def form_valid(self, form):
+		currentYear = getActiveYear(self.request)
+		selectedYear = form.cleaned_data["fromYear"].year
+		packagesToBeImported = SponsorPackage.objects.filter(year=selectedYear)
+
+		for package in packagesToBeImported:
+			# The django way of copying a model is to set pk=None o_O
+			package.pk = None
+			package.year = currentYear
+			package.save()
+
+
+		return redirect(self.success_url)
+
+	def form_invalid(self, form):
+		return redirect(self.success_url)
 
 class SponsorUpdateView(ChangeNotificationMixin,PermCheckUpdateView):
 	model = Sponsoring

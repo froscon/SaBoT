@@ -5,6 +5,8 @@ class TokenAuthenticationBackend(object):
 	supports_inactive_user = False
 
 	def authenticate(self, token=None):
+		if token is None or len(token) == 0:
+			return None
 		try:
 			profile = models.UserProfile.objects.get(authToken__iexact=token)
 			return profile.user

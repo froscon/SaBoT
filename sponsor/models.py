@@ -119,6 +119,8 @@ class SponsorPackage(models.Model):
 	additionalContentTextEN = models.TextField(blank=True,verbose_name=_("Additional package content (English). Additional items that belong to this package but are not automatically generated from the selections above."))
 	hpCatagoryName = models.CharField(max_length=128,verbose_name=_("Homepage Catagory"))
 
+	year = models.PositiveIntegerField(editable=False, verbose_name=_("Conference year this package belongs to"))
+
 	def getPriceGross(self):
 		with localcontext() as ctx:
 			ctx.rounding = ROUND_HALF_EVEN
@@ -254,6 +256,8 @@ class Sponsoring(models.Model):
 	billingReferenceOptOut = models.BooleanField(default=False, verbose_name=_("Sponsor does not provide a billing reference number"))
 
 	clearedForBilling = models.BooleanField(verbose_name=_("This sponsoring is ready for billing"), default=False)
+
+	year = models.PositiveIntegerField(editable=False, verbose_name=_("Conference year this sponsoring belongs to"))
 
 	fieldDescriptionalNames = { # this is used by email notification
 		"logo" : _("Company logo"),
