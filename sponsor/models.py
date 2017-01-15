@@ -97,7 +97,7 @@ class SponsorPackage(models.Model):
 	logoWebsitePositionDE = models.CharField(blank=True, max_length=256, verbose_name=_("Description text for the logo position on our website (German)"))
 	logoWebsitePositionEN = models.CharField(blank=True, max_length=256, verbose_name=_("Description text for the logo position on our website (English)"))
 	hasHpText = models.BooleanField(default=False,verbose_name=_("Has the sponsor texts on our homepage?"))
-	hasLogoOnPrintmedia = models.BooleanField(default=False, verbose_name=_("Is the sponsor's logo is shown on all our printed media?"))
+	hasLogoOnPrintmedia = models.BooleanField(default=False, verbose_name=_("Is the sponsor's logo shown on all our printed media?"))
 	hasSocialMedia = models.BooleanField(default=True, verbose_name=_("Has the sponsor social media advertising?"))
 	hasConferenceBagContent = models.BooleanField(default=False, verbose_name=_("Has the sponsor the option to send us contents for the conference bag?"))
 	hasBooth = models.BooleanField(default=False,verbose_name=_("Has the sponsor the option for a booth on the conference?"))
@@ -117,7 +117,7 @@ class SponsorPackage(models.Model):
 	countPackages = models.PositiveIntegerField(default=0, verbose_name=_("How many packages of this type do we sell?"))
 	additionalContentTextDE = models.TextField(blank=True,verbose_name=_("Additional package contents (German). See English"))
 	additionalContentTextEN = models.TextField(blank=True,verbose_name=_("Additional package content (English). Additional items that belong to this package but are not automatically generated from the selections above."))
-	hpCatagoryName = models.CharField(max_length=128,verbose_name=_("Hompage Catagory"))
+	hpCatagoryName = models.CharField(max_length=128,verbose_name=_("Homepage Catagory"))
 
 	def getPriceGross(self):
 		with localcontext() as ctx:

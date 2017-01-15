@@ -1,13 +1,8 @@
-iThis software is currently developed and tested with django version 1.10
+This software is currently developed and tested with django version 1.10
 
 It depends on several third party extensions that have to be installed on the system:
-+ django-registration version >=2.2 [used with model based workflow]
-+ django-crispy-forms version >=1.6.1
-+ python-rtkit version >=0.7.0
 + python-lxml
-+ requests >= 2.12
 + python-pil (for image fields)
-+ django-recaptcha >= 1.2.0
 
 
 The system is currently used with mod_wsgi in an apache environment. However, it is also
@@ -38,11 +33,16 @@ possible to use fastcgi. An example of a working apache config for mod_wsgi look
 	</Directory>
 
 In order to test the software, you may simply (as usual for django projects)
-use ./manage.py run
+use "./manage.py runserver"
 
 Before you start
-- create the config files sabot/settings.py sabot/conferenceSettings.py sabot/localSettings.py (and sabot/prodSettings.py if you want to distinguish a development and a production version) from their example files (prodSettings.py needs the same parameter
-- run the project use "./manage.py syncdb" to setup your database and create an admin user
+- run "sudo pip install -r requirements.txt"
+- create the following config files: 
+	- sabot/settings.py
+	- sabot/conferenceSettings.py
+	- sabot/localSettings.py (and sabot/prodSettings.py if you want to distinguish a development and a production version) from their example files (prodSettings.py needs the same parameters)
+- run "./manage.py migrate" to setup your database
+- run "./manage.py createsuperuser" to create your admin account
 
 If you want to use the invoice creation functionality, it is required that
 you have libreoffice (or openoffice) installed on the server.

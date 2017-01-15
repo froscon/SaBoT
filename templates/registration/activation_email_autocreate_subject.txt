@@ -1,1 +1,1 @@
-You were registered with FrOSCon-Projects
+You were registered with {{CONFERENCE_NAME}}-Projects
