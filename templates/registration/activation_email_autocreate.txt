@@ -1,19 +1,19 @@
 Hi {{user.first_name}} {{user.last_name}},
 
 
-You were registered with the {{CONFERENCE_NAME}}-Projects interface as a participant of {{project.projectName}}.
+You were registered with the {{conference_name}}-Projects interface as a participant of {{project.projectName}}.
 
 Your username is {{user.username}}.
 
 If you want to correct your name information or view the status of your project, you
 need to activate your account and set a password. Otherwise, you can just ignore
-this email. If your project is accepted, we will print your {{CONFERENCE_NAME}} ticket with
+this email. If your project is accepted, we will print your {{conference_name}} ticket with
 the above mentioned information.
 
 Please use the following link to activate your account:
 
-{{INSTALL_MAIN_URL}}/accounts/activatepw/{{activation_key}}
+{{install_main_url}}/accounts/activatepw/{{activation_key}}
 
 Best Regards,
 
-Your {{CONFERENCE_NAME}}-Team
+Your {{conference_name}}-Team

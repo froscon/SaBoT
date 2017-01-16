@@ -132,6 +132,8 @@ class ParticipantsView(ObjectPermCheckMixin,FormView):
 
 		ctx_dict = {'activation_key': profile.activation_key,
 			'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS,
+			'install_main_url' : settings.INSTALL_MAIN_URL,
+			'conference_name' : settings.CONFERENCE_NAME,
 			'site': site,
 			'project' : self.object,
 			'user' : user}

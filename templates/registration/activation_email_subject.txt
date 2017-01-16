@@ -1,1 +1,1 @@
-Your {{CONFERENCE_NAME}}-Projects registration
+Your FrOSCon-Projects registration
