@@ -1,7 +1,7 @@
 # Django settings for sabot project.
 
 try:
-	import prod
+	import prodSettings
 	LOCAL = False
 except ImportError:
 	LOCAL = True

@@ -1,9 +1,4 @@
-This software is currently developed and tested with django version 1.10
-
-It depends on several third party extensions that have to be installed on the system:
-+ python-lxml
-+ python-pil (for image fields)
-
+This software is currently developed and tested with django version 1.10.
 
 The system is currently used with mod_wsgi in an apache environment. However, it is also
 possible to use fastcgi. An example of a working apache config for mod_wsgi looks like:
@@ -47,3 +42,4 @@ Before you start
 If you want to use the invoice creation functionality, it is required that
 you have libreoffice (or openoffice) installed on the server.
 
+Here is a pretty good tutorial to run django apps with guniocorn behind an apache webserver: https://wiki.uberspace.de/cool:django (easy to adopt for SaBoT)
