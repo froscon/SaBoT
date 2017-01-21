@@ -1,6 +1,7 @@
+*.db
+test.db*
 *.pyc
 *.swp
-test.db*
 *.log
 sabot/settings.py
 sabot/prodSettings.py
@@ -8,7 +9,7 @@ sabot/localSettings.py
 sabot/conferenceSettings.py
 templates/sponsor/internalFaq.html
 templates/sponsor/publicFaq.html
-*.db
 media/*
 static/GitHub-Mark-32px.png
+static/booths.jpg
 d10env
