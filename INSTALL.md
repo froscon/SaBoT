@@ -13,6 +13,11 @@ possible to use fastcgi. An example of a working apache config for mod_wsgi look
 	<Directory /var/www/sabot/django/media>
 		Order deny,allow
 		Allow from all
+		Options -Indexes
+	</Directory>
+	<Directory /var/www/sabot/django/media/invoice_pdfs>
+		Order deny,allow
+		Deny from all
 	</Directory>
 
 	WSGIDaemonProcess sabot user=sabot group=sabot python-path=/var/www/sabot/django processes=2 threads=15 display-name=%{GROUP}
