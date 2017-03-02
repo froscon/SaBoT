@@ -7,7 +7,7 @@ from invoice import views
 from invoice.models import Invoice
 from sabot.decorators import user_is_finance, user_is_staff
 from sabot.multiYear import getActiveYear
-from sabot.views import PropertySetterView, MultipleListView
+from sabot.views import PropertySetterView, MultipleListView, ObjectFileDownloader
 from sponsor.models import Sponsoring
 
 urlpatterns = [
@@ -27,6 +27,12 @@ urlpatterns = [
 		user_is_finance(views.InvoiceCreateUpdateView.as_view(
 			next_view="invoice_overview")),
 		name = "invoice_create"),
+	url(r"^downloadinvoice/(?P<pk>\d+)$",
+		user_is_staff(ObjectFileDownloader.as_view(
+			model = Invoice,
+			upload_field = "pdf",
+			content_type = "application/pdf")),
+		name = "invoice_download"),
 	url(r"^sendinvoice/(?P<spk>\d+)$",
 		user_is_finance(views.RTinvoiceView.as_view()),
 		name = "invoice_sendinvoice"),

@@ -1,3 +1,4 @@
+import os.path
 import tarfile
 
 from django.views.generic import FormView, UpdateView, RedirectView, CreateView, TemplateView, ListView, DeleteView, DetailView
@@ -369,4 +370,19 @@ class ArchiveCreatorView(View):
 		self.process_files(self.tarobj)
 
 		self.tarobj.close()
+		return response
+
+
+class ObjectFileDownloader(SingleObjectMixin, View):
+	upload_field = None
+	content_type = None
+
+	def get(self, request, *args, **kwargs):
+		self.object = self.get_object()
+		try:
+			upload_field = getattr(self.object, self.upload_field)
+		except AttributeError:
+			raise ImproperlyConfigured("The upload field with name {} does not exist".format(self.upload_field))
+		response = HttpResponse(upload_field.file, content_type=self.content_type)
+		response["Content-Disposition"] = "attachment; filename=" + os.path.basename(upload_field.name)
 		return response

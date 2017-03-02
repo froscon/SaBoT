@@ -7,8 +7,9 @@ from django.conf import settings
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-import sponsor.models
 from invoice import odtemplate
+from sabot.utils import random_filename_upload
+import sponsor.models
 
 class DocumentTemplate(models.Model):
 	DOC_CHOICES = (
@@ -17,7 +18,7 @@ class DocumentTemplate(models.Model):
 	)
 
 	description = models.CharField(max_length=128, verbose_name=_("Description for the invoice template"))
-	template = models.FileField(upload_to="invoice_templates", verbose_name=_("Invoice template file (odt)"))
+	template = models.FileField(upload_to=random_filename_upload("invoice_templates"), verbose_name=_("Invoice template file (odt)"))
 	docType = models.CharField(max_length=16, choices=DOC_CHOICES, verbose_name=_("Type of this document template"))
 
 

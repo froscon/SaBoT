@@ -9,6 +9,8 @@ from django.core.validators import RegexValidator
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+from sabot.utils import random_filename_upload
+
 class SponsorMailAttachment(models.Model):
 	name = models.CharField(max_length=128, verbose_name=_("Displayed attachment file name"))
 	attachment = models.FileField(upload_to="sponsormail_attachments", verbose_name=_("The contact mail attachment"))
@@ -213,8 +215,8 @@ class Sponsoring(models.Model):
 	commitment = models.BooleanField(verbose_name=_("The sponsor has confirmed the sponsoring"),default=False)
 
 	displayCompanyName = models.CharField(max_length=256, blank=True, verbose_name=_("Company or product name that we should you to announce and advertise your sponsoring"))
-	logo = models.ImageField(blank=True,upload_to="sponsors/logos", verbose_name=_("Company logo for homepage (preferably as PNG)"))
-	vectorLogo = models.FileField(blank=True,upload_to="sponsors/vec_logos", verbose_name=_("Company logo as vector graphics (preferably PDF or SVG) for printed advertisements such as posters, flyers and visitor badges"))
+	logo = models.ImageField(blank=True,upload_to=random_filename_upload("sponsors/logos"), verbose_name=_("Company logo for homepage (preferably as PNG)"))
+	vectorLogo = models.FileField(blank=True,upload_to=random_filename_upload("sponsors/vec_logos"), verbose_name=_("Company logo as vector graphics (preferably PDF or SVG) for printed advertisements such as posters, flyers and visitor badges"))
 	homepage = models.URLField(blank=True, verbose_name=_("Company homepage url"))
 
 	hpTextDE = models.TextField(blank=True, verbose_name=_("Description text for our homepage (German)"))
@@ -226,7 +228,7 @@ class Sponsoring(models.Model):
 	boothBarTables = models.IntegerField(blank=True, null=True, verbose_name=("How many bar tables do you need? Please note that we can only provide tables and don't have bar stools."))
 	boothComments = models.TextField(blank=True, verbose_name=_("Comments, e.g., if you bring your own booth its dimensions"))
 
-	programAd = models.FileField(blank=True, upload_to="sponsors/ad/", verbose_name=_("PDF of your advertisement in our printed program"))
+	programAd = models.FileField(blank=True, upload_to=random_filename_upload("sponsors/ad/"), verbose_name=_("PDF of your advertisement in our printed program"))
 
 	packetInfo = models.TextField(blank = True, verbose_name=_("If you send us packets. Please describe here what kind of material you are sending us. Especially write the purpose of the material, i.e., denote whether the material is for your booth or the conference bags. Provide general information here. Please enter your parcels with tracking number below in order to help us to identify and sort incoming packets."))
 
