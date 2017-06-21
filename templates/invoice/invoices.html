@@ -41,7 +41,7 @@
 					{% else %}
 						<a href="{% url "invoice_create" spk=sponsoring.pk %}"><span class="glyphicon glyphicon-repeat" data-toggle="tooltip" title="Recreate an invoice for this sponsoring"></span></a>
 						{% if sponsoring.invoice.pdf %}
-							<a href="{% url 'invoice_download' pk=sponsoring.pk %}" data-toggle="tooltip" title="Download invoice pdf"><span class="glyphicon glyphicon-download"></span></a>
+							<a href="{% url 'invoice_download' pk=sponsoring.invoice.pk %}" data-toggle="tooltip" title="Download invoice pdf"><span class="glyphicon glyphicon-download"></span></a>
 							{% if sponsoring.invoice.rtTicketRef %}
 								<a href="{{RT_TICKET_URL}}{{sponsoring.invoice.rtTicketRef}}" data-toggle="tooltip" title="View invoice RT ticket"><span class="glyphicon glyphicon-list-alt"></span></a>
 							{% else %}
