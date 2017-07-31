@@ -24,8 +24,8 @@
 				<td>{{sponsoring.invoice.invoiceAmount}}{% if sponsoring.invoice %}€{% endif %}</td>
 				<td>{{sponsoring.invoice.dueDate|date:"d.m.Y"}}</td>
 				<td>{{sponsoring.package.name}}</td>
-				{% if user|has_group:"finance" %}
 				<td>
+				{% if user|has_group:"finance" %}
 					{% if not sponsoring.invoice %}
 						{% if sponsoring.contact.allDataAvailable %}
 							{% if sponsoring.package.invoiceTextDE != "" and sponsoring.package.invoiceTextEN != "" %}
