@@ -25,7 +25,7 @@ urlpatterns = [
 			model = Parcel,
 			form_class = ParcelAdminForm,
 			template_name = "parcel/admin/update.html",
-			success_url = "list")),
+			success_url = "parcel_list")),
 		name = "parcel_new"),
 	url(r'^(?P<pk>[0-9]+)$',
 		user_is_staff(UpdateView.as_view(
