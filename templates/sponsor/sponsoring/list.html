@@ -57,6 +57,13 @@
 				</label>
 			</div>
 		</div>
+		<div class="form-group">
+			<div class="checkbox">
+				<label for="filterSocialMedia">
+					<input class="checkboxinput checkbox" id="filterSocialMedia" type="checkbox" data-filter="socialmedia"> with social media
+				</label>
+			</div>
+		</div>
 	</form>
 
 </div>
@@ -86,7 +93,7 @@
 				</td>
 				<td>{{sponsor.owner.first_name}} {{sponsor.owner.last_name}}</td>
 				<td>{{sponsor.owner.email}}</td>
-				<td class="sponsor-package-col"{%if sponsor.package.hasBooth %} data-hasbooth="1"{% endif %}{% if sponsor.package.hasRecruitingEvent %} data-hasrecruiting="1"{% endif %}{% if sponsor.package.hasPackets %} data-hasparcel="1"{% endif %}>
+				<td class="sponsor-package-col"{%if sponsor.package.hasBooth %} data-hasbooth="1"{% endif %}{% if sponsor.package.hasRecruitingEvent %} data-hasrecruiting="1"{% endif %}{% if sponsor.package.hasPackets %} data-hasparcel="1"{% endif %} {% if sponsor.package.hasSocialMedia %} data-hassocialmedia="1"{% endif %}>
 					<a href="{% url 'sponsorpackage_update' pk=sponsor.package.pk %}">{{sponsor.package}}</a>
 				</td>
 				<td>
@@ -215,7 +222,8 @@ function filtersFromHash() {
 	var availableFilters = {
 		"booth" : function (res) { return res.filter(".sponsor-package-col[data-hasbooth]"); },
 		"parcel" : function (res) { return res.filter(".sponsor-package-col[data-hasparcel]"); },
-		"recruiting" : function (res) { return res.filter(".sponsor-package-col[data-hasrecruiting]"); }
+		"recruiting" : function (res) { return res.filter(".sponsor-package-col[data-hasrecruiting]"); },
+		"socialmedia" : function (res) { return res.filter(".sponsor-package-col[data-hassocialmedia]"); }
 	}
 
 	$(document).ready(function () {
