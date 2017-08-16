@@ -51,6 +51,24 @@ def queryParcelOwners(request):
 	return HttpResponse(json.dumps(response), content_type="application/json")
 
 
+def packageQuickStore(request):
+	response = { "status" : "error" }
+	if request.POST.has_key("tracking"):
+		tracking = request.POST["tracking"]
+		res = Parcel.objects.filter(trackingNumber=tracking)
+		if len(res) == 0:
+			response["status"] = "not-found"
+		elif len(res) > 1:
+			response["status"] = "ambiguous"
+		else:
+			location = request.POST.get("location","")
+			parcel = res[0]
+			parcel.received = True
+			parcel.storageLocation = location
+			parcel.save()
+			response["status"] = "ok"
+
+	return HttpResponse(json.dumps(response), content_type="application/json")
 
 class LinkedParcelCreateView(CallableSuccessUrlMixin,CreateView):
 	linked_model = None

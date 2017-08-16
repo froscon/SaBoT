@@ -54,7 +54,16 @@
 			$("#id_ownerId").val("");
 		});
 
-
+		var url = new URL(window.location.href);
+		var tId = url.searchParams.get("trackingId");
+		if (tId) {
+			$("#id_trackingNumber").val(tId);
+		}
+		var sLoc = url.searchParams.get("storageLocation");
+		if (sLoc) {
+			$("#id_storageLocation").val(sLoc);
+			$("#id_received").prop("checked", true);
+		}
 
 
 	});

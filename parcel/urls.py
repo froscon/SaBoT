@@ -3,7 +3,7 @@ from django.views.generic import ListView, CreateView, DeleteView, UpdateView
 
 from parcel.forms import ParcelAdminForm
 from parcel.models import Parcel
-from parcel.views import queryParcelOwners
+from parcel.views import queryParcelOwners, packageQuickStore 
 from sabot.decorators import user_is_finance, user_is_staff
 from sabot.multiYear import getActiveYear, YSCreateView
 from sabot.views import MultipleListView
@@ -43,4 +43,7 @@ urlpatterns = [
 	url(r'query_owners',
 		user_is_staff(queryParcelOwners),
 		name = "parcel_query_owners"),
+	url(r'quick_store',
+		user_is_staff(packageQuickStore),
+		name = "parcel_quick_store"),
 ]

@@ -8,6 +8,23 @@
 	<li><a href="{% url 'parcel_new' %}"><span class="glyphicon glyphicon-plus"></span> Add parcel</a></li>
 </ul>
 
+<div class="bs-callout bs-callout-info" id="quickArrival" style="display: none">
+	<h4>Parcel quick arrival</h4>
+
+	<form class="form-inline">
+		<div class="form-group">
+			<label for="trackingId" class="sr-only">Tracking ID</label>
+			<input class="form-control" id="trackingId" type="text" placeholder="Tracking number" />
+		</div>
+		<div class="form-group">
+			<label for="storageLocation" class="sr-only">Storage Location</label>
+			<input class="form-control" id="storageLocation" type="text" placeholder="Storage location" />
+		</div>
+		<button id="goBtn" class="btn btn-default">Go</button>
+		<span id="quickStoreOngoing" style="margin-left:5px; display:none" class="glyphicon glyphicon-refresh icon-spin"></span>
+	</form>
+</div>
+
 <h4>Parcel tracking list</h4>
 	<table id="parcel-table" class="table table-striped table-bordered table-hover tablesorter">
 		<thead>
@@ -81,9 +98,40 @@
 
 </table>
 <script>
+	var addParcelUrl = "{% url 'parcel_new' %}";
+	var quickStoreUrl = "{% url 'parcel_quick_store' %}";
+	$.ajaxSetup({
+		beforeSend: function(xhr, settings) {
+			xhr.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
+		}
+	});
 	$(document).ready(function () {
+		$("#quickArrival").show();
+		$("#goBtn").click(function (event) {
+			event.preventDefault();
+			var trackingId = $("#trackingId").val();
+			var storageLocation = $("#storageLocation").val();
+			var data = { "tracking" : trackingId,
+					 "location" : storageLocation };
+			$("#quickStoreOngoing").show();
+			$.post(quickStoreUrl, data, function ( resp ) {
+				if (resp["status"] == "not-found") {
+					var url = addParcelUrl + "?trackingId=" + encodeURIComponent(trackingId) + "&storageLocation=" + encodeURIComponent(storageLocation);
+					window.location.replace(url);
+
+				} else if (resp["status"] == "ok") {
+					$("#trackingId").val("").focus();
+					var origColor = $("#goBtn").css("background-color");
+					$("#goBtn").animate({ "background-color" : "#00ff00"}, 1000);
+				}
+			}).done(function () {
+				$("#quickStoreOngoing").hide();
+			});
+		});
+
 		$("#generalPacket").tablesorter();
 		$("#parcel-table").tablesorter({ sortList : [[0,0]], headers : { 0 : {sorter : "eudate" }, 6 : {sorter : false}}});
+
 	});
 </script>
 
