@@ -106,6 +106,7 @@
 		}
 	});
 	$(document).ready(function () {
+		var origColorGo = $("#goBtn").css("background-color");
 		$("#quickArrival").show();
 		$("#goBtn").click(function (event) {
 			event.preventDefault();
@@ -121,8 +122,10 @@
 
 				} else if (resp["status"] == "ok") {
 					$("#trackingId").val("").focus();
-					var origColor = $("#goBtn").css("background-color");
-					$("#goBtn").animate({ "background-color" : "#00ff00"}, 1000);
+					$("#goBtn").css({ "background-color" : "#00ff00"});
+					setTimeout(function () {
+						$("#goBtn").css({ "background-color" : origColorGo });
+					}, 1000);
 				}
 			}).done(function () {
 				$("#quickStoreOngoing").hide();
