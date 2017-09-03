@@ -4,17 +4,20 @@
 	<head>
 		<title>{{CONFERENCE_NAME}} SaBoT</title>
 		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" type="text/javascript"></script>
+		<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 		<link rel="shortcut icon" href="/static/favicon.png">
+		<script src="{{STATIC_URL}}bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
 		<link href="{{STATIC_URL}}bootstrap/css/bootstrap.min.css" rel="stylesheet">
-		<link href="{{STATIC_URL}}tablesorter/themes/my/style.css" rel="stylesheet">
-		<link href="{{STATIC_URL}}cfp.css" rel="stylesheet">
 		<script src="{{STATIC_URL}}cfp.js" type="text/javascript"></script>
+		<link href="{{STATIC_URL}}cfp.css" rel="stylesheet">
 		<script src="{{STATIC_URL}}typeahead.bundle.js" type="text/javascript"></script>
 		<link href="{{STATIC_URL}}typeahead.css" rel="stylesheet">
-		<script src="{{STATIC_URL}}bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
 		<script src="{{STATIC_URL}}tablesorter/jquery.tablesorter.min.js" type="text/javascript"></script>
 		<script src="{{STATIC_URL}}tablesorter/tablesorter.custom.js" type="text/javascript"></script>
+		<link href="{{STATIC_URL}}tablesorter/themes/my/style.css" rel="stylesheet">
 		<script>
 			$(document).ready(function () {
 				$("[data-toggle=tooltip]").not("ul.nav a").not("label > span").tooltip();
@@ -96,7 +99,7 @@
 					<a href="https://www.djangoproject.com/" target="_blank"><img src="https://www.djangoproject.com/m/img/badges/djangomade124x25_grey.gif" alt="Made with Django." title="Made with Django." /></a>
 					<span style="padding-left:10px; margin-left:10px; border-left: 1px solid #999">
 						Get/Contribute 
-						<a href="https://github.com/froscon/SaBoT" target="_blank"><img src="{{STATIC_URL}}GitHub-Mark-32px.png" alt="GitHub" title="GitHub" /></a>
+						<a href="https://github.com/froscon/SaBoT" target="_blank"><i class="fa fa-github fa-lg" aria-hidden="true"></i></a>
 					</span>
 				</span>
 				<div class="pull-right">
@@ -107,4 +110,3 @@
 		</div>
 	</body>
 </html>
-

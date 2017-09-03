@@ -3,26 +3,26 @@
 
 {% block content %}
 <div class="row">
-<div class="col-md-6">
-	<div class="page-header">
-		<h2>Login</h2>
-	</div>
-	<form method="POST">
-		{% csrf_token %}
-		{{form|crispy}}
-		<input type="hidden" name="next" value="{{ next }}" />
-		<button class="btn btn-primary">Login</button>
-	</form>
-	<p><a href="{% url 'password_reset' %}">Forgot password?</a></p>
-	<p>You don't have an account yet? Then just <a href="/accounts/register">register</a> one.</p>
-	<div style="margin-top: 30px">
-		<div class="alert alert-info">
-			<strong>Please notice</strong> that you have to create a new account. Accounts from last year are not valid anymore.
+	<div class="col-md-6">
+		<div class="page-header">
+			<h2>Login</h2>
+		</div>
+		<form method="POST">
+			{% csrf_token %}
+			{{form|crispy}}
+			<input type="hidden" name="next" value="{{ next }}" />
+			<button class="btn btn-primary">Login</button>
+		</form>
+		<p><a href="{% url 'password_reset' %}">Forgot password?</a></p>
+		<p>You don't have an account yet? Then just <a href="/accounts/register">register</a> one.</p>
+		<div style="margin-top: 30px">
+			<div class="alert alert-info">
+				<strong>Please notice</strong> that you have to create a new account. Accounts from last year are not valid anymore.
+			</div>
 		</div>
 	</div>
-</div>
 	<div class="col-md-6 visible-desktop">
-		<img src="{{STATIC_URL}}booths.jpg" />
+		<img src="{{STATIC_URL}}booths.jpg" class="img-responsive" alt="Booths" />
 	</div>
 </div>
 {% endblock %}

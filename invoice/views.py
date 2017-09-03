@@ -140,7 +140,7 @@ def InvoiceEmailTemplate(request, spk):
 		return respond_json(res)
 
 	templateName = "invoice/mail/invoiceMailDE.html" if sponsoring.contact.contactPersonLanguage.startswith("de") else "invoice/mail/invoiceMailEN.html"
-	ctx_dict = { "sponsoring" : sponsoring, "user" : request.user }
+	ctx_dict = { "sponsoring" : sponsoring, "user" : request.user, "conference_name" : settings.CONFERENCE_NAME }
 	message = render_to_string(templateName, ctx_dict)
 
 	res["status"] = "success"
