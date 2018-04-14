@@ -207,12 +207,13 @@ function filtersFromHash() {
 	$("[data-filter]").prop("checked", false);
 	$("#filterByPacket").val("all");
 	if (location.hash != "") {
-		if (location.hash.indexOf("#package:") === 0) {
-			packageFilter = location.hash.split(":")[1];
+		var hash = decodeURIComponent(location.hash);
+		if (hash.indexOf("#package:") === 0) {
+			packageFilter = hash.split(":")[1];
 			$("#filterByPacket").val(packageFilter);
 		}
 		else {
-			res = location.hash.substring(1).split("-");
+			res = hash.substring(1).split("-");
 			res.forEach(function(val) { filters[val] = 1; $("[data-filter=" + val + "]").prop("checked", true); });
 		}
 	}
