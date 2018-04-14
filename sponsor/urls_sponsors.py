@@ -15,7 +15,7 @@ from sponsor.models import Sponsoring, SponsoringParticipants, SponsorContact, S
 from sponsor.views import SponsorCreateView, SponsorUpdateView, SponsorEmailingView, sponsorMailPreview, SponsorContactResetEmailView, loadResponseInfoFromRT
 
 from sabot.views import ParticipantsView, OwnerSettingCreateView, PermCheckUpdateView, MultipleListView, PropertySetterView, PermCheckPropertySetterView, PermCheckSimpleDeleteView, ArchiveCreatorView, PermCheckDeleteView, PermCheckDetailView, EmailOutputView
-from sabot.multiYear import YSXMLListView, getActiveYear
+from sabot.multiYear import YSJSONListView, YSXMLListView, getActiveYear
 from sabot.decorators import user_is_staff
 
 urlpatterns = [
@@ -126,6 +126,11 @@ urlpatterns = [
 			queryset = Sponsoring.objects.select_related(),
 			template_name = "sponsor/sponsoring/xmlexport.html")),
 			name="sponsor_export_xml"),
+	url(r'^export/json',
+		user_is_staff(YSJSONListView.as_view(
+			queryset = Sponsoring.objects.select_related(),
+			jsonify_function = lambda x : x.toJSON())),
+			name="sponsor_export_json"),
 	url(r'^export/logos',
 		user_is_staff(ArchiveCreatorView.as_view(
 			filename = "sponsorlogos.tar.bz2",

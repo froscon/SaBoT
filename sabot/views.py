@@ -4,11 +4,12 @@ import tarfile
 from django.views.generic import FormView, UpdateView, RedirectView, CreateView, TemplateView, ListView, DeleteView, DetailView
 from django.views.generic.base import View, TemplateResponseMixin
 from django.views.generic.detail import SingleObjectMixin
+from django.views.generic.list import MultipleObjectMixin
 from django.core.exceptions import ImproperlyConfigured, PermissionDenied
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
-from django.http import Http404, HttpResponseRedirect, HttpResponse
+from django.http import Http404, HttpResponseRedirect, HttpResponse, JsonResponse
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.template.loader import render_to_string
@@ -272,6 +273,13 @@ class EmailOutputView(TemplateView):
 	def get(self, request, *args, **kwargs):
 		context = self.get_context_data(**kwargs)
 		return self.render_to_response(context, content_type="text/plain")
+
+class JSONListView(MultipleObjectMixin, View):
+	jsonify_function = None
+	def get(self, request, *args, **kwargs):
+		self.object_list = self.get_queryset()
+		result_list = map(self.jsonify_function, self.object_list)
+		return JsonResponse(result_list, safe=False)
 
 class XMLListView(ListView):
 	def get(self, request, *args, **kwargs):

@@ -4,7 +4,8 @@ from django.shortcuts import redirect
 from django.views.generic import ListView, CreateView
 
 from main.models import ConferenceYear
-from sabot.views import EmailOutputView, XMLListView
+from sabot.views import EmailOutputView, XMLListView, JSONListView
+
 
 def getActiveYear(request):
 	return request.session.get("currentYear", settings.CURRENT_CONFERENCE_YEAR)
@@ -21,6 +22,7 @@ def makeYearSelected(cls):
 		pass
 	return YS
 
+YSJSONListView = makeYearSelected(JSONListView)
 YSXMLListView = makeYearSelected(XMLListView)
 YSListView = makeYearSelected(ListView)
 

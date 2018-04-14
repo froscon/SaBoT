@@ -197,6 +197,16 @@ class SponsorPackage(models.Model):
 		( lambda s: True, lambda s : [text.strip() for text in s.additionalContentTextEN.strip().split("\n") if text.strip() != ""]),
 	]
 
+	def toJSON(self):
+		return {
+			"name": self.name,
+			"hasHpText": self.hasHpText,
+			"hasBooth": self.hasBooth,
+			"hasProgramAd": self.hasProgramAd,
+			"hasRecruitingEvent": self.hasRecruitingEvent,
+			"price": self.price,
+		}
+
 STATUS_COMPLETE = 2
 STATUS_MISSING = 0
 STATUS_INCOMPLETE = 1
@@ -463,6 +473,18 @@ class Sponsoring(models.Model):
 		("Advertisement text for printed program", "#printed-program", lambda p: p.hasProgramAdText, settings.PRINTED_PROGRAM_DATA_DEADLINE, lambda s: STATUS_COMPLETE if s.programAdText != "" else STATUS_MISSING),
 		("Booth personnel", "/participants", lambda p : p.hasParticipants, settings.PARTICIPANTS_DEADLINE, lambda s : s.participantsStatus),
 	]
+
+	def toJSON(self):
+		return {
+			"name": self.contact.companyName,
+			"package": self.package.toJSON(),
+			"homepage": self.homepage,
+			"logo" : self.logo.url if self.logo else "",
+			"hpText-en": self.hpTextEN,
+			"hpText-de": self.hpTextDE,
+			"programAd-text": self.programAdText,
+			"programAd-url": self.programAd.url if self.programAd else "",
+		}
 
 class SponsoringParticipants(models.Model):
 	project = models.ForeignKey(Sponsoring)

@@ -20,3 +20,16 @@ class TokenAuthenticationBackend(object):
 		except User.DoesNotExist:
 			return None
 
+class APITokenMiddleware(object):
+	def __init__(self, get_response):
+		self.get_response = get_response
+
+	def __call__(self, request):
+		try:
+			token = request.META.get("HTTP_TOKEN")
+			if token is not None:
+				profile = models.UserProfile.objects.get(authToken__iexact=token)
+				request.user = profile.user
+		except models.UserProfile.DoesNotExist:
+			pass
+		return self.get_response(request)
