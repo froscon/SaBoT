@@ -181,11 +181,15 @@ class RTinvoiceView(JobProcessingView):
 
 		rt = RTResource(settings.RT_URL, settings.RT_USER, settings.RT_PW, BasicAuthenticator)
 		# TODO: Refactor froscon specific parts to config
+		if sponsoring.contact.contactPersonLanguage.startswith("de"):
+			subject = "Rechnung Partner-Paket {} {}".format(settings.CONFERENCE_NAME, date.today().year)
+		else: 
+			subject = "Invoice Partnership {} {}".format(settings.CONFERENCE_NAME, date.today().year)
 		data = {
 			"content" : {
 				"Queue" : settings.RT_QUEUE_INVOICE,
 				"Owner" : self.request.user.username,
-				"Subject" : "Rechnung Sponsoring {} {}".format(settings.CONFERENCE_NAME, date.today().year) if sponsoring.contact.contactPersonLanguage.startswith("de") else "Invoice Sponsoring {} {}".format(settings.CONFERENCE_NAME, date.today().year),
+				"Subject" : subject,
 				"Requestor" : sponsoring.contact.contactPersonEmail,
 			}
 		}
