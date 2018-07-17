@@ -66,6 +66,6 @@ You can also run the server instance inside a Docker container
      - ./init.sh
      - ./start.sh
 
-If all was going well you should see the gunicorn server starting up and some logs lines
+If all was going well you should see the gunicorn server starting up and some logs lines  
 Open your webbrowser and go to http://localhost:8000
 
