@@ -46,8 +46,8 @@
 		</div>
 		<div class="form-group">
 			<div class="checkbox">
-				<label for="filterRecruiting">
-					<input class="checkboxinput checkbox" id="filterRecruiting" type="checkbox" data-filter="recruiting"> with recruiting
+				<label for="filterAllPrint">
+					<input class="checkboxinput checkbox" id="filterAllPrint" type="checkbox" data-filter="print"> with logo on print
 				</label>
 			</div>
 		</div>
@@ -94,7 +94,7 @@
 				</td>
 				<td>{{sponsor.owner.first_name}} {{sponsor.owner.last_name}}</td>
 				<td>{{sponsor.owner.email}}</td>
-				<td class="sponsor-package-col"{%if sponsor.package.hasBooth %} data-hasbooth="1"{% endif %}{% if sponsor.package.hasRecruitingEvent %} data-hasrecruiting="1"{% endif %}{% if sponsor.package.hasPackets %} data-hasparcel="1"{% endif %} {% if sponsor.package.hasSocialMedia %} data-hassocialmedia="1"{% endif %}>
+				<td class="sponsor-package-col"{%if sponsor.package.hasBooth %} data-hasbooth="1"{% endif %}{% if sponsor.package.hasLogoOnPrintmedia %} data-hasprint="1"{% endif %}{% if sponsor.package.hasPackets %} data-hasparcel="1"{% endif %} {% if sponsor.package.hasSocialMedia %} data-hassocialmedia="1"{% endif %}>
 					<a href="{% url 'sponsorpackage_update' pk=sponsor.package.pk %}">{{sponsor.package}}</a>
 				</td>
 				<td>
@@ -224,7 +224,7 @@ function filtersFromHash() {
 	var availableFilters = {
 		"booth" : function (res) { return res.filter(".sponsor-package-col[data-hasbooth]"); },
 		"parcel" : function (res) { return res.filter(".sponsor-package-col[data-hasparcel]"); },
-		"recruiting" : function (res) { return res.filter(".sponsor-package-col[data-hasrecruiting]"); },
+		"print" : function (res) { return res.filter(".sponsor-package-col[data-hasprint]"); },
 		"socialmedia" : function (res) { return res.filter(".sponsor-package-col[data-hassocialmedia]"); }
 	}
 
