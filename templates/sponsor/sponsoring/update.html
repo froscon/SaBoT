@@ -4,12 +4,12 @@
 {% block content %}
 
 <div class="page-header">
-	<h2>Sponsor <small>{{object.contact.companyName}}</small></h2>
+	<h2>Partner <small>{{object.contact.companyName}}</small></h2>
 </div>
 <ul class="nav nav-pills" style="margin-bottom: 10px">
 	<li class="pull-right active"><a href="#">Your data</a></li>
 	<li class="pull-right"><a href="{% url 'sponsor_faq' pk=object.pk %}">FAQ</a></li>
-	<li class="pull-right"><a href="{% url 'sponsor_overview' pk=object.pk %}" data-toggle="tooltip" title="Overview of your sponsoring.">Overview</a></li>
+	<li class="pull-right"><a href="{% url 'sponsor_overview' pk=object.pk %}" data-toggle="tooltip" title="Overview of your partnership.">Overview</a></li>
 </ul>
 <div class="alert alert-info">
 	If you have any problems with filling in the form or if you have any (general) questions, please don't hesitate to contact us via <a href="mailto:{{SPONSOR_MAIL}}">{{SPONSOR_MAIL}}</a>. Please do not enter questions in the form below because we might not directly see them there.
