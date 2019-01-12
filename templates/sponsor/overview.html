@@ -3,7 +3,7 @@
 {% block content %}
 
 <div class="page-header">
-	<h2>Sponsor <small>{{object.contact.companyName}}</small></h2>
+	<h2>Partner <small>{{object.contact.companyName}}</small></h2>
 </div>
 <ul class="nav nav-pills" style="margin-bottom: 10px">
 	<li class="pull-right"><a href="{% url 'sponsor_update' pk=object.pk %}">Your data</a></li>
@@ -11,13 +11,13 @@
 	<li class="pull-right active"><a href="#">Overview</a></li>
 </ul>
 
-<h3>Welcome to {{CONFERENCE_NAME}} sponsor management!</h3>
+<h3>Welcome to {{CONFERENCE_NAME}} partnership management!</h3>
 <div class="alert alert-info">
-This is {{CONFERENCE_NAME}}'s management system for sponsors. You can find an overview on your booked sponsoring package and provide the data we need to complete your sponsoring.</p>
+This is {{CONFERENCE_NAME}}'s management system for partners. You can find an overview on your booked partnership package and provide the data we need to complete your package.</p>
 <p>In case of any questions, please take a look at the FAQ page. In any case, please don't hesitate to contact us at <a href="mailto:{{SPONSOR_MAIL}}">{{SPONSOR_MAIL}}</a> if you have questions or need assistence with this system.</p>
 </div>
 
-<h3>Content of your sponsoring package</h3>
+<h3>Content of your partnership package</h3>
 <ul>
 {% if object.contact.contactPersonLanguage == "de-DE" %}
 	{% for item in object.package.getPackageDescriptionDE %}

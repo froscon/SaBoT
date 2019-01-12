@@ -1,6 +1,6 @@
-The sponsoring of {{sponsor.contact.companyName}} is ready for billing.
+The partnership of {{sponsor.contact.companyName}} is ready for billing.
 
-Sponsoring package: {{sponsor.package.name}} ({{sponsor.package.price}} €)
+Partner package: {{sponsor.package.name}} ({{sponsor.package.price}} €)
 
 The currently provided billing address is
 {{sponsor.billingAddress}}
