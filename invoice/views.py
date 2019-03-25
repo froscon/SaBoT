@@ -213,6 +213,7 @@ class RTinvoiceView(JobProcessingView):
 		resp_data = {
 			"content" : {
 				"Action" : "correspond",
+				"Status" : "stalled",
 				"Text" : self.request.POST["text"].encode("utf8")
 			}
 		}
