@@ -83,6 +83,9 @@
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 				<h3>Send invoice to <span id="modal-rtmail-company"></span></h3>
 			</div>
+			<div class="modal-body">
+				<p>Invoice will be sent to {{sponsoring.contact.contactPersonFirstname}} {{sponsoring.contact.contactPersonSurname}} ({{sponsoring.contact.contactPersonEmail}}).</p>
+			</div>
 			<form id="modal-rtmail-form" method="POST">
 				{% csrf_token %}
 				<textarea id="modal-rtmail-message" rows="10" cols="40" name="text" class="textarea form-control"></textarea>
