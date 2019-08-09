@@ -19,7 +19,7 @@
 	</thead>
 	<tbody>
 		{% for sponsoring in object_list %}
-			<tr {% if sponsoring.invoice.payed %}class="success"{% endif %}{% if not sponsoring.invoice.payed and sponsoring.invoice.dueDate < today %}class="danger"{% endif %}>
+			<tr {% if sponsoring.invoice.payed %}class="success"{% elif not sponsoring.invoice.payed and sponsoring.invoice.dueDate < today %}class="danger"{% endif %}>
 				<td>{% if sponsoring.invoice.payed %}Complete{% elif not sponsoring.invoice.payed and sponsoring.invoice.dueDate < today %}Overdue{% else %}Pending{% endif %}</td>
 				<td><a href="{% url 'sponsorcontact_update' pk=sponsoring.contact.pk %}">{{sponsoring.contact.companyName}}</a></td>
 				<td>{{sponsoring.invoice.invoiceNumber}}</td>
