@@ -48,3 +48,24 @@ If you want to use the invoice creation functionality, it is required that
 you have libreoffice (or openoffice) installed on the server.
 
 Here is a pretty good tutorial to run django apps with guniocorn behind an apache webserver: https://wiki.uberspace.de/cool:django (easy to adopt for SaBoT)
+
+## Docker Setup
+
+You can also run the server instance inside a Docker container
+
+- create the following config files:
+     - sabot/settings.py
+     - sabot/conferenceSettings.py
+     - sabot/localSettings.py (and sabot/prodSettings.py if you want to distinguish a development and a production version) from their example files (prodSettings.py needs the same parameters)
+     - Make sure that `PROJECT_ROOT = '/sabot'` is set in sabot/localSettings.py (or sabot/prodSettings.py)
+- create the Docker image
+     - docker build -t sabot:latest .
+- create a container with that image
+     - docker run -it -p 8000:8000 sabot bash
+- run the following scripts to initialize and run the server
+     - ./init.sh
+     - ./start.sh
+
+If all was going well you should see the gunicorn server starting up and some logs lines  
+Open your webbrowser and go to http://localhost:8000
+
