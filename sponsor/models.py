@@ -62,7 +62,7 @@ class SponsorContact(models.Model):
 	contactPersonEmail = models.EmailField(blank=True, verbose_name=_("Contact person email"))
 
 	comment = models.TextField(blank=True, verbose_name=_("Comments and Notes"))
-	template = models.ForeignKey(SponsorMail,blank=True, null=True, verbose_name=_("Mail contact template"))
+	template = models.ForeignKey(SponsorMail,blank=True, null=True, verbose_name=_("Mail contact template"), on_delete=models.SET_NULL)
 
 	lastMailed = models.DateField(blank=True,null=True,editable=False, verbose_name=_("Last time we mailed this contact"))
 	rtTicketId = models.PositiveIntegerField(blank=True, null=True, editable=False, verbose_name=_("RT ticket id"))
@@ -212,14 +212,16 @@ STATUS_MISSING = 0
 STATUS_INCOMPLETE = 1
 STATUS_NOTINPACKAGE = -1
 STATUS_NOTWANTED = -2
+
+
 class Sponsoring(models.Model):
 	class Meta:
 		ordering = ["contact"]
 
-	owner = models.ForeignKey(User,editable=False,related_name="sponsorings")
+	owner = models.ForeignKey(User, editable=False,related_name="sponsorings", on_delete=models.CASCADE)
 	modifyDate = models.DateField(auto_now=True, editable=False)
-	contact = models.ForeignKey(SponsorContact, editable=False, related_name="sponsoring")
-	package = models.ForeignKey(SponsorPackage, verbose_name=_("Selected sponsoring package"), related_name="sponsorings")
+	contact = models.ForeignKey(SponsorContact, editable=False, related_name="sponsoring", on_delete=models.CASCADE)
+	package = models.ForeignKey(SponsorPackage, verbose_name=_("Selected sponsoring package"), related_name="sponsorings", on_delete=models.CASCADE)
 	adminComment = models.TextField(blank=True, verbose_name=_("Internal comments on this sponsor"))
 	rtTicketId = models.PositiveIntegerField(blank=True, null=True, verbose_name=_("RT ticket id"))
 	commitment = models.BooleanField(verbose_name=_("The sponsor has confirmed the sponsoring"),default=False)
@@ -232,7 +234,7 @@ class Sponsoring(models.Model):
 	hpTextDE = models.TextField(blank=True, verbose_name=_("Description text for our homepage (German)"))
 	hpTextEN = models.TextField(blank=True, verbose_name=_("Description text for our homepage (English)"))
 
-	wantBooth = models.NullBooleanField(verbose_name=_("Do you want a booth for your company on the conference?"))
+	wantBooth = models.BooleanField(verbose_name=_("Do you want a booth for your company on the conference?"), null=True)
 	boothTables = models.IntegerField(blank=True, null=True, verbose_name =_("How many tables do you need for your booth?"))
 	boothChairs = models.IntegerField(blank=True, null=True, verbose_name=("How many chairs do you need?"))
 	boothBarTables = models.IntegerField(blank=True, null=True, verbose_name=("How many bar tables do you need? Please note that we can only provide tables and don't have bar stools."))
@@ -247,7 +249,7 @@ class Sponsoring(models.Model):
 	programAdText = models.TextField(blank=True, verbose_name=_("Description text."))
 	programAdTextOptOut = models.BooleanField(default=False,verbose_name=_("Sponsor does not use program ad text"))
 
-	wantRecruting = models.NullBooleanField(verbose_name=_("Do you want to participate in the recruiting event on the conference?"))
+	wantRecruting = models.BooleanField(verbose_name=_("Do you want to participate in the recruiting event on the conference?"), null=True)
 	recruitingInfoDE = models.TextField(blank=True, verbose_name=_("What are you looking for? Only short job descriptions. Internships? Bachelor's/Master's thesis? (German)"))
 	recruitingInfoEN = models.TextField(blank=True, verbose_name=_("Your recruiting keywords (as above) in English"))
 	twitterAccount = models.CharField(blank=True,max_length=128,verbose_name=("Twitter account name"))
@@ -487,6 +489,6 @@ class Sponsoring(models.Model):
 		}
 
 class SponsoringParticipants(models.Model):
-	project = models.ForeignKey(Sponsoring)
-	user = models.ForeignKey(User)
+	project = models.ForeignKey(Sponsoring, on_delete=models.CASCADE)
+	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	isAdmin = models.BooleanField(default=False)

@@ -1,5 +1,5 @@
 from copy import deepcopy
-from cStringIO import StringIO
+from io import StringIO
 from lxml.etree import ElementTree, Element
 import os
 import re

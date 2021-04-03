@@ -1,8 +1,10 @@
 from django import forms
-from models import Devroom
+
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Field, Submit, Div, HTML
-from crispy_forms.bootstrap import FormActions, StrictButton, TabHolder, Tab
+
+from devroom.models import Devroom
+
 
 class DevroomGeneralForm(forms.ModelForm):
 	class Meta:

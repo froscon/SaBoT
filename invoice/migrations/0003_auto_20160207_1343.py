@@ -62,7 +62,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='invoice',
             name='sponsoring',
-            field=models.OneToOneField(related_name='invoice', editable=False, to='sponsor.Sponsoring', verbose_name='Sponsoring package belonging to this invoice'),
+            field=models.OneToOneField(related_name='invoice', editable=False, to='sponsor.Sponsoring', verbose_name='Sponsoring package belonging to this invoice', on_delete=models.CASCADE),
             preserve_default=True,
         ),
     ]

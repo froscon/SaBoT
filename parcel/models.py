@@ -8,7 +8,7 @@ from exhibitor.models import Exhibitor
 from sponsor.models import Sponsoring
 
 class Parcel(models.Model):
-	ownerType = models.ForeignKey(ContentType, null=True, blank=True, verbose_name=_("Type of the owner object"))
+	ownerType = models.ForeignKey(ContentType, null=True, blank=True, verbose_name=_("Type of the owner object"), on_delete=models.SET_NULL)
 	ownerId = models.PositiveIntegerField(blank=True, null=True, verbose_name=_("Key of the owner object"))
 	owner = GenericForeignKey("ownerType", "ownerId")
 	originText = models.CharField(max_length=256, blank=True, verbose_name=_("Name or description of the sender if it is no registered owner"))

@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
                 ('dueDate', models.DateField(verbose_name='Due date')),
                 ('pdf', models.FileField(upload_to=b'skinvoices', null=True, verbose_name='invoice pdf', blank=True)),
                 ('rtTicketRef', models.PositiveIntegerField(null=True, verbose_name='RT Ticket reference for sending this invoice', blank=True)),
-                ('sponsoring', models.OneToOneField(related_name='invoice', verbose_name='Sponsoring package belonging to this invoice', to='sponsor.Sponsoring')),
+                ('sponsoring', models.OneToOneField(related_name='invoice', verbose_name='Sponsoring package belonging to this invoice', to='sponsor.Sponsoring', on_delete=models.CASCADE)),
             ],
             options={
             },
@@ -45,7 +45,7 @@ class Migration(migrations.Migration):
                 ('jobid', models.PositiveIntegerField(verbose_name='SMSKaufen job identifier')),
                 ('joberror', models.CharField(max_length=256, verbose_name='Error description of a potential processing error', blank=True)),
                 ('success', models.BooleanField(default=False, verbose_name='The mail was successfully sent.')),
-                ('sponsoring', models.OneToOneField(related_name='snailmailinvoice', verbose_name='Sponsoring package belonging to this snail mailing job', to='sponsor.Sponsoring')),
+                ('sponsoring', models.OneToOneField(related_name='snailmailinvoice', verbose_name='Sponsoring package belonging to this snail mailing job', to='sponsor.Sponsoring', on_delete=models.CASCADE)),
             ],
             options={
             },

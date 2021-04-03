@@ -55,7 +55,7 @@ class Invoice(models.Model):
 	creationDate = models.DateField(auto_now_add=True, editable=False, verbose_name=_("Creation date"))
 	dueDate = models.DateField(verbose_name=_("Due date"))
 	payed = models.BooleanField(default=False, editable=False, verbose_name=_("This invoice is payed."))
-	sponsoring = models.OneToOneField(sponsor.models.Sponsoring, editable=False, related_name="invoice", verbose_name=_("Sponsoring package belonging to this invoice"))
+	sponsoring = models.OneToOneField(sponsor.models.Sponsoring, editable=False, null=True, related_name="invoice", verbose_name=_("Sponsoring package belonging to this invoice"), on_delete=models.SET_NULL)
 	pdf = models.FileField(upload_to="skinvoices", blank=True, null=True, editable=False, verbose_name=_("Invoice pdf"))
 	template = models.ForeignKey(DocumentTemplate,null=True, on_delete=models.SET_NULL, verbose_name=_("Template to use for this invoice"))
 	rtTicketRef = models.PositiveIntegerField(blank=True, null=True, editable=False, verbose_name=_("RT Ticket reference for sending this invoice"))
@@ -92,8 +92,9 @@ class Invoice(models.Model):
 		self.pdf.name = "invoice_pdfs/" + self.getInvoiceFilename()
 		self.save()
 
+
 class SMSKaufenSnailMailJob(models.Model):
-	sponsoring = models.OneToOneField(sponsor.models.Sponsoring, related_name="snailmailinvoice", verbose_name=_("Sponsoring package belonging to this snail mailing job"))
+	sponsoring = models.OneToOneField(sponsor.models.Sponsoring, related_name="snailmailinvoice", verbose_name=_("Sponsoring package belonging to this snail mailing job"), on_delete=models.CASCADE)
 	jobid = models.PositiveIntegerField(verbose_name=_("SMSKaufen job identifier"))
 	joberror = models.CharField(max_length=256, blank=True, verbose_name=_("Error description of a potential processing error"))
 	success = models.BooleanField(default=False, verbose_name=_("The mail was successfully sent."))

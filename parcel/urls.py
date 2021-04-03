@@ -1,4 +1,5 @@
 from django.conf.urls import url
+from django.urls import path
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView
 
 from parcel.forms import ParcelAdminForm
@@ -10,7 +11,7 @@ from sabot.views import MultipleListView
 from sponsor.models import Sponsoring
 
 urlpatterns = [
-	url(r'^list/?',
+	path('list',
 		user_is_staff(MultipleListView.as_view(
 			template_params = {
 				"object_list" :
@@ -20,30 +21,30 @@ urlpatterns = [
 			},
 			template_name = "parcel/admin/list.html")),
 		name = "parcel_list"),
-	url(r'^new',
+	path('new',
 		user_is_staff(YSCreateView.as_view(
 			model = Parcel,
 			form_class = ParcelAdminForm,
 			template_name = "parcel/admin/update.html",
 			success_url = "parcel_list")),
 		name = "parcel_new"),
-	url(r'^(?P<pk>[0-9]+)$',
+	path('<int:pk>',
 		user_is_staff(UpdateView.as_view(
 			model = Parcel,
 			form_class = ParcelAdminForm,
 			template_name = "parcel/admin/update.html",
 			success_url = "list")),
 		name = "parcel_update"),
-	url(r'^del/(?P<pk>[0-9]+)$',
+	path('del/<int:pk>',
 		user_is_staff(DeleteView.as_view(
 			model = Parcel,
 			template_name= "parcel/admin/del.html",
 			success_url="../list")),
 		name = "parcel_del"),
-	url(r'query_owners',
+	path('query_owners',
 		user_is_staff(queryParcelOwners),
 		name = "parcel_query_owners"),
-	url(r'quick_store',
+	path('quick_store',
 		user_is_staff(packageQuickStore),
 		name = "parcel_quick_store"),
 ]

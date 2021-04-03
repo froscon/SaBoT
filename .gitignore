@@ -2,8 +2,8 @@
 *.swp
 test.db*
 *.log
-sabot/settings.py
 sabot/prodSettings.py
+sabot/privateSettings.py
 sabot/localSettings.py
 sabot/conferenceSettings.py
 templates/sponsor/internalFaq.html
@@ -12,3 +12,8 @@ templates/sponsor/publicFaq.html
 media/*
 static/GitHub-Mark-32px.png
 d10env
+venv
+.idea
+*.bck
+*.old
+email_files

@@ -23,8 +23,9 @@ class Migration(migrations.Migration):
                 ('contentAndUsage', models.TextField(verbose_name='What is the content of this package? What should we use it for?', blank=True)),
                 ('received', models.BooleanField(default=False, verbose_name='Received')),
                 ('storageLocation', models.TextField(verbose_name='Storage location', blank=True)),
-                ('owner', models.ForeignKey(related_name='parcels', editable=False, to=settings.AUTH_USER_MODEL)),
-                ('sponsoring', models.ForeignKey(related_name='parcels', editable=False, to='sponsor.Sponsoring')),
+                ('owner', models.ForeignKey(related_name='parcels', editable=False, to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
+                ('sponsoring', models.ForeignKey(related_name='parcels', editable=False, to='sponsor.Sponsoring', on_delete=models.CASCADE)),
+
             ],
             options={
             },

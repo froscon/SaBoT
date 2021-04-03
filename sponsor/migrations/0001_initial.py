@@ -63,8 +63,8 @@ class Migration(migrations.Migration):
                 ('facebookAccount', models.CharField(max_length=128, verbose_name='Facebook account name', blank=True)),
                 ('gplusPage', models.URLField(verbose_name='G+ fanpage URL', blank=True)),
                 ('gplusAccount', models.CharField(max_length=128, verbose_name='G+ account name', blank=True)),
-                ('contact', models.ForeignKey(related_name='sponsoring', editable=False, to='sponsor.SponsorContact')),
-                ('owner', models.ForeignKey(related_name='sponsorings', editable=False, to=settings.AUTH_USER_MODEL)),
+                ('contact', models.ForeignKey(related_name='sponsoring', editable=False, to='sponsor.SponsorContact', on_delete=models.CASCADE)),
+                ('owner', models.ForeignKey(related_name='sponsorings', editable=False, to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
             ],
             options={
             },
@@ -75,8 +75,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('isAdmin', models.BooleanField(default=False)),
-                ('project', models.ForeignKey(to='sponsor.Sponsoring')),
-                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+                ('project', models.ForeignKey(to='sponsor.Sponsoring', on_delete=models.CASCADE)),
+                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
             ],
             options={
             },
@@ -136,7 +136,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='sponsoring',
             name='package',
-            field=models.ForeignKey(related_name='sponsorings', verbose_name='Selected sponsoring package', to='sponsor.SponsorPackage'),
+            field=models.ForeignKey(related_name='sponsorings', verbose_name='Selected sponsoring package', to='sponsor.SponsorPackage', on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
@@ -148,7 +148,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='sponsorcontact',
             name='template',
-            field=models.ForeignKey(verbose_name='Mail contact template', blank=True, to='sponsor.SponsorMailTemplate', null=True),
+            field=models.ForeignKey(verbose_name='Mail contact template', blank=True, to='sponsor.SponsorMailTemplate', null=True, on_delete=models.CASCADE),
             preserve_default=True,
         ),
     ]

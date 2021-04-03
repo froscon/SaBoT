@@ -12,8 +12,9 @@ PREFERENCES = (
 	(PREFERENCE_NO_PREF, "No preference"),
 )
 
+
 class Exhibitor(models.Model):
-	owner = models.ForeignKey(User,editable=False,related_name="exhibitors")
+	owner = models.ForeignKey(User, editable=False,related_name="exhibitors", on_delete=models.CASCADE)
 	createDate = models.DateField(auto_now_add=True,editable=False)
 	modifyDate = models.DateField(auto_now=True, editable=False)
 	projectName = models.CharField(max_length=128, verbose_name=_("Project name"))
@@ -40,7 +41,8 @@ class Exhibitor(models.Model):
 	def has_write_permission(self, user):
 		return ExhibitorParticipants.objects.filter(user=user,isAdmin=True).count() > 0 or user == self.owner
 
+
 class ExhibitorParticipants(models.Model):
-	project = models.ForeignKey(Exhibitor)
-	user = models.ForeignKey(User)
+	project = models.ForeignKey(Exhibitor, on_delete=models.CASCADE)
+	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	isAdmin = models.BooleanField(default=False)

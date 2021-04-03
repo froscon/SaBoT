@@ -3,8 +3,7 @@ import random
 
 from django import template
 from django.conf import settings
-from django.core.urlresolvers import reverse
-from django.utils.html import conditional_escape
+from django.urls import reverse
 from django.utils.safestring import mark_safe
 
 from crispy_forms.templatetags.crispy_forms_tags import CrispyFormNode

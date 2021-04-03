@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
                 ('contentAndUsage', models.TextField(verbose_name='What is the content of this package? What should we use it for?', blank=True)),
                 ('received', models.BooleanField(default=False, verbose_name='We received this package (tick this and enter storage location once handled)')),
                 ('storageLocation', models.TextField(verbose_name='Storage location', blank=True)),
-                ('ownerType', models.ForeignKey(blank=True, editable=False, to='contenttypes.ContentType', null=True, verbose_name='Type of the owner object')),
+                ('ownerType', models.ForeignKey(blank=True, editable=False, to='contenttypes.ContentType', null=True, verbose_name='Type of the owner object', on_delete=models.SET_NULL)),
             ],
             options={
             },

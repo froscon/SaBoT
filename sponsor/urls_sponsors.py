@@ -1,8 +1,6 @@
 from functools import partial
 
-from django.conf.urls import include, url
-
-from django.core.urlresolvers import reverse
+from django.urls import path, re_path, reverse, include
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Q, Sum
@@ -19,32 +17,32 @@ from sabot.multiYear import YSJSONListView, YSXMLListView, getActiveYear
 from sabot.decorators import user_is_staff
 
 urlpatterns = [
-	url(r'^new/(?P<pk>[0-9]+)$',
+	path('new/<int:pk>',
 		user_is_staff(SponsorCreateView.as_view()), name="sponsor_new"),
-	url(r'^(?P<pk>[0-9]+)/?$',
+	path('<int:pk>',
 		login_required(SponsorUpdateView.as_view()), name="sponsor_update"),
-	url(r'^(?P<pk>[0-9]+)/participants$',
+	path('<int:pk>/participants',
 		login_required(ParticipantsView.as_view(
 			object_class = Sponsoring,
 			connection_table_class = SponsoringParticipants,
 			template_name = "sponsor/participants.html")),
 		name="sponsor_participants"),
-	url(r'^(?P<pk>[0-9]+)/overview$',
+	path('<int:pk>/overview',
 		login_required(PermCheckDetailView.as_view(
 			model = Sponsoring,
 			template_name = "sponsor/overview.html")),
 		name="sponsor_overview"),
-	url(r'^(?P<pk>[0-9]+)/faq$',
+	path('<int:pk>/faq',
 		login_required(TemplateView.as_view(
 			template_name = "sponsor/internalFaqPage.html")),
 		name="sponsor_faq"),
-	url(r'^participants/remove/(?P<pk>[0-9]+)$',
+	path('participants/remove/<int:pk>',
 		login_required(PermCheckSimpleDeleteView.as_view(
 			model = SponsoringParticipants,
 			permission_checker = lambda obj, user: obj.project.has_write_permission(user),
 			redirect = lambda obj, kwargs: reverse("sponsor_participants", kwargs = { "pk" : obj.project_id }) )),
 		name="sponsor_participants_delete"),
-	url(r'^list/?',
+	path('list',
 		user_is_staff(MultipleListView.as_view(
 			template_name = "sponsor/sponsoring/list.html",
 			template_params = {
@@ -88,16 +86,16 @@ urlpatterns = [
 				"offerForm" : lambda req, kwargs : OfferForm(),
 			})),
 			name="sponsor_list"),
-	url(r'^del/(?P<pk>[0-9]+)$',
+	path('del/<int:pk>',
 		user_is_staff(DeleteView.as_view(model = Sponsoring, template_name= "sponsor/sponsoring/del.html", success_url="/sponsors/list") ),name="sponsor_del"),
-	url(r'^export/adminmail',
+	path('export/adminmail',
 		user_is_staff(EmailOutputView.as_view(
 			queryset = lambda req, kwargs : User.objects.filter(
 				Q(sponsorings__year=getActiveYear(req))
 				).distinct(),
 			template_name = "mail.html")),
 			name="sponsor_export_adminmail"),
-	url(r'^export/allmail',
+	path('export/allmail',
 		user_is_staff(EmailOutputView.as_view(
 			queryset = lambda req, kwargs : User.objects.filter(
 				Q(sponsorings__year=getActiveYear(req)) |
@@ -105,7 +103,7 @@ urlpatterns = [
 				).distinct(),
 			template_name = "mail.html")),
 			name="sponsor_export_allmail"),
-	url(r'^export/boothmail',
+	path('export/boothmail',
 		user_is_staff(EmailOutputView.as_view(
 			queryset = lambda req, kwargs : User.objects.filter(
 				sponsorparticipation__package__hasBooth=True,
@@ -113,7 +111,7 @@ urlpatterns = [
 				).distinct(),
 			template_name = "mail.html")),
 			name="sponsor_export_boothmail"),
-	url(r'^export/recruitingmail',
+	path('export/recruitingmail',
 		user_is_staff(EmailOutputView.as_view(
 			queryset = lambda req, kwargs : User.objects.filter(
 				sponsorparticipation__package__hasRecruitingEvent=True,
@@ -121,17 +119,17 @@ urlpatterns = [
 				).distinct(),
 			template_name = "mail.html")),
 			name="sponsor_export_recruitingmail"),
-	url(r'^export/xml',
+	path('export/xml',
 		user_is_staff(YSXMLListView.as_view(
 			queryset = Sponsoring.objects.select_related(),
 			template_name = "sponsor/sponsoring/xmlexport.html")),
 			name="sponsor_export_xml"),
-	url(r'^export/json',
+	path('export/json',
 		user_is_staff(YSJSONListView.as_view(
 			queryset = Sponsoring.objects.select_related(),
 			jsonify_function = lambda x : x.toJSON())),
 			name="sponsor_export_json"),
-	url(r'^export/logos',
+	path('export/logos',
 		user_is_staff(ArchiveCreatorView.as_view(
 			filename = "sponsorlogos.tar.bz2",
 			filelist = lambda req, kwargs : filter(
@@ -145,7 +143,7 @@ urlpatterns = [
 			)
 		)),
 		name="sponsor_export_logos"),
-	url(r'^export/programad',
+	path('export/programad',
 		user_is_staff(ArchiveCreatorView.as_view(
 			filename = "sponsorads.tar.bz2",
 			filelist = lambda req, kwargs : filter(
@@ -159,5 +157,5 @@ urlpatterns = [
 			)
 		)),
 		name="sponsor_export_programad"),
-	url(r'^parcel/', include('sponsor.urls_parcel')),
+	path('parcel', include('sponsor.urls_parcel')),
 ]

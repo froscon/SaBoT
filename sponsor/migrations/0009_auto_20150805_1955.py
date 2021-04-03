@@ -15,13 +15,13 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='sponsoring',
             name='owner',
-            field=models.ForeignKey(related_name='sponsorings', editable=False, to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(related_name='sponsorings', editable=False, to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AlterField(
             model_name='sponsorparcel',
             name='sponsoring',
-            field=models.ForeignKey(related_name='parcels', to='sponsor.Sponsoring'),
+            field=models.ForeignKey(related_name='parcels', to='sponsor.Sponsoring', on_delete=models.CASCADE),
             preserve_default=True,
         ),
     ]

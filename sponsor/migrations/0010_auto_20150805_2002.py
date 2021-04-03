@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='sponsorparcel',
             name='sponsoring',
-            field=models.ForeignKey(related_name='parcels', blank=True, to='sponsor.Sponsoring', null=True),
+            field=models.ForeignKey(related_name='parcels', blank=True, to='sponsor.Sponsoring', null=True, on_delete=models.CASCADE),
             preserve_default=True,
         ),
     ]

@@ -7,15 +7,14 @@ from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.list import MultipleObjectMixin
 from django.core.exceptions import ImproperlyConfigured, PermissionDenied
 from django.conf import settings
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.shortcuts import redirect
 from django.http import Http404, HttpResponseRedirect, HttpResponse, JsonResponse
 from django.contrib.auth.models import User
-from django.contrib.sites.models import Site
 from django.template.loader import render_to_string
 from django.db.models import Count, Q
 
-from registration.models import RegistrationProfile
+from django_registration.backends.activation.views import RegistrationView
 
 from sabot.forms import ParticipantAddForm
 # this is the place for generic views
@@ -97,7 +96,6 @@ class ParticipantsView(ObjectPermCheckMixin,FormView):
 
 		except User.DoesNotExist:
 			# we create a matching user with emailaddr=username
-			site = Site.objects.get_current()
 
 			# we should come up with a unique username
 			proposedname = email.split("@")[0]
@@ -105,18 +103,17 @@ class ParticipantsView(ObjectPermCheckMixin,FormView):
 				proposedname = proposedname[:28]
 
 			if len(User.objects.filter(username__iexact=proposedname)) > 0:
-				for num in xrange(1,101):
+				for num in range(1,101):
 					if len(User.objects.filter(username__iexact=proposedname+str(num))) == 0:
 						if num == 101:
 							raise ValueError("Unable to create a unique username")
 						proposedname = proposedname + str(num)
 						break
 
-			new_user = User(username=proposedname,email=email)
+			new_user = User(username=proposedname,email=email,is_active=False)
 			new_user.first_name = form.cleaned_data["first_name"]
 			new_user.last_name = form.cleaned_data["last_name"]
 			new_user.save()
-			RegistrationProfile.objects.create_profile(new_user)
 
 			# add new user - nontheless
 			connection = self.connection_table_class(project=self.object,user=new_user)
@@ -129,14 +126,13 @@ class ParticipantsView(ObjectPermCheckMixin,FormView):
 		return self.render_to_response(self.get_context_data(form=newForm))
 
 	def send_info_email(self, user):
-		profile = RegistrationProfile.objects.get(user=user)
-		site = Site.objects.get_current()
+		django_reg_view = RegistrationView()
+		activation_key = django_reg_view.get_activation_key(user)
 
-		ctx_dict = {'activation_key': profile.activation_key,
+		ctx_dict = {'activation_key': activation_key,
 			'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS,
 			'install_main_url' : settings.INSTALL_MAIN_URL,
 			'conference_name' : settings.CONFERENCE_NAME,
-			'site': site,
 			'project' : self.object,
 			'user' : user}
 		subject = render_to_string('registration/activation_email_autocreate_subject.txt', ctx_dict)

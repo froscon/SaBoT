@@ -4,23 +4,23 @@ import random
 import string
 
 from django.conf import settings
+
 from django.contrib.auth.models import User
 from django.core.exceptions import ImproperlyConfigured, PermissionDenied
 from django.core.mail import send_mail
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.db import transaction
 from django.http import HttpResponseRedirect, Http404, HttpResponse
 from django.shortcuts import redirect
 from django.template import TemplateSyntaxError, TemplateDoesNotExist
 from django.template.loader import render_to_string
 from django.views.generic.base import TemplateResponseMixin, TemplateView
-from django.views.generic.detail import SingleObjectTemplateResponseMixin, SingleObjectMixin
-from django.views.generic.edit import BaseFormView, UpdateView
+from django.views.decorators.http import require_POST
 from django.views.generic import FormView, CreateView
 
-from rtkit.authenticators import BasicAuthenticator
+#from rtkit.authenticators import BasicAuthenticator
 from rtkit.errors import RTResourceError
-from rtkit.resource import RTResource
+#from rtkit.resource import RTResource
 
 
 from account.models import UserProfile
@@ -46,7 +46,8 @@ class SponsorEmailingView(FormView):
 
 	def form_valid(self, form):
 		# initialize rt connection
-		rt = RTResource(settings.RT_URL, settings.RT_USER, settings.RT_PW, BasicAuthenticator)
+		# FIXME: Replace broken python-rtkit
+#		rt = RTResource(settings.RT_URL, settings.RT_USER, settings.RT_PW, BasicAuthenticator)
 
 		results = []
 		for contact in form.cleaned_data["recipients"]:
@@ -150,7 +151,7 @@ def sponsorMailPreview(request, pk):
 			ctx_dict = { "rcpt" : contact }
 			try:
 				message = render_to_string(tmpl.template.templateName, ctx_dict)
-				resp["message"] = message.encode("utf8")
+				resp["message"] = message
 				names = []
 				if len(tmpl.attachments.all()) > 0:
 					names = [ att.name for att in tmpl.attachments.all() ]
@@ -296,12 +297,10 @@ class SponsorContactResetEmailView(JobProcessingView,TemplateView):
 def respond_json(jdata):
 	return HttpResponse(json.dumps(jdata), content_type="application/json")
 
-
+@require_POST
 def loadResponseInfoFromRT(request):
-	if request.method != "POST":
-		return HttpResponseNotAllowed(["POST"])
-
-	rt = RTResource(settings.RT_URL, settings.RT_USER, settings.RT_PW, BasicAuthenticator)
+	# FIXME: Replace broken python-rtkit
+	#rt = RTResource(settings.RT_URL, settings.RT_USER, settings.RT_PW, BasicAuthenticator)
 	res = { "failed" : 0, "succeded" : 0 , "updated" : 0 }
 
 	unansweredContacts = SponsorContact.objects.filter(responded=False).exclude(rtTicketId=None)

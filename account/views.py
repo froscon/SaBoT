@@ -1,14 +1,12 @@
 from django.views.generic import RedirectView, FormView
 from django.contrib.auth import authenticate, login
 from django.shortcuts import Http404, redirect
-from django.core.urlresolvers import reverse
-from django.core.exceptions import ImproperlyConfigured, PermissionDenied
+from django.urls import reverse
 from django.contrib.auth.models import User
 
-from registration.models import RegistrationProfile
-from registration.backends.default.views import RegistrationView
+from django_registration.exceptions import ActivationError
+from django_registration.backends.activation.views import ActivationView
 
-from account.forms import RegistrationFormNameAndUniqueEmail
 from account.forms import UserProfileForm, SetPasswordForm
 from account.models import UserProfile
 from sabot.views import JobProcessingView
@@ -62,18 +60,19 @@ class UserProfileView(FormView):
 		user.save()
 		return self.form_invalid(form)
 
-class ActivateAndSetPWView(FormView):
+class ActivateAndSetPWView(ActivationView, FormView):
 	form_class = SetPasswordForm
 	template_name = "registration/activate_with_pw.html"
-	invalid_template_name = "registration/activate.html"
+	invalid_template_name = "django_registration/activation_failed.html"
 
 
 	def get(self, request, *args, **kwargs):
 		# check if activation link is ok, otherwise link to invalid
+
 		try:
-			profile = RegistrationProfile.objects.get(activation_key=kwargs["activation_key"])
-			return super(ActivateAndSetPWView, self).get(request, *args, **kwargs)
-		except RegistrationProfile.DoesNotExist:
+			username = self.validate_key(kwargs.get("activation_key"))
+			return super().get(request, *args, **kwargs)
+		except ActivationError:
 			return self.response_class(
 				request = self.request,
 				template = self.invalid_template_name,
@@ -81,10 +80,11 @@ class ActivateAndSetPWView(FormView):
 
 	def form_valid(self, form):
 		try:
-			profile = RegistrationProfile.objects.get(activation_key=self.kwargs["activation_key"])
-			profile.user.set_password(form.cleaned_data["password1"])
-			profile.user.save()
-			RegistrationProfile.objects.activate_user(self.kwargs["activation_key"])
-			return redirect(reverse("auth_login"))
-		except RegistrationProfile.DoesNotExist:
+			user = self.activate(**self.kwargs)
+			user.set_password(form.cleaned_data["password1"])
+			user.save()
+			return redirect(reverse("login"))
+		except ActivationError as e:
+			if e.code == "already_activated":
+				return redirect(reverse("login"))
 			raise Http404

@@ -1,10 +1,11 @@
 # Create your views here.
 from django.views.generic import FormView
-from forms import DevroomSetRoomForm
 from django.http import Http404
 from django.core.exceptions import ImproperlyConfigured, PermissionDenied
 from django.http import HttpResponseRedirect
-from models import Devroom
+
+from devroom.forms import DevroomSetRoomForm
+from devroom.models import Devroom
 
 class SetRoomView(FormView):
 	form_class = DevroomSetRoomForm

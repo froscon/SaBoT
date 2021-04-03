@@ -3,19 +3,16 @@ from datetime import date
 from decimal import Decimal
 
 from django.conf import settings
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.http import Http404, HttpResponseNotAllowed, HttpResponse, HttpResponseRedirect
 from django.template.loader import render_to_string
 from django.views.generic import UpdateView
 
-from rtkit.authenticators import BasicAuthenticator
-from rtkit.resource import RTResource
-from rtkit.errors import RTResourceError
 
 from sabot.views import JobProcessingView
 from invoice.forms import InvoiceForm
 from invoice.models import DocumentTemplate, Invoice, SMSKaufenSnailMailJob, YearlyInvoiceCounters
-import odtemplate
+from invoice import odtemplate
 from sponsor.models import Sponsoring
 
 
@@ -179,7 +176,8 @@ class RTinvoiceView(JobProcessingView):
 			self.job_errors.append("There is no invoice PDF available for this sponsoring.")
 			return False
 
-		rt = RTResource(settings.RT_URL, settings.RT_USER, settings.RT_PW, BasicAuthenticator)
+		# FIXME: Replace broken python-rtkit
+		#rt = RTResource(settings.RT_URL, settings.RT_USER, settings.RT_PW, BasicAuthenticator)
 		# TODO: Refactor froscon specific parts to config
 		if sponsoring.contact.contactPersonLanguage.startswith("de"):
 			subject = "Rechnung Partner-Paket {} {}".format(settings.CONFERENCE_NAME, date.today().year)

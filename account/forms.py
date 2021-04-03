@@ -1,22 +1,23 @@
-from registration.forms import RegistrationFormUniqueEmail
 from django import forms
+from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 
+
+from django_registration.forms import RegistrationFormUniqueEmail
 from captcha.fields import ReCaptchaField
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Field, Submit, Div, HTML
-from crispy_forms.bootstrap import FormActions, StrictButton, TabHolder, Tab
 
 
 class RegistrationFormNameAndUniqueEmail(RegistrationFormUniqueEmail):
 	class Meta(RegistrationFormUniqueEmail.Meta):
 		fields = [
-			'username',
+			User.USERNAME_FIELD,
+			User.get_email_field_name(),
 			'first_name',
 			'last_name',
-			'email',
-			'password1',
-			'password2'
+			"password1",
+			"password2",
 		]
 		required_css_class = 'required'
 

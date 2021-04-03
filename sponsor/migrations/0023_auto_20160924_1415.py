@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='sponsorcontact',
             name='template',
-            field=models.ForeignKey(verbose_name='Mail contact template', blank=True, to='sponsor.SponsorMail', null=True),
+            field=models.ForeignKey(verbose_name='Mail contact template', blank=True, to='sponsor.SponsorMail', null=True, on_delete=models.CASCADE),
             preserve_default=True,
         ),
     ]

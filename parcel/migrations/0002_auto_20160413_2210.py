@@ -26,7 +26,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='parcel',
             name='ownerType',
-            field=models.ForeignKey(verbose_name='Type of the owner object', blank=True, to='contenttypes.ContentType', null=True),
+            field=models.ForeignKey(verbose_name='Type of the owner object', blank=True, to='contenttypes.ContentType', null=True, on_delete=models.SET_NULL),
             preserve_default=True,
         ),
     ]

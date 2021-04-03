@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 
 class Devroom(models.Model):
-	owner = models.ForeignKey(User,editable=False,related_name="devrooms")
+	owner = models.ForeignKey(User, editable=False,related_name="devrooms", on_delete=models.CASCADE)
 	createDate = models.DateField(auto_now_add=True,editable=False)
 	modifyDate = models.DateField(auto_now=True, editable=False)
 	projectName = models.CharField(max_length=128, verbose_name=_("Project name"))
@@ -31,6 +31,6 @@ class Devroom(models.Model):
 		return DevroomParticipants.objects.filter(user=user,isAdmin=True).count() > 0 or user == self.owner
 
 class DevroomParticipants(models.Model):
-	project = models.ForeignKey(Devroom)
-	user = models.ForeignKey(User)
+	project = models.ForeignKey(Devroom, on_delete=models.CASCADE)
+	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	isAdmin = models.BooleanField(default=False)
