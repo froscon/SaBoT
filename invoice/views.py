@@ -356,7 +356,7 @@ def generateSponsoringOffer(request, spk, template, pdf_output=False):
         response = HttpResponse(f, content_type="application/pdf")
         response["Content-Disposition"] = 'attachment; filename="offer.pdf"'
     else:
-        f = open(temp.getTemporaryODT(), "r")
+        f = open(temp.getTemporaryODT(), "rb")
         response = HttpResponse(
             f, content_type="application/vnd.oasis.opendocument.text"
         )

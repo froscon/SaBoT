@@ -16,9 +16,6 @@ class ConferenceYear(models.Model):
     def __str__(self):
         return str(self.year)
 
-    def __unicode__(self):
-        return unicode(self.year)
-
     year = models.PositiveIntegerField(
         editable=False,
         unique=True,

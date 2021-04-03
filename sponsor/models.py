@@ -21,7 +21,7 @@ class SponsorMailAttachment(models.Model):
         verbose_name=_("The contact mail attachment"),
     )
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
@@ -29,7 +29,7 @@ class SponsorMailTemplate(models.Model):
     templateName = models.CharField(max_length=128, verbose_name=_("Template name"))
     template = models.TextField(verbose_name=_("Django template content"))
 
-    def __unicode__(self):
+    def __str__(self):
         return self.templateName
 
 
@@ -46,7 +46,7 @@ class SponsorMail(models.Model):
     mailSubject = models.CharField(max_length=256, verbose_name=_("E-mail subject"))
     attachments = models.ManyToManyField(SponsorMailAttachment, blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.mailTemplateName
 
 
@@ -139,7 +139,7 @@ class SponsorContact(models.Model):
             return True
         return False
 
-    def __unicode__(self):
+    def __str__(self):
         return self.companyName
 
 
@@ -301,7 +301,7 @@ class SponsorPackage(models.Model):
     def countCommitedSponsorings(self):
         return self.sponsorings.filter(commitment=True).count()
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def getPackageDescriptionDE(self):
@@ -631,7 +631,7 @@ class Sponsoring(models.Model):
         "billingReference": _("Billing reference number"),
     }
 
-    def __unicode__(self):
+    def __str__(self):
         return u"{} [{}]".format(self.contact.companyName, self.package.name)
 
     def has_read_permission(self, user):

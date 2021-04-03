@@ -1,5 +1,5 @@
 from copy import deepcopy
-from io import StringIO
+from io import BytesIO
 from lxml.etree import ElementTree, Element
 import os
 import re
@@ -60,7 +60,7 @@ class ODTTemplate(object):
             )
 
         # write out result to temporary archive
-        outbuf = StringIO()
+        outbuf = BytesIO()
         self.tree.write(outbuf, encoding="utf8", xml_declaration=True)
         self.zipfile.writestr("content.xml", outbuf.getvalue())
         self.zipfile.close()

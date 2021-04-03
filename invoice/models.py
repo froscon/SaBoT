@@ -28,7 +28,7 @@ class DocumentTemplate(models.Model):
         verbose_name=_("Type of this document template"),
     )
 
-    def __unicode__(self):
+    def __str__(self):
         return self.description
 
 
@@ -128,9 +128,10 @@ class Invoice(models.Model):
         }
         temp = odtemplate.ODTTemplate(self.template.template.path)
         temp.render(context)
-        if not os.path.exists(settings.MEDIA_ROOT + "invoice_pdfs"):
-            os.mkdir(settings.MEDIA_ROOT + "invoice_pdfs")
-        pdfpath = settings.MEDIA_ROOT + "invoice_pdfs/" + self.getInvoiceFilename()
+        invoice_pdf_dir = settings.MEDIA_ROOT / "invoice_pdfs"
+        if not invoice_pdf_dir.exists():
+            invoice_pdf_dir.mkdir()
+        pdfpath = invoice_pdf_dir / self.getInvoiceFilename()
         temp.savePDF(pdfpath)
         self.pdf.name = "invoice_pdfs/" + self.getInvoiceFilename()
         self.save()
