@@ -8,13 +8,17 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('main', '0001_initial'),
+        ("main", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='conferenceyear',
-            name='year',
-            field=models.PositiveIntegerField(editable=False, unique=True, verbose_name='Conference year that exists in our database'),
+            model_name="conferenceyear",
+            name="year",
+            field=models.PositiveIntegerField(
+                editable=False,
+                unique=True,
+                verbose_name="Conference year that exists in our database",
+            ),
         ),
     ]

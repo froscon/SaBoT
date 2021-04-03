@@ -8,14 +8,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('exhibitor', '0001_initial'),
+        ("exhibitor", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='exhibitor',
-            name='year',
-            field=models.PositiveIntegerField(default=1, editable=False, verbose_name='Conference year this exhibitor belongs to'),
+            model_name="exhibitor",
+            name="year",
+            field=models.PositiveIntegerField(
+                default=1,
+                editable=False,
+                verbose_name="Conference year this exhibitor belongs to",
+            ),
             preserve_default=False,
         ),
     ]
