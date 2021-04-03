@@ -8,10 +8,8 @@ def sponsor_filesanitize(fileattr, sponsor):
     if not f:
         return None
 
-    absolutePath = settings.MEDIA_ROOT + f.name
+    absolutePath = settings.MEDIA_ROOT / f.name
 
-    (base, name) = os.path.split(absolutePath)
-    (oldname, ext) = os.path.splitext(name)
-    newname = sponsor.contact.companyName + ext
+    newname = sponsor.contact.companyName + absolutePath.suffix
 
     return (absolutePath, newname)

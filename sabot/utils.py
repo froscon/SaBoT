@@ -15,7 +15,7 @@ def random_filename_upload(basedir):
         while True:
             newname = random_filename_generator() + ext
             path = os.path.join(basedir, newname)
-            if not os.path.isfile(os.path.join(settings.MEDIA_ROOT, path)):
+            if not (settings.MEDIA_ROOT / path).is_file():
                 break
         return path
 
