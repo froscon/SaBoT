@@ -2,9 +2,8 @@
 *.swp
 test.db*
 *.log
-sabot/prodSettings.py
 sabot/privateSettings.py
-sabot/localSettings.py
+sabot/local_settings.py
 sabot/conferenceSettings.py
 templates/sponsor/internalFaq.html
 templates/sponsor/publicFaq.html
