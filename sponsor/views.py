@@ -2,6 +2,7 @@ import datetime
 import json
 import random
 import string
+from pathlib import Path
 
 from django.conf import settings
 
@@ -18,14 +19,10 @@ from django.views.generic.base import TemplateResponseMixin, TemplateView
 from django.views.decorators.http import require_POST
 from django.views.generic import FormView, CreateView
 
-# from rtkit.authenticators import BasicAuthenticator
-from rtkit.errors import RTResourceError
-
-# from rtkit.resource import RTResource
-
 
 from account.models import UserProfile
 from sabot.multiYear import getActiveYear
+from sabot.rt import SabotRtException, SabotRtWrapper, Attachment, TicketStatus
 from sabot.views import ChangeNotificationMixin, PermCheckUpdateView, JobProcessingView
 from sponsor.forms import (
     SponsorCreationForm,
@@ -51,16 +48,13 @@ class SponsorEmailingView(FormView):
         return kwargs
 
     def form_valid(self, form):
-        # initialize rt connection
-        # FIXME: Replace broken python-rtkit
-        # 		rt = RTResource(settings.RT_URL, settings.RT_USER, settings.RT_PW, BasicAuthenticator)
-
         results = []
+        rt = SabotRtWrapper()
         for contact in form.cleaned_data["recipients"]:
             result = {}
             result["contact"] = contact
 
-            # now compose the mail and send it as rt answer
+            # now compose the mail and send it via RT
             tmpl = contact.template
             ctx_dict = {"rcpt": contact}
             try:
@@ -75,76 +69,42 @@ class SponsorEmailingView(FormView):
                 result["status"] = "failed"
                 results.append(result)
                 continue
+            requestor = (
+                (
+                    contact.contactPersonEmail
+                    if len(contact.contactPersonEmail) > 0
+                    else contact.contactEMail
+                ),
+            )
 
-            # create response
-            resp_data = {
-                "content": {
-                    "Action": "correspond",
-                    "Text": message.encode("utf8"),
-                    "Status": "stalled",
-                }
-            }
             # handle attachments
-            if len(tmpl.attachments.all()) > 0:
-                attId = 1
-                names = []
-                for att in tmpl.attachments.all():
-                    names.append(att.name)
-                    resp_data["attachment_{0}".format(attId)] = file(
-                        att.attachment.path
-                    )
-                    attId = attId + 1
-
-                resp_data["content"]["Attachment"] = ", ".join(names)
-
+            attachments = [
+                Attachment(att.name, Path(att.attachment.path))
+                for att in tmpl.attachments.all()
+            ]
             # post it to rt
-
-            # create a matching ticket
-            data = {
-                "content": {
-                    "Queue": settings.RT_QUEUE,
-                    "Owner": settings.RT_TICKET_OWNER,
-                    "Subject": contact.template.mailSubject,
-                    "Requestor": (
-                        contact.contactPersonEmail
-                        if len(contact.contactPersonEmail) > 0
-                        else contact.contactEMail
-                    ),
-                }
-            }
-            res = rt.post(path="ticket/new", payload=data)
-            if res.status_int != 200:
+            try:
+                ticket_id = rt.create_ticket(
+                    queue=settings.RT_QUEUE,
+                    owner=settings.RT_TICKET_OWNER,
+                    subject=contact.template.mailSubject,
+                    requestor=requestor,
+                    text=message,
+                    status=TicketStatus.OPEN,
+                    attachments=attachments,
+                    send_mail=True,
+                )
+                rt.update_status(ticket_id, TicketStatus.STALLED)
+            except SabotRtException as e:
                 result["status"] = "failed"
-                result["info"] = res.status
-                results.append(result)
-                continue
-
-            tpath = None
-            tid = None
-            for k, v in res.parsed[0]:
-                if k == "id":
-                    tpath = v
-                    break
-
-            if tpath is None or tpath.find("/") < 0:
-                result["status"] = "failed"
-                result["info"] = "Answer contained no ticket id"
-                results.append(result)
-                continue
-            else:
-                tid = int(tpath.split("/")[1])
-
-            res = rt.post(path=(tpath + "/comment"), payload=resp_data)
-            if res.status_int != 200:
-                result["status"] = "failed"
-                result["info"] = repr(res.parded)
+                result["info"] = str(e)
                 results.append(result)
                 continue
 
             result["status"] = "ok"
             results.append(result)
             contact.lastMailed = datetime.date.today()
-            contact.rtTicketId = tid
+            contact.rtTicketId = ticket_id
             contact.save()
 
         self.template_name = self.success_template_name
@@ -332,36 +292,17 @@ def respond_json(jdata):
 
 @require_POST
 def loadResponseInfoFromRT(request):
-    # FIXME: Replace broken python-rtkit
-    # rt = RTResource(settings.RT_URL, settings.RT_USER, settings.RT_PW, BasicAuthenticator)
     res = {"failed": 0, "succeded": 0, "updated": 0}
 
     unansweredContacts = SponsorContact.objects.filter(responded=False).exclude(
         rtTicketId=None
     )
+    rt = SabotRtWrapper()
     for contact in unansweredContacts:
-        # read the ticket from RT
-        rtres = rt.get(path="ticket/{}/history".format(contact.rtTicketId))
-        if rtres.status_int != 200:
-            res["failed"] = res["failed"] + 1
-            continue
-        res["succeded"] = res["succeded"] + 1
-        results = rtres.parsed
-        if (
-            len(
-                [
-                    r
-                    for r in rtres.parsed[0]
-                    if r[1].lower().find("correspondence added") >= 0
-                    and r[1].find("@") >= 0
-                ]
-            )
-            >= 1
-        ):
-
-            # count the number of correspondances that also contain an @. corresespondances added with "@" come from external mail and not rt user?!
+        if rt.check_correspondance(contact.rtTicketId):
             res["updated"] = res["updated"] + 1
             contact.responded = True
             contact.save()
+        res["succeded"] = res["succeded"] + 1
 
     return respond_json(res)

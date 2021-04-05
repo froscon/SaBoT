@@ -78,7 +78,7 @@ SESSION_COOKIE_SECURE = False
 DEFAULT_COUNTRY = "Deutschland"
 
 RT_USER = "rtbot"
-RT_PW = ""
+RT_PASSWORD = ""
 RT_URL = "https://management.froscon.org/rt/REST/1.0/"
 RT_QUEUE = "Test"
 RT_QUEUE_INVOICE = "Finanzen"

@@ -1,6 +1,7 @@
 import json
 from datetime import date
 from decimal import Decimal
+from pathlib import Path
 
 from django.conf import settings
 from django.urls import reverse
@@ -13,7 +14,7 @@ from django.http import (
 from django.template.loader import render_to_string
 from django.views.generic import UpdateView
 
-
+from sabot.rt import SabotRtException, SabotRtWrapper, Attachment
 from sabot.views import JobProcessingView
 from invoice.forms import InvoiceForm
 from invoice.models import (
@@ -106,7 +107,7 @@ def SMSKaufenStatusUpdate(request, invId):
     if smj is None:
         raise Http404
 
-    if not request.GET.has_key("statustext") or not request.GET.has_key("auftrag"):
+    if "statustext" not in request.GET or "auftrag" not in request.GET:
         smj.joberror = "Status update received but incomplete"
         smj.save()
         return HttpResponse("")
@@ -175,7 +176,7 @@ class RTinvoiceView(JobProcessingView):
         return sponsoring
 
     def process_job(self):
-        if not self.request.POST.has_key("text"):
+        if "text" not in self.request.POST:
             self.job_errors.append("invalid request: item 'text' missing.")
             return False
 
@@ -195,9 +196,7 @@ class RTinvoiceView(JobProcessingView):
             )
             return False
 
-        # FIXME: Replace broken python-rtkit
-        # rt = RTResource(settings.RT_URL, settings.RT_USER, settings.RT_PW, BasicAuthenticator)
-        # TODO: Refactor froscon specific parts to config
+        rt = SabotRtWrapper()
         if sponsoring.contact.contactPersonLanguage.startswith("de"):
             subject = "Rechnung Partner-Paket {} {}".format(
                 settings.CONFERENCE_NAME, date.today().year
@@ -206,50 +205,29 @@ class RTinvoiceView(JobProcessingView):
             subject = "Invoice Partnership {} {}".format(
                 settings.CONFERENCE_NAME, date.today().year
             )
-        data = {
-            "content": {
-                "Queue": settings.RT_QUEUE_INVOICE,
-                "Owner": self.request.user.username,
-                "Subject": subject,
-                "Requestor": sponsoring.contact.contactPersonEmail,
-            }
-        }
-        res = rt.post(path="ticket/new", payload=data)
-        if res.status_int != 200:
-            self.job_errors.append(
-                "RT Ticket creation failed with status code {}".format(res.status)
+
+        attachments = [
+            Attachment(
+                f"{sponsoring.invoice.invoiceNumber}.pdf",
+                Path(sponsoring.invoice.pdf.path),
             )
+        ]
+
+        try:
+            ticket_id = rt.create_ticket(
+                queue=settings.RT_QUEUE_INVOICE,
+                owner=self.request.user.username,
+                subject=subject,
+                text=self.request.POST["text"],
+                requestor=sponsoring.contact.contactPersonEmail,
+                attachments=attachments,
+                send_mail=True,
+            )
+        except SabotRtException as e:
+            self.job_errors.append(f"RT Correspondance failed: {e}")
             return False
 
-        tid = None
-        for k, v in res.parsed[0]:
-            if k == "id":
-                tid = v
-                break
-
-        if tid is None:
-            self.job_errors.append("RT answer contained no ticket id")
-            return False
-
-        # compile message
-        resp_data = {
-            "content": {
-                "Action": "correspond",
-                "Status": "stalled",
-                "Text": self.request.POST["text"].encode("utf8"),
-            }
-        }
-        resp_data["attachment_1"] = file(sponsoring.invoice.pdf.path)
-        resp_data["content"]["Attachment"] = "{}.pdf".format(
-            sponsoring.invoice.invoiceNumber
-        )
-
-        res = rt.post(path=(tid + "/comment"), payload=resp_data)
-        if res.status_int != 200:
-            self.job_errors.append("RT Correspondance failed")
-            return False
-
-        invoice.rtTicketRef = int(tid.lstrip("ticket/"))
+        invoice.rtTicketRef = ticket_id
         invoice.save()
         return True
 

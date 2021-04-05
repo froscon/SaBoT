@@ -2,7 +2,7 @@ django
 django-registration
 django-crispy-forms
 django-recaptcha
-python-rtkit
 requests
 lxml>=3.7.2
 Pillow>=4.0.0
+rt

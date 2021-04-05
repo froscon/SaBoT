@@ -1,4 +1,8 @@
 The complete software part and website templates is licensed under the MIT License (see below).
+However, we use the python rt module that is licensed und GPLv3. As a consequence, this whole
+project is distributed under the terms of the GPLv3 even though all SaBot code itself is lisenced
+under the terms of the MIT License. If you want to use it under these terms, either disable the RT
+support on the code or provide an alternative implementation in sabot/rt.py.
 
 This license does not apply to
 - Sample invoice and offer documents provided in invoice/

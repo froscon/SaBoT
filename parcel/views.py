@@ -18,7 +18,7 @@ from sabot.multiYear import getActiveYear
 
 def queryParcelOwners(request):
     response = []
-    if request.GET.has_key("q"):
+    if "q" in request.GET:
         query = request.GET["q"]
         activeYear = getActiveYear(request)
 
@@ -61,7 +61,7 @@ def queryParcelOwners(request):
 
 def packageQuickStore(request):
     response = {"status": "error"}
-    if request.POST.has_key("tracking"):
+    if "tracking" in request.POST:
         tracking = request.POST["tracking"]
         res = Parcel.objects.filter(trackingNumber=tracking)
         if len(res) == 0:

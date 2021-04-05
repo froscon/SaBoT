@@ -206,7 +206,7 @@ class SponsorForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         adminForm = False
-        if kwargs.has_key("request") and kwargs["request"].user is not None:
+        if "request" in kwargs and kwargs["request"].user is not None:
             adminForm = kwargs["request"].user.is_staff
             del kwargs["request"]
 
