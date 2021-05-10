@@ -36,7 +36,7 @@ class TokenLoginView(RedirectView):
     permanent = False
 
     def get_redirect_url(self, **kwargs):
-        user = authenticate(token=kwargs["token"])
+        user = authenticate(self.request, token=kwargs["token"])
         if user is not None:
             if user.is_active:
                 login(self.request, user)

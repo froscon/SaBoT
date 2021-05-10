@@ -1,11 +1,12 @@
-import models
+from account import models
 from django.contrib.auth.models import User
+from django.contrib.auth.backends import BaseBackend
 
 
-class TokenAuthenticationBackend(object):
+class TokenAuthenticationBackend(BaseBackend):
     supports_inactive_user = False
 
-    def authenticate(self, token=None):
+    def authenticate(self, request, token=None):
         if token is None or len(token) == 0:
             return None
         try:
@@ -21,7 +22,7 @@ class TokenAuthenticationBackend(object):
             return None
 
 
-class APITokenMiddleware(object):
+class APITokenMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
 

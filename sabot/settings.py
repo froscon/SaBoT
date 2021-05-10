@@ -133,6 +133,11 @@ CRISPY_TEMPLATE_PACK = "bootstrap3"
 REGISTRATION_OPEN = True
 ACCOUNT_ACTIVATION_DAYS = 365
 
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'account.backend.TokenAuthenticationBackend',
+]
+
 from sabot.local_settings import *
 from sabot.conferenceSettings import *
 
