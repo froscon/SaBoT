@@ -142,7 +142,7 @@ from sabot.local_settings import *
 from sabot.conferenceSettings import *
 
 if not DEBUG:
-    template_loaders = TEMPLATES[0]["options"]["loaders"]
-    TEMPLATES[0]["options"]["loaders"] = [
+    template_loaders = TEMPLATES[0]["OPTIONS"]["loaders"]
+    TEMPLATES[0]["OPTIONS"]["loaders"] = [
         ("django.template.loaders.cached.Loader", template_loaders)
     ]
