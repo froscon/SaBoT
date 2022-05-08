@@ -8,14 +8,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('parcel', '0002_auto_20160413_2210'),
+        ("parcel", "0002_auto_20160413_2210"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='parcel',
-            name='year',
-            field=models.PositiveIntegerField(default=1, editable=False, verbose_name='Conference year this parcel belongs to'),
+            model_name="parcel",
+            name="year",
+            field=models.PositiveIntegerField(
+                default=1,
+                editable=False,
+                verbose_name="Conference year this parcel belongs to",
+            ),
             preserve_default=False,
         ),
     ]

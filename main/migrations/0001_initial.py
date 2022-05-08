@@ -9,15 +9,28 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='ConferenceYear',
+            name="ConferenceYear",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('year', models.PositiveIntegerField(editable=False, verbose_name='Conference year that exists in our database')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "year",
+                    models.PositiveIntegerField(
+                        editable=False,
+                        verbose_name="Conference year that exists in our database",
+                    ),
+                ),
             ],
         ),
     ]
