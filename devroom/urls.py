@@ -101,7 +101,7 @@ urlpatterns = [
         name="devroom_accept",
     ),
     path(
-        "<int:pk/unaccept",
+        "<int:pk>/unaccept",
         user_is_staff(
             PropertySetterView.as_view(
                 model=Devroom,
