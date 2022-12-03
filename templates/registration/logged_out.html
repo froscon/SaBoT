@@ -1,1 +1,12 @@
-logout.html
+{% extends "master.html" %}
+{% block content %}
+
+<div class="page-header">
+	<h2>Logout</h2>
+</div>
+
+<p>You have been logged out.</p>
+
+<p>Use the <a href="{% url 'login' %}">login screen</a> to login again or as another user.</p>
+
+{% endblock %}

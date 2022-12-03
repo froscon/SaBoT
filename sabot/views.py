@@ -1,10 +1,17 @@
 import os.path
 import tarfile
 
+from django.conf import settings
+from django.contrib.auth.models import User
+from django.core.exceptions import ImproperlyConfigured, PermissionDenied
+from django.db.models import Count
+from django.http import Http404, HttpResponseRedirect, HttpResponse, JsonResponse
+from django.shortcuts import redirect
+from django.template.loader import render_to_string
+from django.urls import reverse
 from django.views.generic import (
     FormView,
     UpdateView,
-    RedirectView,
     CreateView,
     TemplateView,
     ListView,
@@ -14,18 +21,10 @@ from django.views.generic import (
 from django.views.generic.base import View, TemplateResponseMixin
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.list import MultipleObjectMixin
-from django.core.exceptions import ImproperlyConfigured, PermissionDenied
-from django.conf import settings
-from django.urls import reverse
-from django.shortcuts import redirect
-from django.http import Http404, HttpResponseRedirect, HttpResponse, JsonResponse
-from django.contrib.auth.models import User
-from django.template.loader import render_to_string
-from django.db.models import Count, Q
-
 from django_registration.backends.activation.views import RegistrationView
 
 from sabot.forms import ParticipantAddForm
+
 
 # this is the place for generic views
 
@@ -307,7 +306,7 @@ class PermCheckUpdateView(ObjectPermCheckMixin, CallableSuccessUrlMixin, UpdateV
             not self.object.has_write_permission(self.request.user)
             and not self.request.user.is_staff
         ):
-            for field in form.fields.values():
+            for field in list(form.fields.values()):
                 field.widget.attrs["readonly"] = "readonly"
             if hasattr(form, "helper"):
                 form.helper.inputs = []
@@ -347,7 +346,7 @@ class JSONListView(MultipleObjectMixin, View):
 
     def get(self, request, *args, **kwargs):
         self.object_list = self.get_queryset()
-        result_list = map(self.jsonify_function, self.object_list)
+        result_list = list(map(self.jsonify_function, self.object_list))
         return JsonResponse(result_list, safe=False)
 
 
@@ -357,8 +356,7 @@ class XMLListView(ListView):
         allow_empty = self.get_allow_empty()
         if not allow_empty and len(self.object_list) == 0:
             raise Http404(
-                _(u"Empty list and '%(class_name)s.allow_empty' is False.")
-                % {"class_name": self.__class__.__name__}
+                f"Empty list and '{self.__class__.__name__}.allow_empty' is False."
             )
         context = self.get_context_data(object_list=self.object_list)
         return self.render_to_response(context, content_type="application/xml")
@@ -369,7 +367,7 @@ class MultipleListView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(MultipleListView, self).get_context_data(**kwargs)
-        for key, value in self.template_params.items():
+        for key, value in list(self.template_params.items()):
             if callable(value):
                 context[key] = value(self.request, self.kwargs)
             else:

@@ -14,7 +14,7 @@ from django.http import (
 from django.template.loader import render_to_string
 from django.views.generic import UpdateView
 
-from sabot.rt import SabotRtException, SabotRtWrapper, Attachment
+from sabot.localrt import SabotRtException, SabotRtWrapper, Attachment
 from sabot.views import JobProcessingView
 from invoice.forms import InvoiceForm
 from invoice.models import (
@@ -43,7 +43,7 @@ class InvoiceCreateUpdateView(UpdateView):
     # This view obtains in parameter "spk" the sponsoring. In order to
     # retrieve a potential invoice. If there is none, return None to not
     # bind this form.
-    def get_object(self):
+    def get_object(self, queryset=None):
         try:
             self.sponsoring = Sponsoring.objects.get(pk=self.kwargs["spk"])
         except Sponsoring.DoesNotExist:
@@ -279,7 +279,7 @@ class InvoiceSnailMailView(JobProcessingView):
                 international=international,
             )
         except smskaufen.api.SmskaufenException as e:
-            self.job_errors.append(e.message)
+            self.job_errors.append(str(e))
             return False
 
         s = SMSKaufenSnailMailJob()

@@ -1,20 +1,19 @@
 # coding: utf8
-from django import forms
-from django.conf import settings
-from django.urls import reverse
-from django.template.loader import render_to_string
-from django.utils.translation import ugettext_lazy as _
 
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Field, Submit, Div, HTML
 from crispy_forms.bootstrap import (
     FormActions,
-    StrictButton,
     TabHolder,
     Tab,
     AppendedText,
-    PrependedText,
 )
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Field, Submit, Div, HTML
+from django import forms
+from django.conf import settings
+from django.core.exceptions import ValidationError
+from django.template.loader import render_to_string
+from django.urls import reverse
+from django.utils.translation import ugettext_lazy as _
 
 from main.models import ConferenceYear
 from sabot.crispy_ext import TextOptOut
@@ -159,7 +158,7 @@ class SponsorPackageForm(forms.ModelForm):
             Field("hpCatagoryName"),
             Field("comments"),
             Field("color"),
-            AppendedText("price", u"€"),
+            AppendedText("price", "€"),
             Field("countPackages"),
             Field("logoWebsitePositionEN"),
             Field("logoWebsitePositionDE"),

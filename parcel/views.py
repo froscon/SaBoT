@@ -29,7 +29,7 @@ def queryParcelOwners(request):
         response = response + [
             {
                 "identifier": s.contact.companyName,
-                "type": unicode(_("Sponsor")),
+                "type": str(_("Sponsor")),
                 "contentType_id": ContentType.objects.get_for_model(Sponsoring).id,
                 "obj_id": s.pk,
             }
@@ -39,7 +39,7 @@ def queryParcelOwners(request):
         response = response + [
             {
                 "identifier": p.projectName,
-                "type": unicode(_("Exhibitor")),
+                "type": str(_("Exhibitor")),
                 "contentType_id": ContentType.objects.get_for_model(Exhibitor).id,
                 "obj_id": p.pk,
             }
@@ -49,7 +49,7 @@ def queryParcelOwners(request):
         response = response + [
             {
                 "identifier": p.projectName,
-                "type": unicode(_("Devroom")),
+                "type": str(_("Devroom")),
                 "contentType_id": ContentType.objects.get_for_model(Devroom).id,
                 "obj_id": p.pk,
             }

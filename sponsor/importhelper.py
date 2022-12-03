@@ -1,7 +1,7 @@
 # this is a helper script to import sponsor contacts from the old redmine plugin
 
 from lxml import etree
-from models import SponsorContact, SponsorMailTemplate
+from .models import SponsorContact, SponsorMailTemplate
 import re
 
 addrRe = re.compile("([^\n]+\d+[^\n]*)\n(\d+)\s+([^\n]+)", re.M)
@@ -137,8 +137,8 @@ def saveIfDoubleAsk(cList):
     for c in cList:
         doubles = checkDoubleContact(c)
         if len(doubles) > 0:
-            print("{} collides with {}, override?".format(c, doubles))
-            inp = raw_input("y/n")
+            print(("{} collides with {}, override?".format(c, doubles)))
+            inp = input("y/n")
             if inp != "y":
                 continue
             for d in doubles:

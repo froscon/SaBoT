@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from decimal import Decimal, localcontext, ROUND_HALF_EVEN
+
 import datetime
-import re
+from decimal import Decimal, localcontext, ROUND_HALF_EVEN
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -334,28 +334,28 @@ class SponsorPackage(models.Model):
             "hasBooth",
             lambda s: s.boothPositionDE
             if len(s.boothPositionDE) > 0
-            else u"Ausstellungsplatz",
+            else "Ausstellungsplatz",
         ),
-        ("hasRecruitingEvent", u"Stand auf der Recruitingsession"),
-        ("hasConferenceBagContent", u"Informationsmaterial in den Konferenztaschen"),
+        ("hasRecruitingEvent", "Stand auf der Recruitingsession"),
+        ("hasConferenceBagContent", "Informationsmaterial in den Konferenztaschen"),
         (lambda s: True, lambda s: s.logoWebsitePositionDE),
         (
             "hasLogoOnPrintmedia",
-            u"Logopräsenz auf allen Werbemitteln (z. B. Badges, Besucherflyer, Plakat)",
+            "Logopräsenz auf allen Werbemitteln (z. B. Badges, Besucherflyer, Plakat)",
         ),
         (
             "hasSocialMedia",
-            u"Namentliche Erwähnung auf unseren SocialMedia Kanälen (Twitter, Facebook, G+)",
+            "Namentliche Erwähnung auf unseren SocialMedia Kanälen (Twitter, Facebook, G+)",
         ),
         (
             "hasProgramAd",
-            lambda s: u"Anzeige im Konferenzprogramm ({})".format(
+            lambda s: "Anzeige im Konferenzprogramm ({})".format(
                 s.programAdInfoDescDE
             ),
         ),
         (
             "hasProgramAdText",
-            lambda s: u"Text im Konferenzprogramm ({} Wörter)".format(
+            lambda s: "Text im Konferenzprogramm ({} Wörter)".format(
                 s.programAdTextNumWords
             ),
         ),
@@ -373,28 +373,28 @@ class SponsorPackage(models.Model):
             "hasBooth",
             lambda s: s.boothPositionEN
             if len(s.boothPositionEN) > 0
-            else u"Exhibition space",
+            else "Exhibition space",
         ),
-        ("hasRecruitingEvent", u"Booth at the recruiting session"),
-        ("hasConferenceBagContent", u"Advertising material in the conference bags"),
+        ("hasRecruitingEvent", "Booth at the recruiting session"),
+        ("hasConferenceBagContent", "Advertising material in the conference bags"),
         (lambda s: True, lambda s: s.logoWebsitePositionEN),
         (
             "hasLogoOnPrintmedia",
-            u"Your logo on all publications (e. g. flyers, posters, badges)",
+            "Your logo on all publications (e. g. flyers, posters, badges)",
         ),
         (
             "hasSocialMedia",
-            u"Official mention of sponsorship on our social media channels (Twitter, Facebook, G+)",
+            "Official mention of sponsorship on our social media channels (Twitter, Facebook, G+)",
         ),
         (
             "hasProgramAd",
-            lambda s: u"Advertisement in the printed conference program ({})".format(
+            lambda s: "Advertisement in the printed conference program ({})".format(
                 s.programAdInfoDescEN
             ),
         ),
         (
             "hasProgramAdText",
-            lambda s: u"Text in the printed conference program ({} words)".format(
+            lambda s: "Text in the printed conference program ({} words)".format(
                 s.programAdTextNumWords
             ),
         ),
@@ -632,7 +632,7 @@ class Sponsoring(models.Model):
     }
 
     def __str__(self):
-        return u"{} [{}]".format(self.contact.companyName, self.package.name)
+        return "{} [{}]".format(self.contact.companyName, self.package.name)
 
     def has_read_permission(self, user):
         return user == self.owner

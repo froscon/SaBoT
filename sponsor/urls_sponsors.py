@@ -1,50 +1,34 @@
 from functools import partial
 
-from django.urls import path, re_path, reverse, include
-from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from django.db.models import Count, Q, Sum
+from django.contrib.auth.models import User
+from django.db.models import Q, Sum
+from django.urls import path, reverse, include
 from django.views.generic import (
-    ListView,
     DeleteView,
-    CreateView,
-    UpdateView,
     TemplateView,
 )
 
 from invoice.forms import OfferForm
-from sponsor.forms import SponsorContactForm, SponsorPackageForm
+from sabot.decorators import user_is_staff
+from sabot.multiYear import YSJSONListView, YSXMLListView, getActiveYear
+from sabot.views import (
+    ParticipantsView,
+    MultipleListView,
+    PermCheckSimpleDeleteView,
+    ArchiveCreatorView,
+    PermCheckDetailView,
+    EmailOutputView,
+)
 from sponsor.helpers import sponsor_filesanitize
 from sponsor.models import (
     Sponsoring,
     SponsoringParticipants,
-    SponsorContact,
-    SponsorPackage,
 )
 from sponsor.views import (
     SponsorCreateView,
     SponsorUpdateView,
-    SponsorEmailingView,
-    sponsorMailPreview,
-    SponsorContactResetEmailView,
-    loadResponseInfoFromRT,
 )
-
-from sabot.views import (
-    ParticipantsView,
-    OwnerSettingCreateView,
-    PermCheckUpdateView,
-    MultipleListView,
-    PropertySetterView,
-    PermCheckPropertySetterView,
-    PermCheckSimpleDeleteView,
-    ArchiveCreatorView,
-    PermCheckDeleteView,
-    PermCheckDetailView,
-    EmailOutputView,
-)
-from sabot.multiYear import YSJSONListView, YSXMLListView, getActiveYear
-from sabot.decorators import user_is_staff
 
 urlpatterns = [
     path(
@@ -231,15 +215,15 @@ urlpatterns = [
         user_is_staff(
             ArchiveCreatorView.as_view(
                 filename="sponsorlogos.tar.bz2",
-                filelist=lambda req, kwargs: filter(
+                filelist=lambda req, kwargs: list(filter(
                     lambda x: x is not None,
-                    map(
+                    list(map(
                         partial(sponsor_filesanitize, "logo"),
                         Sponsoring.objects.filter(
                             year=getActiveYear(req)
                         ).select_related(),
-                    ),
-                ),
+                    )),
+                )),
             )
         ),
         name="sponsor_export_logos",
@@ -249,15 +233,15 @@ urlpatterns = [
         user_is_staff(
             ArchiveCreatorView.as_view(
                 filename="sponsorads.tar.bz2",
-                filelist=lambda req, kwargs: filter(
+                filelist=lambda req, kwargs: list(filter(
                     lambda x: x is not None,
-                    map(
+                    list(map(
                         partial(sponsor_filesanitize, "programAd"),
                         Sponsoring.objects.filter(
                             year=getActiveYear(req)
                         ).select_related(),
-                    ),
-                ),
+                    )),
+                )),
             )
         ),
         name="sponsor_export_programad",

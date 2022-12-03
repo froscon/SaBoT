@@ -30,7 +30,7 @@ def form_post_button_tag(context, glyph, description, delete_view, **kwargs):
     csrf_token = context.get("csrf_token", None)
     buttonId = "delete-" + id_generator()
     return mark_safe(
-        u"""<form action="{}" method="POST" style="display: inline">
+        """<form action="{}" method="POST" style="display: inline">
 <div style='display:none'><input type='hidden' name='csrfmiddlewaretoken' value='{}' /></div>
 <label for="{}" style="display: inline"><span data-toggle="tooltip" title="{}" class="glyphicon glyphicon-{}"></span></label>
 <input type="submit" id="{}" style="display: None" />

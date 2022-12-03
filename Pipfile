@@ -1,0 +1,22 @@
+[[source]]
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+django = "~=3.2"
+django-registration = "*"
+django-crispy-forms = "*"
+django-recaptcha = "*"
+requests = "*"
+lxml = ">=3.7.2"
+pillow = ">=4.0.0"
+rt = "*"
+python-ldap = "~=3.2.0"
+psycopg2 = "~=2.8.6"
+django-auth-ldap = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.9"

@@ -4,7 +4,10 @@ test.db*
 *.log
 sabot/privateSettings.py
 sabot/local_settings.py
+sabot/localSettings.py
 sabot/conferenceSettings.py
+sabot/prod.py
+sabot/prodSettings.py
 templates/sponsor/internalFaq.html
 templates/sponsor/publicFaq.html
 *.db

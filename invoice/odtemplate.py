@@ -1,12 +1,12 @@
-from copy import deepcopy
-from io import BytesIO
-from lxml.etree import ElementTree, Element
 import os
-import re
 import shutil
 import subprocess
 import tempfile
 import zipfile
+from copy import deepcopy
+from io import BytesIO
+
+from lxml.etree import ElementTree, Element
 
 ODT_BINARY = "libreoffice"
 
@@ -110,7 +110,7 @@ class ODTTemplate(object):
         name = elem.attrib["{{{}}}name".format(OD_TEXT_NS)]
         # check if this is in our dictionary, if not, we leave it as it is
         # but create a warning
-        if not name in context.keys():
+        if not name in list(context.keys()):
             self.unknownVariables.add(name)
             return
         # otherwise mark it as used
