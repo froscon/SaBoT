@@ -12,7 +12,7 @@ from typing import Optional, List, Dict, Union
 # here.
 
 from django.conf import settings
-import rt
+from rt import rest1 as rt
 from requests.auth import HTTPBasicAuth
 
 

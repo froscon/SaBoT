@@ -6,6 +6,6 @@ django-auth-ldap
 requests
 lxml>=3.7.2
 Pillow>=4.0.0
-rt
+rt>=3,<4
 python-ldap~=3.2.0
 psycopg2~=2.8.6
