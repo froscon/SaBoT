@@ -42,7 +42,11 @@
 					{% if package.hasParticipants %}<span class="glyphicon glyphicon-user" data-toggle="tooltip" title="Sponsor can register people as VIPs on the conference"></span>{% endif %}
 				</td>
 				<td>{{package.numFreeTickets}}</td>
-				<td>{{package.countCommitedSponsorings}}/{{package.countSponsorings}}/{% if package.countPackages == 0 %}∞{% else %}{{package.countPackages}}{% endif %}</td>
+				<td>
+					<span data-toggle="tooltip" title="Committed Partners / Created Partners / Offered Packages of this Type">
+					{{package.countCommitedSponsorings}}/{{package.countSponsorings}}/{% if package.countPackages == 0 %}∞{% else %}{{package.countPackages}}{% endif %}
+					</span>
+				</td>
 				<td>
 					<a href="{% url 'sponsorpackage_update' pk=package.pk %}" data-toggle="tooltip" title="Edit sponsor package information"><span class="glyphicon glyphicon-edit"></span></a>
 					<a href="{% url 'sponsorpackage_del' pk=package.pk %}" data-toggle="tooltip" title="Delete this sponsor package"><span class="glyphicon glyphicon-remove"></span></a>
