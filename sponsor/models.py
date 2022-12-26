@@ -2,6 +2,7 @@
 from decimal import Decimal, localcontext, ROUND_HALF_EVEN
 import datetime
 import re
+import os.path
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -9,7 +10,7 @@ from django.core.validators import RegexValidator
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from sabot.utils import random_filename_upload
+from sabot.utils import random_filename_generator
 
 
 class SponsorMailAttachment(models.Model):
@@ -426,6 +427,36 @@ STATUS_NOTINPACKAGE = -1
 STATUS_NOTWANTED = -2
 
 
+def random_filename_upload_logos(instance, filename):
+    fn, ext = os.path.splitext(filename)
+    while True:
+        newname = random_filename_generator() + ext
+        path = os.path.join("sponsors/logos", newname)
+        if not (settings.MEDIA_ROOT / path).is_file():
+            break
+    return path
+
+
+def random_filename_upload_vec_logos(instance, filename):
+    fn, ext = os.path.splitext(filename)
+    while True:
+        newname = random_filename_generator() + ext
+        path = os.path.join("sponsors/vec_logos", newname)
+        if not (settings.MEDIA_ROOT / path).is_file():
+            break
+    return path
+
+
+def random_filename_upload_ad(instance, filename):
+    fn, ext = os.path.splitext(filename)
+    while True:
+        newname = random_filename_generator() + ext
+        path = os.path.join("sponsors/ad", newname)
+        if not (settings.MEDIA_ROOT / path).is_file():
+            break
+    return path
+
+
 class Sponsoring(models.Model):
     class Meta:
         ordering = ["contact"]
@@ -465,12 +496,12 @@ class Sponsoring(models.Model):
     )
     logo = models.ImageField(
         blank=True,
-        upload_to=random_filename_upload("sponsors/logos"),
+        upload_to=random_filename_upload_logos,
         verbose_name=_("Company logo for homepage (preferably as PNG)"),
     )
     vectorLogo = models.FileField(
         blank=True,
-        upload_to=random_filename_upload("sponsors/vec_logos"),
+        upload_to=random_filename_upload_vec_logos,
         verbose_name=_(
             "Company logo as vector graphics (preferably PDF or SVG) for printed advertisements such as posters, flyers and visitor badges"
         ),
@@ -510,7 +541,7 @@ class Sponsoring(models.Model):
 
     programAd = models.FileField(
         blank=True,
-        upload_to=random_filename_upload("sponsors/ad/"),
+        upload_to=random_filename_upload_ad,
         verbose_name=_("PDF of your advertisement in our printed program"),
     )
 
@@ -565,15 +596,9 @@ class Sponsoring(models.Model):
     facebookAccountOptOut = models.BooleanField(
         default=False, verbose_name=_("Sponsor does not use a Facebook account")
     )
-    gplusPage = models.URLField(blank=True, verbose_name=_("G+ fanpage URL"))
-    gplusPageOptOut = models.BooleanField(
-        default=False, verbose_name=_("Sponsor does not use G+ fanpage URL")
-    )
-    gplusAccount = models.CharField(
-        blank=True, max_length=128, verbose_name=_("G+ account name")
-    )
-    gplusAccountOptOut = models.BooleanField(
-        default=False, verbose_name=_("Sponsor does not use a G+ account name")
+    linkedinPage = models.URLField(blank=True, verbose_name=_("Linkedin page URL"))
+    linkedinPageOptOut = models.BooleanField(
+        default=False, verbose_name=_("Sponsor does not use linkedin page URL")
     )
     socialMediaAnnounced = models.BooleanField(
         default=False, verbose_name=_("Social media announcements were made")
@@ -620,8 +645,7 @@ class Sponsoring(models.Model):
         "twitterAccount": _("Twitter account name"),
         "facebookAccount": _("Facebook account name"),
         "facebookPage": _("Facebook fanpage"),
-        "gplusAccount": _("G+ account name"),
-        "gplusPage": _("G+ fanpage"),
+        "linkedinPage": _("Linkedin page"),
         "billingName": _("Billing contact person"),
         "billingStreet": _("Billing address street"),
         "billingAddress2": _("Billing addresss addition"),
@@ -655,8 +679,7 @@ class Sponsoring(models.Model):
             self.twitterAccount != "" or self.twitterAccountOptOut,
             self.facebookPage != "" or self.facebookPageOptOut,
             self.facebookAccount != "" or self.facebookPageOptOut,
-            self.gplusPage != "" or self.gplusPageOptOut,
-            self.gplusAccount != "" or self.gplusAccountOptOut,
+            self.linkedinPage != "" or self.linkedinPageOptOut,
         ]
 
         if all(socialMediaItems):

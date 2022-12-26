@@ -304,8 +304,7 @@ class SponsorForm(forms.ModelForm):
                     TextOptOut("twitterAccount"),
                     TextOptOut("facebookAccount"),
                     TextOptOut("facebookPage"),
-                    TextOptOut("gplusAccount"),
-                    TextOptOut("gplusPage"),
+                    TextOptOut("linkedinPage"),
                 )
             )
         if instance.package.hasHpText:
