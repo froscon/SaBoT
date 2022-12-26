@@ -125,7 +125,9 @@ class SponsorCreationForm(forms.Form):
     )
 
     def __init__(self, *args, **kwargs):
+        year = kwargs.pop("year")
         super(SponsorCreationForm, self).__init__(*args, **kwargs)
+        self.fields["sponsorPackage"].queryset = SponsorPackage.objects.filter(year=year)
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.layout = Layout(

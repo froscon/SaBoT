@@ -146,6 +146,11 @@ class SponsorCreateView(FormView):
     template_name = "sponsor/sponsoring/create.html"
     success_url = "../{id}"
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["year"] = getActiveYear(self.request)
+        return kwargs
+
     def form_valid(self, form):
         # create a new user for this sponsor
         try:
