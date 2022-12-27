@@ -58,6 +58,7 @@ class SponsorContact(models.Model):
     GENDER_CHOICES = (
         ("M", "Male"),
         ("F", "Female"),
+        ("D", "Diverse"),
     )
     LANGUAGE_CHOICES = (
         ("de-DE", "German"),

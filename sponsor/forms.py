@@ -101,6 +101,42 @@ class SponsorContactForm(forms.ModelForm):
         self.helper.add_input(Submit("Save", "Save"))
 
 
+class SponsorContactSelfEditForm(forms.ModelForm):
+    class Meta:
+        fields = [
+            "companyName",
+            "contactEMail",
+            "street",
+            "zipcode",
+            "city",
+            "country",
+            "contactPersonFirstname",
+            "contactPersonSurname",
+            "contactPersonGender",
+            "contactPersonEmail",
+            "contactPersonLanguage",
+        ]
+        model = SponsorContact
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Field("companyName"),
+            Field("contactEMail"),
+            Field("street"),
+            Field("zipcode"),
+            Field("city"),
+            Field("country"),
+            Field("contactPersonFirstname"),
+            Field("contactPersonSurname"),
+            Field("contactPersonGender"),
+            Field("contactPersonEmail"),
+            Field("contactPersonLanguage"),
+        )
+        self.helper.add_input(Submit("Save", "Save"))
+
+
 class SponsorCreationForm(forms.Form):
     sponsorContact = forms.ModelChoiceField(
         queryset=SponsorContact.objects.all(), label=_("Sponsor Contact")
@@ -286,7 +322,14 @@ class SponsorForm(forms.ModelForm):
 
         general_fields.append(Field("homepage"))
         tablist.append(Tab("General", *general_fields))
-
+        contact = instance.contact
+        contact_info = render_to_string('sponsor/sponsoring/contactinfo.html', {'contact': contact})
+        tablist.append(
+            Tab(
+                "Contact Info",
+                HTML(contact_info)
+            )
+        )
         tablist.append(
             Tab(
                 "Billing Address",

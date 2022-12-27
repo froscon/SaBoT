@@ -1,0 +1,20 @@
+<p>
+    Please check the contact and address information below and update it when necessary. This helps us to contact
+    the right people in your company.
+</p>
+<dl class="dl-horizontal">
+    <dt>Contact Person</dt><dd>{{contact.contactPersonFirstname}} {{contact.contactPersonSurname}} ({{contact.contactPersonGender}})</dd>
+    <dt>Contact Person Email</dt><dd>{{contact.contactPersonEmail}}</dd>
+    <dt>Language</dt><dd>{{contact.get_contactPersonLanguage_display}}</dd>
+</dl>
+
+<p>Company information:</p>
+<address>
+    <strong>{{contact.companyName}}</strong><br/>
+    {{contact.companyEmail}}<br/>
+    {{contact.street}}<br/>
+    {{contact.zipcode}} {{contact.city}} {{contact.country}}
+</address>
+
+<a class="btn btn-primary" href="{% url 'sponsorcontact_selfupdate' pk=contact.pk %}">Update contact information</a>
+<br/><br/>
