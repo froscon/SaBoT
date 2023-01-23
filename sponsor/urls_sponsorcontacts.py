@@ -10,8 +10,9 @@ from sponsor.views import (
     sponsorMailPreview,
     SponsorContactResetEmailView,
     loadResponseInfoFromRT,
+    SelfEditUpdateView,
 )
-from sponsor.forms import SponsorContactForm, SponsorPackageForm
+from sponsor.forms import SponsorContactForm, SponsorContactSelfEditForm
 from sponsor.models import (
     Sponsoring,
     SponsoringParticipants,
@@ -30,7 +31,7 @@ from sabot.views import (
     PermCheckSimpleDeleteView,
     ArchiveCreatorView,
 )
-from sabot.decorators import user_is_staff
+from sabot.decorators import user_is_staff, login_required
 
 urlpatterns = [
     path(
@@ -56,6 +57,18 @@ urlpatterns = [
             )
         ),
         name="sponsorcontact_update",
+    ),
+    path(
+        "selfupdate/<int:pk>",
+        login_required(
+            SelfEditUpdateView.as_view(
+                model=SponsorContact,
+                form_class=SponsorContactSelfEditForm,
+                template_name="sponsor/contact/selfupdate.html",
+                success_url="/",
+            )
+        ),
+        name="sponsorcontact_selfupdate",
     ),
     path(
         "list",

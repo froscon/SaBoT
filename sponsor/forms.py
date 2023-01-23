@@ -100,6 +100,42 @@ class SponsorContactForm(forms.ModelForm):
         self.helper.add_input(Submit("Save", "Save"))
 
 
+class SponsorContactSelfEditForm(forms.ModelForm):
+    class Meta:
+        fields = [
+            "companyName",
+            "contactEMail",
+            "street",
+            "zipcode",
+            "city",
+            "country",
+            "contactPersonFirstname",
+            "contactPersonSurname",
+            "contactPersonGender",
+            "contactPersonEmail",
+            "contactPersonLanguage",
+        ]
+        model = SponsorContact
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Field("companyName"),
+            Field("contactEMail"),
+            Field("street"),
+            Field("zipcode"),
+            Field("city"),
+            Field("country"),
+            Field("contactPersonFirstname"),
+            Field("contactPersonSurname"),
+            Field("contactPersonGender"),
+            Field("contactPersonEmail"),
+            Field("contactPersonLanguage"),
+        )
+        self.helper.add_input(Submit("Save", "Save"))
+
+
 class SponsorCreationForm(forms.Form):
     sponsorContact = forms.ModelChoiceField(
         queryset=SponsorContact.objects.all(), label=_("Sponsor Contact")
@@ -124,7 +160,9 @@ class SponsorCreationForm(forms.Form):
     )
 
     def __init__(self, *args, **kwargs):
+        year = kwargs.pop("year")
         super(SponsorCreationForm, self).__init__(*args, **kwargs)
+        self.fields["sponsorPackage"].queryset = SponsorPackage.objects.filter(year=year)
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.layout = Layout(
@@ -283,7 +321,14 @@ class SponsorForm(forms.ModelForm):
 
         general_fields.append(Field("homepage"))
         tablist.append(Tab("General", *general_fields))
-
+        contact = instance.contact
+        contact_info = render_to_string('sponsor/sponsoring/contactinfo.html', {'contact': contact})
+        tablist.append(
+            Tab(
+                "Contact Info",
+                HTML(contact_info)
+            )
+        )
         tablist.append(
             Tab(
                 "Billing Address",
@@ -301,8 +346,7 @@ class SponsorForm(forms.ModelForm):
                     TextOptOut("twitterAccount"),
                     TextOptOut("facebookAccount"),
                     TextOptOut("facebookPage"),
-                    TextOptOut("gplusAccount"),
-                    TextOptOut("gplusPage"),
+                    TextOptOut("linkedinPage"),
                 )
             )
         if instance.package.hasHpText:

@@ -17,6 +17,8 @@ from django.urls import reverse
 from django.views.decorators.http import require_POST
 from django.views.generic import FormView
 from django.views.generic.base import TemplateView
+from django.views.generic import FormView, UpdateView
+
 
 from account.models import UserProfile
 from sabot.localrt import SabotRtException, SabotRtWrapper, Attachment, TicketStatus
@@ -143,6 +145,11 @@ class SponsorCreateView(FormView):
     form_class = SponsorCreationForm
     template_name = "sponsor/sponsoring/create.html"
     success_url = "../{id}"
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["year"] = getActiveYear(self.request)
+        return kwargs
 
     def form_valid(self, form):
         # create a new user for this sponsor
@@ -304,3 +311,25 @@ def loadResponseInfoFromRT(request):
         res["succeded"] = res["succeded"] + 1
 
     return respond_json(res)
+
+
+class SelfEditUpdateView(UpdateView):
+    def check_permission(self, user):
+        # find evidence of a connecting sponsoring
+        if user.is_staff:
+            return
+        sponsoring = Sponsoring.objects.filter(owner=user, contact=self.object)
+        if sponsoring.count() == 0:
+            raise PermissionDenied
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.check_permission(request.user)
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.check_permission(request.user)
+        return super().post(request, *args, **kwargs)
+
+
