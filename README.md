@@ -1,4 +1,4 @@
-This is the **S**ponsoring **a**nd **Bo**oth **T**oolkit used by [FrOSCon](www.froscon.de) to manage their sponsors, exhibitors and devrooms.
+This is the **S**ponsoring **a**nd **Bo**oth **T**oolkit used by [FrOSCon](froscon.org) to manage their sponsors, exhibitors and devrooms.
 
 Although everything is currently glued together, the three modules
 can be used mostly independently of each other. The sponsoring module

@@ -83,16 +83,16 @@ RT_URL = "https://management.froscon.org/rt/REST/1.0/"
 RT_QUEUE = "Test"
 RT_QUEUE_INVOICE = "Finanzen"
 RT_TICKET_OWNER = "mlang"
-RT_TICKET_URL = "https://management.froscon.de/rt/Ticket/Display.html?id="
+RT_TICKET_URL = "https://management.froscon.org/rt/Ticket/Display.html?id="
 
 SMSKAUFEN_UID = "froscon"
 SMSKAUFEN_APIKEY = ""
 
-INSTALL_MAIN_URL = "https://callforprojects.froscon.de"
+INSTALL_MAIN_URL = "https://callforprojects.froscon.org"
 
 ATTACHMENTS_ROOT = BASE_DIR / 'sponsor_attachments'
 
-DEFAULT_FROM_EMAIL = "projects@froscon.de"
+DEFAULT_FROM_EMAIL = "projects@froscon.org"
 
 # Recaptcha config
 RECAPTCHA_PUBLIC_KEY = ''
