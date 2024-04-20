@@ -282,6 +282,9 @@ class SponsorPackage(models.Model):
         editable=False, verbose_name=_("Conference year this package belongs to")
     )
 
+    def getPriceNet(self):
+        return self.price.quantize(Decimal("0.01"))
+
     def getPriceGross(self):
         with localcontext() as ctx:
             ctx.rounding = ROUND_HALF_EVEN

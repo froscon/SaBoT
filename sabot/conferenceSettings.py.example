@@ -24,6 +24,10 @@ SPONSOR_MAIL = "sponsoren@yourconference.org"
 SPONSOR_URL = "https://sponsors.yourconference.org"
 
 CONFERENCE_NAME = "FrOSCon"
+CONFERENCE_ORGANIZER = "FrOSCon e.V."
+CONFERENCE_ORGANIZER_COUNTRY_CODE = "DE"
+CONFERENCE_ORGANIZER_COUNTRY_SUBDIVISION = "Nordrhein-Westfalen"
+CONFERENCE_ORGANIZER_VAT_ID = "DE0123456789"
 
 CONFERENCE_VENUE_ADDRESS = """ FrOSCon e.V. / Hochschule Bonn-Rhein-Sieg
 Granthamallee 20

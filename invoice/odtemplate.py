@@ -105,6 +105,27 @@ class ODTTemplate(object):
         shutil.copy2(pdfPath, target)
         os.unlink(pdfPath)
 
+    def savePDFA(self, target):
+        with tempfile.TemporaryDirectory() as d:
+            pdffile = os.path.join(d, "orig.pdf")
+            self.savePDF(pdffile)
+            subprocess.run(
+                [
+                    "gs",
+                    "-dPDFA=3",
+                    "-dBATCH",
+                    "-dNOPAUSE",
+                    "-dNOOUTERSAVE",
+                    "-sColorConversionStrategy=UseDeviceIndependentColor",
+                    "-sProcessColorModel=DeviceCMYK",
+                    "-sDEVICE=pdfwrite",
+                    "-dPDFACompatibilityPolicy=1",
+                    "-sOutputFile={}".format(target),
+                    str(pdffile),
+                ],
+                check=True,
+            )
+
     def _field_render(self, elem, context):
         # retrieve the variable name of this field
         name = elem.attrib["{{{}}}name".format(OD_TEXT_NS)]
