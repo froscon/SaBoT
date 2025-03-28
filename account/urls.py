@@ -1,5 +1,4 @@
-from django.conf.urls import include, url
-from django.urls import path, re_path
+from django.urls import path, re_path, include
 from django.views.generic import ListView, DeleteView, CreateView, UpdateView
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required

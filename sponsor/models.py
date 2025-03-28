@@ -9,7 +9,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from sabot.utils import random_filename_generator
 
@@ -281,6 +281,9 @@ class SponsorPackage(models.Model):
     year = models.PositiveIntegerField(
         editable=False, verbose_name=_("Conference year this package belongs to")
     )
+
+    def getPriceNet(self):
+        return self.price.quantize(Decimal("0.01"))
 
     def getPriceGross(self):
         with localcontext() as ctx:

@@ -15,21 +15,22 @@ class TextOptOut(Field):
 
         super(TextOptOut, self).__init__(field, *args, **kwargs)
 
-    def render(self, form, form_style, context, template_pack=TEMPLATE_PACK):
+    def render(self, form, context, template_pack=TEMPLATE_PACK, extra_context=None, **kwargs):
+        template = self.get_template_name(template_pack)
         return render_field(
             self.field,
             form,
-            form_style,
             context,
-            template=self.template,
+            template=template,
             attrs=self.attrs,
             template_pack=template_pack,
+            extra_context=extra_context,
+            **kwargs
         ) + render_field(
             self.field + "OptOut",
             form,
-            form_style,
             context,
-            template=self.template,
+            template=template,
             attrs={"type": "hidden"},
             template_pack=template_pack,
         )
