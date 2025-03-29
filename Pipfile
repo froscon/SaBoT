@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-django = "~=3.2"
+django = "~=5.0"
 django-registration = "*"
 django-crispy-forms = "*"
 django-recaptcha = "*"
@@ -15,6 +15,7 @@ rt = ">=3,<4"
 python-ldap = "~=3.2.0"
 psycopg2 = "~=2.8.6"
 django-auth-ldap = "*"
+drafthorse="*"
 
 [dev-packages]
 
