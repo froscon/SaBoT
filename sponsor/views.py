@@ -76,6 +76,9 @@ class SponsorEmailingView(FormView):
                     else contact.contactEMail
                 ),
             )
+            cc = None
+            if contact.extraContactEmails:
+                cc = contact.extraContactEmails.split(",")
 
             # handle attachments
             attachments = [
@@ -89,6 +92,7 @@ class SponsorEmailingView(FormView):
                     owner=settings.RT_TICKET_OWNER,
                     subject=contact.template.mailSubject,
                     requestor=requestor,
+                    cc=cc,
                     text=message,
                     status=TicketStatus.OPEN,
                     attachments=attachments,

@@ -76,6 +76,7 @@ class SabotRtWrapper:
         attachments: Optional[List[Attachment]] = None,
         send_mail: bool = False,
         rt_parameters: Optional[Dict[str, str]] = None,
+        cc: Optional[Union[str,list]] = None,
     ) -> int:
         params = rt_parameters if rt_parameters is not None else {}
         if send_mail:
@@ -86,6 +87,8 @@ class SabotRtWrapper:
         params["Requestor"] = requestor
         params["Subject"] = subject
         params["Text"] = text
+        if cc is not None:
+            params["Cc"] = cc
         with attachment_files(attachments) as attachment_tuples:
             result = self._rt.create_ticket(queue, files=attachment_tuples, **params)
         if result == -1:

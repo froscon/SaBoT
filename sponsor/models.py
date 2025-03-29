@@ -100,6 +100,14 @@ class SponsorContact(models.Model):
     contactPersonEmail = models.EmailField(
         blank=True, verbose_name=_("Contact person email")
     )
+    extraContactEmails = models.CharField(
+        max_length=256,
+        blank=True,
+        verbose_name=_("Further contact mails"),
+        help_text=_("An empty or comma separated list of additional contact mails"),
+        validators=[RegexValidator("^([^@,]+@[^@,]+\\.[^@,]+)(,[^@,]+@[^@,]+\\.[^@,]+)*$",
+                                   "Not valid comma separated mails list.")]
+    )
 
     comment = models.TextField(blank=True, verbose_name=_("Comments and Notes"))
     template = models.ForeignKey(

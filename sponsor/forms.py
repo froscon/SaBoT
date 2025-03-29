@@ -61,6 +61,7 @@ class SponsorContactForm(forms.ModelForm):
             "responded",
             "companyName",
             "contactEMail",
+            "extraContactEmails",
             "street",
             "zipcode",
             "city",
@@ -85,6 +86,7 @@ class SponsorContactForm(forms.ModelForm):
             HTML(
                 '<p class="text-info">Please ensure the correctness of the address. It will later be used in the billing process.</p>'
             ),
+            Field("extraContactEmails"),
             Field("street"),
             Field("zipcode"),
             Field("city"),
