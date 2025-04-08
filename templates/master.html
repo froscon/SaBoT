@@ -55,6 +55,7 @@
 						<ul class="nav navbar-nav">
 							{% if user.is_authenticated %}
 							<li><a href="/">Overview</a></li>
+							<li><a href="/overview">DevRooms & Exhibition</a></li>
 							<li><a href="/accounts/profile">My Profile</a></li>
 							{% endif %}
 							{% if user.is_authenticated and user.is_staff %}
